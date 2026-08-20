@@ -1,119 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PasóEnJuárez | Noticias de la Frontera</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-  <!-- ENCABEZADO -->
-  <header class="header-oficial">
-    <div class="banner-flex-container">
-      
-      <!-- LOGOTIPO PRINCIPAL (LIMPIO Y OCUPANDO TODO EL ESPACIO) -->
-      <div class="banner-img-container">
-        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
-      </div>
-
-    </div>
-
-    <!-- WIDGETS INFERIORES DEL HEADER (PEQUEÑOS, IGUALES Y DISTRIBUIDOS) -->
-    <div class="header-widgets-bar">
-      
-      <!-- WIDGET 1: PUENTES -->
-      <div class="hw-card">
-        <span class="hw-titulo">Puentes Internacionales</span>
-        <div class="hw-puentes-grid">
-          <span>PdN: <strong class="tiempo-medio">45m</strong></span>
-          <span>Zar: <strong class="tiempo-lento">75m</strong></span>
-          <span>Lib: <strong class="tiempo-medio">60m</strong></span>
-          <span>Jer: <strong class="tiempo-rapido">15m</strong></span>
-        </div>
-      </div>
-
-      <!-- WIDGET 2: TIPO DE CAMBIO -->
-      <div class="hw-card">
-        <span class="hw-titulo">Tipo de Cambio</span>
-        <div class="hw-content-row">
-          <span>Compra: <strong>$16.57</strong></span>
-          <span>Venta: <strong>$16.97</strong></span>
-        </div>
-      </div>
-
-      <!-- WIDGET 3: CLIMA -->
-      <div class="hw-card">
-        <span class="hw-titulo">Clima - Cd. Juárez</span>
-        <div class="hw-content-row">
-          <span style="font-size: 0.9rem; font-weight: bold; color: #38bdf8;">28°C</span>
-          <span style="color: #cbd5e1;">Parcialmente Nublado</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- MENÚ DE NAVEGACIÓN -->
-    <nav id="menu-navegacion">
-      <a href="#" class="nav-btn active" data-categoria="todas">Inicio</a>
-      <a href="#" class="nav-btn" data-categoria="seguridad">Seguridad</a>
-      <a href="#" class="nav-btn" data-categoria="economia">Economía</a>
-      <a href="#" class="nav-btn" data-categoria="puentes">Puentes</a>
-      <a href="#" class="nav-btn" data-categoria="politica">Política</a>
-      <a href="#" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
-      <a href="#" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
-      <a href="#" class="nav-btn" data-categoria="historia">Historia</a>
-      <a href="#" class="nav-btn" data-categoria="migracion">Migración</a>
-      <a href="#" class="nav-btn" data-categoria="clima">Clima</a>
-      <a href="#" class="nav-btn" data-categoria="cultura">Cultura</a>
-    </nav>
-  </header>
-
-  <!-- LAYOUT PRINCIPAL -->
-  <div class="layout-principal">
-
-    <!-- PUBLICIDAD IZQUIERDA -->
-    <aside class="columna-publicidad publicidad-izquierda">
-      <span>PUBLICIDAD</span>
-      <div class="caja-banner-vertical">
-        <p>Anuncio Vertical</p>
-        <small>160 x 600 px</small>
-      </div>
-    </aside>
-
-    <!-- BLOQUE CENTRAL -->
-    <div class="bloque-central">
-      <main class="contenedor-noticias">
-        <p style="color: #94a3b8; text-align: center; width: 100%;">Cargando noticias...</p>
-      </main>
-
-      <section class="seccion-cronologica">
-        <div class="cronologica-header">
-          <h3><span>Última Hora</span> Cronología de noticias</h3>
-          <small>Desliza horizontalmente &rarr;</small>
-        </div>
-        <div class="carrusel-deslizable" id="carrusel-cronologico">
-          <p style="color: #94a3b8; padding: 10px;">Cargando cronología...</p>
-        </div>
-      </section>
-    </div>
-
-    <!-- PUBLICIDAD DERECHA -->
-    <aside class="columna-publicidad publicidad-derecha">
-      <span>PUBLICIDAD</span>
-      <div class="caja-banner-vertical">
-        <p>Anuncio Vertical</p>
-        <small>160 x 600 px</small>
-      </div>
-    </aside>
-
+<!-- ENCABEZADO REESTRUCTURADO -->
+<header class="header-oficial">
+  
+  <!-- LOGO PANORÁMICO -->
+  <div class="banner-contenedor-panoramico">
+    <img src="images/header-bg.jpg" alt="Pasó En Juárez" class="logo-panoramico">
   </div>
 
-  <footer>
-    <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
-  </footer>
+  <!-- WIDGETS EN LÍNEA HORIZONTAL (DISTRIBUCIÓN ÚNICA) -->
+  <div class="header-widgets-linea">
+    <div class="widget-item">
+      <span class="wi-label">Puentes:</span>
+      <span class="wi-val">PdN <span class="tiempo-medio">45m</span></span>
+      <span class="wi-val">Zar <span class="tiempo-lento">75m</span></span>
+      <span class="wi-val">Lib <span class="tiempo-medio">60m</span></span>
+      <span class="wi-val">Jer <span class="tiempo-rapido">15m</span></span>
+    </div>
+    
+    <div class="widget-item">
+      <span class="wi-label">Dólar:</span>
+      <span class="wi-val">Compra <strong style="color:#fff">$16.57</strong></span>
+      <span class="wi-val">Venta <strong style="color:#fff">$16.97</strong></span>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+    <div class="widget-item">
+      <span class="wi-label">Clima:</span>
+      <span class="wi-val">28°C <span style="color:#cbd5e1;">Parcialmente Nublado</span></span>
+    </div>
+  </div>
+
+  <!-- MENÚ -->
+  <nav id="menu-navegacion">
+    <a href="#">Inicio</a> <a href="#">Seguridad</a> <a href="#">Economía</a>
+    <a href="#">Puentes</a> <a href="#">Política</a> <a href="#">Tecnología</a>
+    <a href="#">Medio Ambiente</a> <a href="#">Historia</a> <a href="#">Migración</a>
+    <a href="#">Clima</a> <a href="#">Cultura</a>
+  </nav>
+</header>
