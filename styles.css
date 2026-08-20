@@ -17,24 +17,37 @@ header.header-oficial {
 }
 
 .banner-flex-container {
-  max-width: 1350px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 10px 15px;
+  padding: 12px 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
 }
 
+/* CONTENEDOR IZQUIERDO (CLIMA Y PUENTES AGRUPADOS) */
+.info-izquierda {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 230px;
+  flex-shrink: 0;
+}
+
+/* LOGOTIPO PRINCIPAL AL CENTRO (MÁXIMO PROTAGONISMO) */
 .banner-img-container {
   flex-grow: 1;
-  max-width: 750px;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
 }
 
 .header-banner-img {
   width: 100%;
-  max-height: 160px;
+  max-width: 650px;
+  max-height: 150px;
   object-fit: contain;
   display: block;
 }
@@ -44,9 +57,8 @@ header.header-oficial {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 10px 12px;
-  min-width: 220px;
-  flex-shrink: 0;
+  padding: 8px 10px;
+  width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
@@ -57,71 +69,9 @@ header.header-oficial {
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
-  padding-bottom: 4px;
-  margin-bottom: 8px;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
   letter-spacing: 0.5px;
-}
-
-.clima-actual {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.clima-temp-main {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1;
-}
-
-.clima-sensacion {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  display: block;
-  margin-top: 2px;
-}
-
-.clima-icono {
-  font-size: 1.5rem;
-}
-
-.clima-detalles {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.7rem;
-  color: #cbd5e1;
-  background-color: #0f172a;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
-}
-
-.clima-grid {
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px dashed #334155;
-  padding-top: 6px;
-  gap: 4px;
-}
-
-.clima-dia {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.7rem;
-}
-
-.clima-dia .dia-nombre {
-  color: #94a3b8;
-  font-weight: 600;
-  font-size: 0.65rem;
-}
-
-.clima-dia .temp {
-  color: #f8fafc;
-  font-weight: 700;
 }
 
 .cargando-texto {
@@ -134,10 +84,8 @@ header.header-oficial {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 10px 12px;
-  min-width: 230px;
-  max-width: 260px;
-  flex-shrink: 0;
+  padding: 8px 10px;
+  width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
@@ -148,15 +96,15 @@ header.header-oficial {
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
-  padding-bottom: 4px;
-  margin-bottom: 6px;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
   letter-spacing: 0.5px;
 }
 
 .pm-grid {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .pm-item {
@@ -175,7 +123,7 @@ header.header-oficial {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 130px;
 }
 
 /* CAJA DE TIPO DE CAMBIO */
@@ -184,7 +132,7 @@ header.header-oficial {
   border: 1px solid #334155;
   border-radius: 6px;
   padding: 10px 14px;
-  min-width: 180px;
+  width: 200px;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
@@ -503,11 +451,9 @@ header nav a.active {
   .banner-flex-container {
     flex-direction: column;
   }
-  .tipo-cambio-box,
-  .clima-box,
-  .puentes-mini-box {
+  .info-izquierda,
+  .tipo-cambio-box {
     width: 100%;
-    max-width: 100%;
   }
   .contenedor-noticias {
     grid-template-columns: 1fr;
