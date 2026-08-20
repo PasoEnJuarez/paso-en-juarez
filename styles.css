@@ -20,7 +20,7 @@ header.header-oficial {
 .banner-imagen-full {
   width: 100%;
   background-color: #0b0f19;
-  padding: 10px 0;
+  padding: 15px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,16 +36,16 @@ header.header-oficial {
 
 .header-banner-img {
   width: 100%;
-  max-height: 130px;
+  max-height: 160px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
 }
 
-/* BARRA DE WIDGETS INTEGRADA EN UNA SOLA FILA COMPACTA */
+/* BARRA DE WIDGETS (CLIMA, PUENTES, TIPO DE CAMBIO) */
 .barra-widgets {
   background-color: #111827;
-  padding: 8px 20px;
+  padding: 12px 15px;
   border-bottom: 1px solid #1f2937;
 }
 
@@ -55,90 +55,91 @@ header.header-oficial {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
-/* GRUPOS DENTRO DE LA BARRA */
-.widget-grupo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.8rem;
-  color: #cbd5e1;
+/* CAJA DE CLIMA EN HEADER */
+.clima-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 10px 12px;
+  min-width: 220px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-.widget-titulo {
-  color: #38bdf8;
+.clima-titulo {
+  display: block;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.7rem;
+  color: #38bdf8;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
   letter-spacing: 0.5px;
 }
 
-/* CLIMA EN LÍNEA */
-.clima-inline {
+.clima-actual {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
-.clima-inline .temp {
-  font-size: 1.1rem;
+.clima-temp-main {
+  font-size: 1.4rem;
   font-weight: 800;
   color: #ffffff;
+  line-height: 1;
 }
 
-.clima-inline .desc {
+.clima-sensacion {
+  font-size: 0.7rem;
   color: #94a3b8;
-  font-size: 0.75rem;
+  display: block;
+  margin-top: 2px;
 }
 
-/* PUENTES EN LÍNEA */
-.puentes-inline {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.clima-icono {
+  font-size: 1.5rem;
 }
 
-.puente-item {
+.clima-detalles {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  background-color: #1e293b;
-  padding: 2px 6px;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: #cbd5e1;
+  background-color: #0f172a;
+  padding: 4px 8px;
   border-radius: 4px;
-  border: 1px solid #334155;
+  margin-bottom: 8px;
 }
 
-.puente-item span:first-child {
-  color: #94a3b8;
-}
-
-/* TIPO DE CAMBIO EN LÍNEA */
-.tc-inline {
+.clima-grid {
   display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.tc-item-inline {
-  display: flex;
-  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #334155;
+  padding-top: 6px;
   gap: 4px;
-  font-size: 0.75rem;
-  background-color: #1e293b;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid #334155;
 }
 
-.tc-item-inline .moneda {
+.clima-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.7rem;
+}
+
+.clima-dia .dia-nombre {
   color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.65rem;
 }
 
-.tc-item-inline .valor {
+.clima-dia .temp {
   color: #f8fafc;
   font-weight: 700;
 }
@@ -148,10 +149,97 @@ header.header-oficial {
   color: #94a3b8;
 }
 
+/* MÓDULO DE PUENTES COMPACTO EN HEADER */
+.puentes-mini-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 10px 12px;
+  min-width: 220px;
+  max-width: 240px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.pm-titulo {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #38bdf8;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.pm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.pm-nombre {
+  color: #cbd5e1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+/* CAJA DE TIPO DE CAMBIO */
+.tipo-cambio-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 10px 14px;
+  min-width: 180px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.tc-titulo {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #38bdf8;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.tc-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.tc-fila .moneda {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.tc-fila .valor {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
 /* MENÚ DE NAVEGACIÓN COMPACTO */
 header nav {
   background-color: #111827;
-  padding: 6px 10px;
+  padding: 8px 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -175,13 +263,13 @@ header nav a.active {
 
 header nav a.active {
   border-bottom: 2px solid #38bdf8;
-  padding-bottom: 1px;
+  padding-bottom: 2px;
 }
 
 /* CONTENEDOR PRINCIPAL CON PUBLICIDAD LATERAL */
 .layout-principal {
   max-width: 1350px;
-  margin: 25px auto;
+  margin: 30px auto;
   padding: 0 15px;
   display: flex;
   gap: 20px;
@@ -324,9 +412,9 @@ header nav a.active {
 /* INDICADORES DE TIEMPO (MINUTOS) */
 .minutos {
   font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
 }
 
 .tiempo-rapido { background-color: #dcfce7; color: #15803d; }
@@ -430,12 +518,13 @@ header nav a.active {
 
 @media (max-width: 900px) {
   .widgets-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    justify-content: center;
   }
-  .widget-grupo {
-    justify-content: space-between;
+  .tipo-cambio-box,
+  .clima-box,
+  .puentes-mini-box {
+    width: 100%;
+    max-width: 100%;
   }
   .contenedor-noticias {
     grid-template-columns: 1fr;
