@@ -8,61 +8,67 @@
 </head>
 <body>
 
-  <!-- ENCABEZADO -->
+  <!-- ENCABEZADO OFICIAL -->
   <header class="header-oficial">
-    <div class="banner-flex-container">
-      
-      <!-- MÓDULO DE CLIMA -->
-      <div class="clima-box" id="widget-clima">
-        <span class="clima-titulo">Clima Juárez</span>
-        <span class="cargando-texto">Cargando clima...</span>
-      </div>
-
-      <!-- MÓDULO DE PUENTES COMPACTO -->
-      <div class="puentes-mini-box">
-        <span class="pm-titulo">Puentes Internacionales</span>
-        <div class="pm-grid" id="widget-puentes-mini">
-          <div class="pm-item">
-            <span class="pm-nombre">Paso del Norte</span>
-            <span class="minutos tiempo-medio">45m</span>
-          </div>
-          <div class="pm-item">
-            <span class="pm-nombre">Zaragoza</span>
-            <span class="minutos tiempo-lento">75m</span>
-          </div>
-          <div class="pm-item">
-            <span class="pm-nombre">Córdova (Libre)</span>
-            <span class="minutos tiempo-medio">60m</span>
-          </div>
-          <div class="pm-item">
-            <span class="pm-nombre">Jerónimo-St. Teresa</span>
-            <span class="minutos tiempo-rapido">15m</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- BANNER CENTRAL -->
+    
+    <!-- BANNER DE IMAGEN PRINCIPAL (ARRIBA DEL TODO) -->
+    <div class="banner-imagen-full">
       <div class="banner-img-container">
         <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
       </div>
+    </div>
 
-      <!-- TIPO DE CAMBIO -->
-      <div class="tipo-cambio-box">
-        <span class="tc-titulo">Tipo de Cambio</span>
-        <div class="tc-fila">
-          <span class="moneda">USD Compra:</span>
-          <span class="valor" id="usd-compra">$--.--</span>
+    <!-- BARRA DE WIDGETS (Clima, Puentes y Tipo de Cambio) -->
+    <div class="barra-widgets">
+      <div class="widgets-container">
+        
+        <!-- MÓDULO DE CLIMA -->
+        <div class="clima-box" id="widget-clima">
+          <span class="clima-titulo">Clima Juárez</span>
+          <span class="cargando-texto">Cargando clima...</span>
         </div>
-        <div class="tc-fila">
-          <span class="moneda">USD Venta:</span>
-          <span class="valor" id="usd-venta">$--.--</span>
+
+        <!-- MÓDULO DE PUENTES COMPACTO -->
+        <div class="puentes-mini-box">
+          <span class="pm-titulo">Puentes Internacionales</span>
+          <div class="pm-grid" id="widget-puentes-mini">
+            <div class="pm-item">
+              <span class="pm-nombre">Paso del Norte</span>
+              <span class="minutos tiempo-medio">45m</span>
+            </div>
+            <div class="pm-item">
+              <span class="pm-nombre">Zaragoza</span>
+              <span class="minutos tiempo-lento">75m</span>
+            </div>
+            <div class="pm-item">
+              <span class="pm-nombre">Córdova (Libre)</span>
+              <span class="minutos tiempo-medio">60m</span>
+            </div>
+            <div class="pm-item">
+              <span class="pm-nombre">Jerónimo-St. Teresa</span>
+              <span class="minutos tiempo-rapido">15m</span>
+            </div>
+          </div>
         </div>
-        <div class="tc-fila" style="margin-top: 4px; border-top: 1px dashed #334155; padding-top: 4px;">
-          <span class="moneda">EUR / MXN:</span>
-          <span class="valor" id="eur-mxn">$--.--</span>
+
+        <!-- TIPO DE CAMBIO -->
+        <div class="tipo-cambio-box">
+          <span class="tc-titulo">Tipo de Cambio</span>
+          <div class="tc-fila">
+            <span class="moneda">USD Compra:</span>
+            <span class="valor" id="usd-compra">$--.--</span>
+          </div>
+          <div class="tc-fila">
+            <span class="moneda">USD Venta:</span>
+            <span class="valor" id="usd-venta">$--.--</span>
+          </div>
+          <div class="tc-fila" style="margin-top: 4px; border-top: 1px dashed #334155; padding-top: 4px;">
+            <span class="moneda">EUR / MXN:</span>
+            <span class="valor" id="eur-mxn">$--.--</span>
+          </div>
         </div>
+
       </div>
-
     </div>
 
     <!-- MENÚ DE NAVEGACIÓN -->
@@ -129,7 +135,7 @@
     <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
   </footer>
 
-  <!-- LIBRERÍA SUPABASE MÁS SCRIPT PRINCIPAL -->
+  <!-- LIBRERÍA SUPABASE Y SCRIPT PRINCIPAL -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 
@@ -145,7 +151,7 @@
       
       <h1 id="modal-titulo" style="font-size: 1.5rem; color: #f8fafc; margin: 15px 0 12px 0; line-height: 1.3;"></h1>
       
-      <!-- CONTENIDO (TEXTO DE LA NOTICIA) -->
+      <!-- CONTENIDO -->
       <div id="modal-contenido" style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; white-space: pre-line; margin-bottom: 20px;"></div>
       
       <!-- GALERÍA DE IMÁGENES -->
