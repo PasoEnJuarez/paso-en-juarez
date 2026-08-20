@@ -92,17 +92,52 @@ async function cargarTipoCambio() {
 }
 
 // ==========================================
-// 4. CARGAR TIEMPOS DE PUENTES
+// 4. CARGAR TIEMPOS DE PUENTES (Con renderizado dinámico)
 // ==========================================
 async function cargarTiemposPuentes() {
+  const widgetPuentesMini = document.getElementById('widget-puentes-mini');
+  if (!widgetPuentesMini) return;
+
   try {
     const response = await fetch('https://bwt.cbp.gov/api/borderwait/port/2402');
     if (response.ok) {
       const data = await response.json();
-      console.log("Puentes en vivo:", data);
+      
+      if (Array.isArray(data) && data.length > 0) {
+        let htmlPuentes = '';
+        
+        data.forEach(puente => {
+          let nombreCruce = puente.crossing_name || puente.port_name || 'Puente';
+          
+          // Intentamos extraer el tiempo de espera para autos (estándar)
+          let esperaCarros = 0;
+          if (puente.standard_lanes && puente.standard_lanes.delay_minutes !== undefined) {
+            esperaCarros = parseInt(puente.standard_lanes.delay_minutes, 10);
+          }
+
+          // Asignar clase de color según los minutos de espera
+          let claseTiempo = 'tiempo-rapido';
+          if (esperaCarros > 30 && esperaCarros <= 60) {
+            claseTiempo = 'tiempo-medio';
+          } else if (esperaCarros > 60) {
+            claseTiempo = 'tiempo-lento';
+          }
+
+          htmlPuentes += `
+            <div class="pm-item">
+              <span class="pm-nombre">${nombreCruce}</span>
+              <span class="minutos ${claseTiempo}">${esperaCarros}m</span>
+            </div>
+          `;
+        });
+
+        if (htmlPuentes) {
+          widgetPuentesMini.innerHTML = htmlPuentes;
+        }
+      }
     }
   } catch (error) {
-    console.log("Usando reporte predeterminado de puentes.");
+    console.log("No se pudo conectar a la API de la CBP, manteniendo estructura previa.");
   }
 }
 
@@ -238,7 +273,6 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
           ? nota.contenido.substring(0, 140) + '...' 
           : nota.contenido || '';
 
-        // Limpiar formato de categoría para que coincida con las clases del CSS (ej: "seguridad", "medio-ambiente")
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
         return `
@@ -275,14 +309,23 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
 }
 
 // ==========================================
-// 7. INICIALIZACIÓN
+// 7. INICIALIZACIÓN Y AUTOMATIZACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+  // Carga inicial inmediata al abrir la página
   cargarClimaJuarez();
   cargarTipoCambio();
   cargarTiemposPuentes();
   cargarNoticiasEnVivo();
 
+  // Actualizar Clima automáticamente cada 10 minutos (600,000 ms)
+  setInterval(cargarClimaJuarez, 600000);
+
+  // Actualizar Puentes y Tipo de Cambio automáticamente cada 5 minutos (300,000 ms)
+  setInterval(cargarTiemposPuentes, 300000);
+  setInterval(cargarTipoCambio, 300000);
+
+  // Configuración de eventos para modales y navegación
   const btnCerrar = document.getElementById('cerrar-modal');
   if (btnCerrar) {
     btnCerrar.addEventListener('click', cerrarModalNoticia);
