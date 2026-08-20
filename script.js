@@ -21,7 +21,7 @@ function obtenerListaFotos(nota) {
 }
 
 // ==========================================
-// 2. LÓGICA DEL MODAL
+// 2. LÓGICA DEL MODAL (CON BOTONES DE COMPARTIR)
 // ==========================================
 function abrirModalNoticia(idNota) {
   const nota = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
@@ -61,25 +61,20 @@ function abrirModalNoticia(idNota) {
     `;
   }
 
-  // Generar enlaces de compartir con la información de la noticia
+  // Enlaces para compartir
   const urlActual = window.encodeURIComponent(window.location.href);
   const textoCompartir = window.encodeURIComponent(`¡Lee esto en PasóEnJuárez: "${nota.titulo || 'Noticia'}"!`);
 
   const compartirHTML = `
-    <div class="modal-compartir" style="margin-top: 25px; border-top: 1px solid #334155; padding-top: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <div style="margin-top: 25px; border-top: 1px solid #334155; padding-top: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
       <span style="color: #94a3b8; font-size: 0.85rem; font-weight: bold;">Compartir noticia:</span>
-      <a href="https://api.whatsapp.com/send?text=${textoCompartir}%20${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir whatsapp" style="background: #25d366; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">WhatsApp</a>
-      <a href="https://www.facebook.com/sharer/sharer.php?u=${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir facebook" style="background: #1877f2; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">Facebook</a>
-      <a href="https://twitter.com/intent/tweet?text=${textoCompartir}&url=${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir twitter" style="background: #0f172a; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold; border: 1px solid #334155;">X / Twitter</a>
+      <a href="https://api.whatsapp.com/send?text=${textoCompartir}%20${urlActual}" target="_blank" rel="noopener noreferrer" style="background: #25d366; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">WhatsApp</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${urlActual}" target="_blank" rel="noopener noreferrer" style="background: #1877f2; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?text=${textoCompartir}&url=${urlActual}" target="_blank" rel="noopener noreferrer" style="background: #0f172a; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold; border: 1px solid #334155;">X / Twitter</a>
     </div>
   `;
   
   modalGaleria.innerHTML = galeriaHTML + compartirHTML;
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-  
-  modalGaleria.innerHTML = galeriaHTML;
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -118,12 +113,23 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
       );
     }
 
+    if (!noticiasFiltradas || noticiasFiltradas.length === 0) {
+      if (contenedorNoticias) {
+        contenedorNoticias.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 25px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; color: #475569;">
+            <p style="margin-bottom: 5px; font-size: 1.05rem;">No hay noticias registradas en la categoría: <strong>${categoria}</strong></p>
+          </div>
+        `;
+      }
+      return;
+    }
+
     // RENDERIZAR NOTICIAS
     if (contenedorNoticias) {
       contenedorNoticias.innerHTML = noticiasFiltradas.map(nota => {
         const listaFotos = obtenerListaFotos(nota);
-        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo}">` : '';
-        const resumen = nota.contenido?.substring(0, 140) + '...';
+        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}">` : '';
+        const resumen = nota.contenido && nota.contenido.length > 140 ? nota.contenido.substring(0, 140) + '...' : nota.contenido || '';
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
         return `
@@ -137,7 +143,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
         `;
       }).join('');
 
-      // AÑADIR EVENTO DE CLIC A LAS NOTICIAS RENDERIZADAS
+      // Eventos de clic en las tarjetas de noticias
       contenedorNoticias.querySelectorAll('.noticia').forEach(tarjeta => {
         tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
       });
@@ -155,12 +161,16 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
         `;
       }).join('');
 
+      contenedorNoticias?.querySelectorAll('.tarjeta-cronologica')?.forEach(tarjeta => {
+        tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
+      });
+
       carruselCronologico.querySelectorAll('.tarjeta-cronologica').forEach(tarjeta => {
         tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
       });
     }
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Error imprevisto:", err);
   }
 }
 
