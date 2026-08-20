@@ -18,53 +18,57 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS (Clima, Puentes y Tipo de Cambio) -->
+    <!-- BARRA DE WIDGETS HORIZONTALES (LOS 3 EN LA MISMA FILA) -->
     <div class="barra-widgets">
       <div class="widgets-container">
         
         <!-- MÓDULO DE CLIMA -->
         <div class="clima-box" id="widget-clima">
           <span class="clima-titulo">Clima Juárez</span>
-          <span class="cargando-texto">Cargando clima...</span>
+          <div class="clima-contenido-linea">
+            <span class="cargando-texto">Cargando clima...</span>
+          </div>
         </div>
 
-        <!-- MÓDULO DE PUENTES COMPACTO -->
+        <!-- MÓDULO DE PUENTES COMPACTO EN HORIZONTAL -->
         <div class="puentes-mini-box">
           <span class="pm-titulo">Puentes Internacionales</span>
-          <div class="pm-grid" id="widget-puentes-mini">
-            <div class="pm-item">
-              <span class="pm-nombre">Paso del Norte</span>
+          <div class="pm-grid-horizontal" id="widget-puentes-mini">
+            <div class="pm-item-h">
+              <span class="pm-nombre">P. Norte</span>
               <span class="minutos tiempo-medio">45m</span>
             </div>
-            <div class="pm-item">
+            <div class="pm-item-h">
               <span class="pm-nombre">Zaragoza</span>
               <span class="minutos tiempo-lento">75m</span>
             </div>
-            <div class="pm-item">
-              <span class="pm-nombre">Córdova (Libre)</span>
+            <div class="pm-item-h">
+              <span class="pm-nombre">Córdova</span>
               <span class="minutos tiempo-medio">60m</span>
             </div>
-            <div class="pm-item">
-              <span class="pm-nombre">Jerónimo-St. Teresa</span>
+            <div class="pm-item-h">
+              <span class="pm-nombre">Jerónimo</span>
               <span class="minutos tiempo-rapido">15m</span>
             </div>
           </div>
         </div>
 
-        <!-- TIPO DE CAMBIO -->
+        <!-- TIPO DE CAMBIO EN HORIZONTAL -->
         <div class="tipo-cambio-box">
           <span class="tc-titulo">Tipo de Cambio</span>
-          <div class="tc-fila">
-            <span class="moneda">USD Compra:</span>
-            <span class="valor" id="usd-compra">$--.--</span>
-          </div>
-          <div class="tc-fila">
-            <span class="moneda">USD Venta:</span>
-            <span class="valor" id="usd-venta">$--.--</span>
-          </div>
-          <div class="tc-fila" style="margin-top: 4px; border-top: 1px dashed #334155; padding-top: 4px;">
-            <span class="moneda">EUR / MXN:</span>
-            <span class="valor" id="eur-mxn">$--.--</span>
+          <div class="tc-fila-horizontal">
+            <div class="tc-item">
+              <span class="moneda">USD Compra</span>
+              <span class="valor" id="usd-compra">$--.--</span>
+            </div>
+            <div class="tc-item">
+              <span class="moneda">USD Venta</span>
+              <span class="valor" id="usd-venta">$--.--</span>
+            </div>
+            <div class="tc-item">
+              <span class="moneda">EUR / MXN</span>
+              <span class="valor" id="eur-mxn">$--.--</span>
+            </div>
           </div>
         </div>
 
