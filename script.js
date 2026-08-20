@@ -90,20 +90,17 @@ async function cargarTipoCambio() {
 }
 
 // ==========================================================
-// 4. CARGAR TIEMPOS DE PUENTES (A TRAVÉS DE SUPABASE PROXY)
+// 4. CARGAR TIEMPOS DE PUENTES (Versión Estable Anterior)
 // ==========================================================
 async function cargarTiemposPuentes() {
   const widgetPuentesMini = document.getElementById('widget-puentes-mini');
   if (!widgetPuentesMini) return;
 
   try {
-    // URL de tu función pública en Supabase
     const urlProxy = 'https://akwnmorymjhthdkcebri.supabase.co/functions/v1/obtener-puentes';
-    
-    // Petición simple: al ser pública, ya no requiere headers de autenticación
     const response = await fetch(urlProxy);
 
-    if (!response.ok) throw new Error('Error al conectar con el proxy de Supabase');
+    if (!response.ok) throw new Error('Error al conectar con el proxy');
     
     const data = await response.json();
     
@@ -121,7 +118,13 @@ async function cargarTiemposPuentes() {
       
       if (puenteData && puenteData.passenger_vehicles) {
         const espera = puenteData.passenger_vehicles.delay_minutes || 0;
-        let claseTiempo = espera > 60 ? 'tiempo-lento' : (espera > 30 ? 'tiempo-medio' : 'tiempo-rapido');
+        
+        let claseTiempo = 'tiempo-rapido';
+        if (espera > 30 && espera <= 60) {
+          claseTiempo = 'tiempo-medio';
+        } else if (espera > 60) {
+          claseTiempo = 'tiempo-lento';
+        }
 
         htmlPuentes += `
           <div class="pm-item">
@@ -131,9 +134,12 @@ async function cargarTiemposPuentes() {
         `;
       }
     }
-    widgetPuentesMini.innerHTML = htmlPuentes || '<p>Datos no disponibles</p>';
+
+    if (htmlPuentes !== '') {
+      widgetPuentesMini.innerHTML = htmlPuentes;
+    }
   } catch (error) {
-    console.error("Error al cargar puentes:", error);
+    console.error("Error al cargar tiempos de puentes:", error);
   }
 }
 
@@ -158,16 +164,67 @@ function cerrarModalNoticia() {
 
 async function cargarNoticiasEnVivo(categoria = 'todas') {
   const contenedorNoticias = document.querySelector('.contenedor-noticias');
+  const carruselCronologico = document.getElementById('carrusel-cronologico');
+
   if (!supabaseClient) return;
-  let { data: noticias } = await supabaseClient.from('Noticias').select('*').order('created_at', { ascending: false });
-  listaNoticiasCargadas = noticias || [];
-  if (contenedorNoticias) {
-    contenedorNoticias.innerHTML = listaNoticiasCargadas.map(nota => `
-      <article class="noticia" onclick="abrirModalNoticia('${nota.id}')" style="cursor:pointer;">
-        <h2>${nota.titulo}</h2>
-        <p>${nota.contenido?.substring(0,100)}...</p>
-      </article>
-    `).join('');
+
+  try {
+    let { data: noticias, error } = await supabaseClient
+      .from('Noticias')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      const res = await supabaseClient.from('noticias').select('*').order('created_at', { ascending: false });
+      noticias = res.data;
+      error = res.error;
+    }
+
+    if (error) return;
+
+    listaNoticiasCargadas = noticias || [];
+
+    let noticiasFiltradas = listaNoticiasCargadas;
+    if (categoria && categoria.toLowerCase() !== 'todas') {
+      noticiasFiltradas = listaNoticiasCargadas.filter(n => 
+        n.categoria && n.categoria.toLowerCase().trim() === categoria.toLowerCase().trim()
+      );
+    }
+
+    if (contenedorNoticias) {
+      contenedorNoticias.innerHTML = noticiasFiltradas.map(nota => {
+        let imagenHTML = '';
+        const imgUrl = nota.imagen_url || nota.galeria || nota.imagen;
+        if (imgUrl) {
+          const primeraImg = String(imgUrl).split(',')[0].trim();
+          imagenHTML = `<img src="${primeraImg}" alt="${nota.titulo}">`;
+        }
+        return `
+          <article class="noticia" onclick="abrirModalNoticia('${nota.id}')" style="cursor: pointer;">
+            <span class="categoria">${nota.categoria || 'General'}</span>
+            <h2>${nota.titulo || 'Sin título'}</h2>
+            ${imagenHTML}
+            <p>${nota.contenido ? nota.contenido.substring(0, 120) + '...' : ''}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
+    if (carruselCronologico) {
+      carruselCronologico.innerHTML = listaNoticiasCargadas.map(nota => {
+        const hora = nota.created_at 
+          ? new Date(nota.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) 
+          : '--:--';
+        return `
+          <div class="tarjeta-cronologica" onclick="abrirModalNoticia('${nota.id}')" style="cursor: pointer;">
+            <span class="hora">${hora}</span>
+            <h4>${nota.titulo || ''}</h4>
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error(err);
   }
 }
 
