@@ -75,13 +75,13 @@
   <script>
     const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // Login
     document.getElementById('form-login').onsubmit = async (e) => {
       e.preventDefault();
       const pass = document.getElementById('login-password').value;
-      const { error } = await supabase.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: pass });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: pass });
       
       if (error) {
         document.getElementById('mensaje-login').style.color = '#ef4444';
@@ -107,13 +107,13 @@
 
         if (archivo) {
           const nombreArchivo = `${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabase.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
           if (uploadError) throw new Error('Error al subir la imagen');
           
-          urlImagen = supabase.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
 
-        const { error: insertError } = await supabase.from('Noticias').insert({
+        const { error: insertError } = await supabaseClient.from('Noticias').insert({
           titulo: document.getElementById('titulo').value,
           categoria: document.getElementById('categoria').value,
           contenido: document.getElementById('contenido').value,
