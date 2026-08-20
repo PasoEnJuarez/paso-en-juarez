@@ -20,7 +20,7 @@ header.header-oficial {
 .banner-imagen-full {
   width: 100%;
   background-color: #0b0f19;
-  padding: 15px 0;
+  padding: 10px 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,16 +36,16 @@ header.header-oficial {
 
 .header-banner-img {
   width: 100%;
-  max-height: 160px;
+  max-height: 130px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
 }
 
-/* BARRA DE WIDGETS HORIZONTALES */
+/* BARRA DE WIDGETS HORIZONTALES (MÁS COMPACTA) */
 .barra-widgets {
   background-color: #111827;
-  padding: 10px 15px;
+  padding: 8px 15px;
   border-bottom: 1px solid #1f2937;
 }
 
@@ -55,10 +55,10 @@ header.header-oficial {
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  gap: 12px;
+  gap: 10px;
 }
 
-/* ESTILO COMPARTIDO PARA LOS TRES WIDGETS (MISMA FILA, BAJA ALTURA) */
+/* CADA WIDGET OCUPA UN TERCIO EXACTO Y TIENE MENOS ALTURA */
 .clima-box,
 .puentes-mini-box,
 .tipo-cambio-box {
@@ -66,8 +66,8 @@ header.header-oficial {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 8px 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  padding: 6px 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -78,89 +78,89 @@ header.header-oficial {
 .pm-titulo,
 .tc-titulo {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
-  padding-bottom: 3px;
-  margin-bottom: 5px;
+  padding-bottom: 2px;
+  margin-bottom: 4px;
   letter-spacing: 0.5px;
 }
 
-/* CONTENIDO INTERNO: CLIMA COMPACTO */
+/* CLIMA COMPACTO EN LÍNEA */
 .clima-contenido-linea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #cbd5e1;
 }
 
 .clima-temp-main {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #ffffff;
 }
 
-/* CONTENIDO INTERNO: PUENTES EN LÍNEA HORIZONTAL */
+/* PUENTES EN LÍNEA HORIZONTAL */
 .pm-grid-horizontal {
   display: flex;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
 }
 
 .pm-item-h {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   text-align: center;
 }
 
 .pm-nombre {
   color: #94a3b8;
   font-weight: 500;
-  font-size: 0.65rem;
-  margin-bottom: 2px;
+  font-size: 0.6rem;
+  margin-bottom: 1px;
 }
 
-/* CONTENIDO INTERNO: TIPO DE CAMBIO EN FILA HORIZONTAL */
-.tc-fila-horizontal {
+/* TIPO DE CAMBIO EN FILA HORIZONTAL */
+.tc-grid-horizontal {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
-  gap: 10px;
+  gap: 6px;
 }
 
 .tc-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
 .tc-item .moneda {
   color: #94a3b8;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 600;
 }
 
 .tc-item .valor {
   color: #f8fafc;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .cargando-texto {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #94a3b8;
 }
 
 /* MENÚ DE NAVEGACIÓN COMPACTO */
 header nav {
   background-color: #111827;
-  padding: 8px 10px;
+  padding: 6px 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -173,7 +173,7 @@ header nav a {
   text-decoration: none;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   transition: color 0.2s ease;
 }
 
@@ -184,13 +184,13 @@ header nav a.active {
 
 header nav a.active {
   border-bottom: 2px solid #38bdf8;
-  padding-bottom: 2px;
+  padding-bottom: 1px;
 }
 
 /* CONTENEDOR PRINCIPAL CON PUBLICIDAD LATERAL */
 .layout-principal {
   max-width: 1350px;
-  margin: 30px auto;
+  margin: 25px auto;
   padding: 0 15px;
   display: flex;
   gap: 20px;
@@ -333,9 +333,9 @@ header nav a.active {
 /* INDICADORES DE TIEMPO (MINUTOS) */
 .minutos {
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 1px 5px;
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 
 .tiempo-rapido { background-color: #dcfce7; color: #15803d; }
