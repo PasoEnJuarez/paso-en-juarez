@@ -8,14 +8,12 @@ const supabaseClient = window.supabase
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
   : null;
 
-// Variable global para almacenar las noticias cargadas
 let listaNoticiasCargadas = [];
 
-// Función auxiliar para procesar imágenes (Evita código duplicado)
+// Función auxiliar para procesar imágenes
 function obtenerListaFotos(nota) {
   const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
   if (!textoImagenes) return [];
-
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos
     .map(img => String(img).replace(/\\/g, '/').trim())
@@ -23,7 +21,7 @@ function obtenerListaFotos(nota) {
 }
 
 // ==========================================
-// 2. MOSTRAR MODAL CON IMÁGENES AJUSTADAS AL FINAL
+// 2. LÓGICA DEL MODAL
 // ==========================================
 function abrirModalNoticia(idNota) {
   const nota = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
@@ -36,9 +34,6 @@ function abrirModalNoticia(idNota) {
   const modalGaleria = document.getElementById('modal-galeria');
   const modalContenido = document.getElementById('modal-contenido');
 
-  if (!modal) return;
-
-  // Asignar datos del texto
   modalCategoria.textContent = nota.categoria || 'General';
   modalFecha.textContent = nota.created_at 
     ? new Date(nota.created_at).toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' })
@@ -46,9 +41,8 @@ function abrirModalNoticia(idNota) {
   modalTitulo.textContent = nota.titulo || 'Sin título';
   modalContenido.textContent = nota.contenido || '';
 
-  // Procesar e insertar imágenes AL FINAL con tamaños controlados
-  let galeriaHTML = '';
   const listaFotos = obtenerListaFotos(nota);
+  let galeriaHTML = '';
 
   if (listaFotos.length === 1) {
     galeriaHTML = `
@@ -61,16 +55,13 @@ function abrirModalNoticia(idNota) {
       <div style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;">
         <small style="color: #94a3b8; display: block; margin-bottom: 8px; font-weight: bold;">Galería de imágenes:</small>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
-          ${listaFotos.map(img => `
-            <img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">
-          `).join('')}
+          ${listaFotos.map(img => `<img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">`).join('')}
         </div>
       </div>
     `;
   }
   
   modalGaleria.innerHTML = galeriaHTML;
-
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -84,36 +75,20 @@ function cerrarModalNoticia() {
 }
 
 // ==========================================
-// 3. CARGAR NOTICIAS EN VIVO Y CRONOLOGÍA
+// 3. CARGAR Y RENDERIZAR NOTICIAS
 // ==========================================
 async function cargarNoticiasEnVivo(categoria = 'todas') {
   const contenedorNoticias = document.querySelector('.contenedor-noticias');
   const carruselCronologico = document.getElementById('carrusel-cronologico');
 
-  if (!supabaseClient) {
-    console.error("Cliente de Supabase no inicializado.");
-    return;
-  }
+  if (!supabaseClient) return;
 
   try {
-    let { data: noticias, error } = await supabaseClient
-      .from('Noticias')
-      .select('*')
-      .order('created_at', { ascending: false });
+    let { data: noticias, error } = await supabaseClient.from('Noticias').select('*').order('created_at', { ascending: false });
 
-    // Intento alternativo en minúsculas si la tabla original falla por sensibilidad de mayúsculas
     if (error && error.code === '42P01') {
       const res = await supabaseClient.from('noticias').select('*').order('created_at', { ascending: false });
       noticias = res.data;
-      error = res.error;
-    }
-
-    if (error) {
-      console.error("Error al consultar Supabase:", error);
-      if (contenedorNoticias) {
-        contenedorNoticias.innerHTML = `<p style="color: #ef4444; text-align: center; width: 100%;">Error al cargar las noticias. Intenta recargar la página.</p>`;
-      }
-      return;
     }
 
     listaNoticiasCargadas = noticias || [];
@@ -125,32 +100,16 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
       );
     }
 
-    if (!noticiasFiltradas || noticiasFiltradas.length === 0) {
-      if (contenedorNoticias) {
-        contenedorNoticias.innerHTML = `
-          <div style="grid-column: span 2; text-align: center; padding: 25px; background: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; color: #475569;">
-            <p style="margin-bottom: 5px; font-size: 1.05rem;">No hay noticias registradas en la categoría: <strong>${categoria}</strong></p>
-            <small style="color: #94a3b8;">Prueba hacer clic en "Inicio" para recargar la lista general.</small>
-          </div>
-        `;
-      }
-      return;
-    }
-
-    // RENDERIZAR TARJETAS EN PORTADA
+    // RENDERIZAR NOTICIAS
     if (contenedorNoticias) {
       contenedorNoticias.innerHTML = noticiasFiltradas.map(nota => {
         const listaFotos = obtenerListaFotos(nota);
-        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}">` : '';
-
-        const resumen = nota.contenido && nota.contenido.length > 140 
-          ? nota.contenido.substring(0, 140) + '...' 
-          : nota.contenido || '';
-
+        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo}">` : '';
+        const resumen = nota.contenido?.substring(0, 140) + '...';
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
         return `
-          <article class="noticia" onclick="abrirModalNoticia('${nota.id}')" style="cursor: pointer;">
+          <article class="noticia" data-id="${nota.id}" style="cursor: pointer;">
             <span class="categoria ${catClase}">${nota.categoria || 'General'}</span>
             <h2>${nota.titulo || 'Sin título'}</h2>
             ${galeriaHTML}
@@ -159,62 +118,52 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
           </article>
         `;
       }).join('');
+
+      // AÑADIR EVENTO DE CLIC A LAS NOTICIAS RENDERIZADAS
+      contenedorNoticias.querySelectorAll('.noticia').forEach(tarjeta => {
+        tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
+      });
     }
 
-    // RENDERIZAR CRONOLOGÍA DE ÚLTIMA HORA
+    // RENDERIZAR CRONOLOGÍA
     if (carruselCronologico) {
       carruselCronologico.innerHTML = listaNoticiasCargadas.map(nota => {
-        const hora = nota.created_at 
-          ? new Date(nota.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) 
-          : '--:--';
-
+        const hora = nota.created_at ? new Date(nota.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '--:--';
         return `
-          <div class="tarjeta-cronologica" onclick="abrirModalNoticia('${nota.id}')" style="cursor: pointer;">
+          <div class="tarjeta-cronologica" data-id="${nota.id}" style="cursor: pointer;">
             <span class="hora">${hora}</span>
             <h4>${nota.titulo || ''}</h4>
           </div>
         `;
       }).join('');
-    }
 
+      carruselCronologico.querySelectorAll('.tarjeta-cronologica').forEach(tarjeta => {
+        tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
+      });
+    }
   } catch (err) {
-    console.error("Error imprevisto:", err);
+    console.error("Error:", err);
   }
 }
 
 // ==========================================
-// 4. INICIALIZACIÓN Y EVENTOS
+// 4. INICIALIZACIÓN
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo();
 
-  const btnCerrar = document.getElementById('cerrar-modal');
-  if (btnCerrar) {
-    btnCerrar.addEventListener('click', cerrarModalNoticia);
-  }
-
-  const modal = document.getElementById('modal-noticia');
-  if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) cerrarModalNoticia();
-    });
-  }
-
-  // Cerrar modal al presionar la tecla ESC
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      cerrarModalNoticia();
-    }
+  document.getElementById('cerrar-modal')?.addEventListener('click', cerrarModalNoticia);
+  document.getElementById('modal-noticia')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) cerrarModalNoticia();
   });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModalNoticia(); });
 
-  const botonesNav = document.querySelectorAll('#menu-navegacion .nav-btn');
-  botonesNav.forEach(btn => {
+  document.querySelectorAll('#menu-navegacion .nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      botonesNav.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const categoria = btn.getAttribute('data-categoria');
-      cargarNoticiasEnVivo(categoria);
+      cargarNoticiasEnVivo(btn.getAttribute('data-categoria'));
     });
   });
 });
