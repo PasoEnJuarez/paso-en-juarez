@@ -10,26 +10,28 @@ body {
   color: #1e293b;
 }
 
-/* ENCABEZADO Y BANNER CON TIPO DE CAMBIO */
+/* ENCABEZADO OFICIAL */
 header.header-oficial {
   background-color: #111827;
   border-bottom: 3px solid #d32f2f;
 }
 
-.banner-flex-container {
-  max-width: 1350px;
-  margin: 0 auto;
-  padding: 10px 15px;
+/* BANNER DE IMAGEN PRINCIPAL (SUPERIOR) */
+.banner-imagen-full {
+  width: 100%;
+  background-color: #0b0f19;
+  padding: 15px 0;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
+  border-bottom: 1px solid #1f2937;
 }
 
 .banner-img-container {
-  flex-grow: 1;
-  max-width: 750px;
-  overflow: hidden;
+  max-width: 1350px;
+  width: 100%;
+  padding: 0 15px;
+  text-align: center;
 }
 
 .header-banner-img {
@@ -37,6 +39,24 @@ header.header-oficial {
   max-height: 160px;
   object-fit: contain;
   display: block;
+  margin: 0 auto;
+}
+
+/* BARRA DE WIDGETS (CLIMA, PUENTES, TIPO DE CAMBIO) */
+.barra-widgets {
+  background-color: #111827;
+  padding: 12px 15px;
+  border-bottom: 1px solid #1f2937;
+}
+
+.widgets-container {
+  max-width: 1350px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 /* CAJA DE CLIMA EN HEADER */
@@ -496,9 +516,9 @@ header nav a.active {
   }
 }
 
-@media (max-width: 750px) {
-  .banner-flex-container {
-    flex-direction: column;
+@media (max-width: 900px) {
+  .widgets-container {
+    justify-content: center;
   }
   .tipo-cambio-box,
   .clima-box,
