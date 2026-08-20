@@ -17,22 +17,13 @@ header.header-oficial {
 }
 
 .banner-flex-container {
-  max-width: 1400px;
+  max-width: 1450px;
   margin: 0 auto;
-  padding: 12px 15px;
+  padding: 10px 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
-}
-
-/* CONTENEDOR IZQUIERDO (CLIMA Y PUENTES AGRUPADOS) */
-.info-izquierda {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 230px;
-  flex-shrink: 0;
 }
 
 /* LOGOTIPO PRINCIPAL AL CENTRO (MÁXIMO PROTAGONISMO) */
@@ -46,74 +37,84 @@ header.header-oficial {
 
 .header-banner-img {
   width: 100%;
-  max-width: 650px;
+  max-width: 800px;
   max-height: 150px;
   object-fit: contain;
   display: block;
 }
 
-/* CAJA DE CLIMA EN HEADER */
+/* BLOQUE DERECHO (TIPO DE CAMBIO Y CLIMA ULTRA-COMPACTOS) */
+.bloque-derecho {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+/* CAJA DE CLIMA EN HEADER (COMPACTA) */
 .clima-box {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 6px 8px;
   width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .clima-titulo {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
-  padding-bottom: 3px;
-  margin-bottom: 5px;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
   letter-spacing: 0.5px;
 }
 
 .cargando-texto {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: #94a3b8;
 }
 
-/* MÓDULO DE PUENTES COMPACTO EN HEADER */
+/* MÓDULO DE PUENTES COMPACTO EN HEADER (IZQUIERDA) */
 .puentes-mini-box {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
   padding: 8px 10px;
-  width: 100%;
+  width: 185px;
+  flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .pm-titulo {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
   padding-bottom: 3px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   letter-spacing: 0.5px;
 }
 
 .pm-grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .pm-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   background-color: #0f172a;
-  padding: 3px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
 }
 
@@ -123,29 +124,28 @@ header.header-oficial {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 130px;
+  max-width: 110px;
 }
 
-/* CAJA DE TIPO DE CAMBIO */
+/* CAJA DE TIPO DE CAMBIO (COMPACTA) */
 .tipo-cambio-box {
   background-color: #1e293b;
   border: 1px solid #334155;
   border-radius: 6px;
-  padding: 10px 14px;
-  width: 200px;
-  flex-shrink: 0;
+  padding: 6px 8px;
+  width: 100%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .tc-titulo {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #334155;
-  padding-bottom: 4px;
-  margin-bottom: 6px;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
   letter-spacing: 0.5px;
 }
 
@@ -153,8 +153,8 @@ header.header-oficial {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
-  margin-top: 4px;
+  font-size: 0.7rem;
+  margin-top: 2px;
 }
 
 .tc-fila .moneda {
@@ -343,9 +343,9 @@ header nav a.active {
 /* INDICADORES DE TIEMPO (MINUTOS) */
 .minutos {
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .tiempo-rapido { background-color: #dcfce7; color: #15803d; }
@@ -451,8 +451,8 @@ header nav a.active {
   .banner-flex-container {
     flex-direction: column;
   }
-  .info-izquierda,
-  .tipo-cambio-box {
+  .puentes-mini-box,
+  .bloque-derecho {
     width: 100%;
   }
   .contenedor-noticias {
