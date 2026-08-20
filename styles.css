@@ -10,99 +10,78 @@ body {
   color: #1e293b;
 }
 
-/* ENCABEZADO */
+/* ENCABEZADO GENERAL */
 header.header-oficial {
   background-color: #111827;
   border-bottom: 3px solid #d32f2f;
 }
 
-.banner-flex-container {
-  max-width: 1450px;
-  margin: 0 auto;
+/* LOGO PANORÁMICO MÁS ALARGADO */
+.banner-contenedor-panoramico {
+  width: 100%;
   padding: 12px 20px;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-/* LOGOTIPO PRINCIPAL (EXPANDIDO AL MÁXIMO) */
-.banner-img-container {
+.logo-panoramico {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.header-banner-img {
-  width: 100%;
-  max-width: 950px;
-  max-height: 140px;
-  object-fit: contain;
+  max-width: 1300px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 4px;
   display: block;
 }
 
-/* BARRA DE WIDGETS INFERIORES (DISTRIBUIDOS Y UNIFORMES) */
-.header-widgets-bar {
-  max-width: 1200px;
-  margin: 0 auto 10px auto;
-  padding: 0 15px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.hw-card {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 0.75rem;
-  color: #f8fafc;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.hw-titulo {
-  display: block;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #38bdf8;
-  border-bottom: 1px solid #1e293b;
-  padding-bottom: 3px;
-  margin-bottom: 5px;
-  letter-spacing: 0.5px;
-}
-
-.hw-puentes-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-}
-
-.hw-content-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2px 0;
-}
-
-/* COLORES PARA LOS TIEMPOS DE PUENTES */
-.tiempo-rapido { color: #4ade80; }
-.tiempo-medio { color: #facc15; }
-.tiempo-lento { color: #f87171; }
-
-/* MENÚ DE NAVEGACIÓN */
-header nav {
-  background-color: #111827;
-  padding: 8px 10px;
+/* WIDGETS EN LÍNEA HORIZONTAL */
+.header-widgets-linea {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 12px;
-  border-top: 1px solid #1f2937;
+  gap: 35px;
+  background-color: #0a0f1a;
+  padding: 8px 20px;
+  border-top: 1px solid #1e293b;
+  border-bottom: 1px solid #1e293b;
+  color: #94a3b8;
+  font-size: 0.75rem;
 }
 
-header nav a {
+.widget-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wi-label { 
+  font-weight: bold; 
+  color: #38bdf8; 
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.wi-val { 
+  display: flex; 
+  align-items: center; 
+  gap: 4px; 
+}
+
+/* COLORES PARA TIEMPOS DE PUENTES */
+.tiempo-rapido { color: #4ade80; font-weight: bold; }
+.tiempo-medio { color: #facc15; font-weight: bold; }
+.tiempo-lento { color: #f87171; font-weight: bold; }
+
+/* MENÚ DE NAVEGACIÓN */
+#menu-navegacion {
+  background-color: #111827;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+#menu-navegacion a {
   color: #f3f4f6;
   text-decoration: none;
   font-weight: 600;
@@ -111,12 +90,12 @@ header nav a {
   transition: color 0.2s ease;
 }
 
-header nav a:hover,
-header nav a.active {
+#menu-navegacion a:hover,
+#menu-navegacion a.active {
   color: #38bdf8;
 }
 
-header nav a.active {
+#menu-navegacion a.active {
   border-bottom: 2px solid #38bdf8;
   padding-bottom: 2px;
 }
@@ -187,13 +166,6 @@ header nav a.active {
   margin-bottom: 35px;
 }
 
-.noticia {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
 /* CRONOLOGÍA */
 .seccion-cronologica {
   background-color: #ffffff;
@@ -225,11 +197,4 @@ footer {
   font-size: 0.85rem;
   margin-top: 40px;
   border-top: 3px solid #38bdf8;
-}
-
-/* RESPONSIVE PARA MÓVILES */
-@media (max-width: 750px) {
-  .header-widgets-bar {
-    grid-template-columns: 1fr;
-  }
 }
