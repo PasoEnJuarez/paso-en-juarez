@@ -28,7 +28,7 @@ header.header-oficial {
 
 .banner-img-container {
   flex-grow: 1;
-  max-width: 1050px;
+  max-width: 750px;
   overflow: hidden;
 }
 
@@ -45,7 +45,7 @@ header.header-oficial {
   border: 1px solid #334155;
   border-radius: 6px;
   padding: 10px 12px;
-  min-width: 240px;
+  min-width: 220px;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
@@ -129,6 +129,52 @@ header.header-oficial {
   color: #94a3b8;
 }
 
+/* MÓDULO DE PUENTES COMPACTO EN HEADER */
+.puentes-mini-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 10px 12px;
+  min-width: 220px;
+  max-width: 240px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.pm-titulo {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #38bdf8;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.pm-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.pm-nombre {
+  color: #cbd5e1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
 /* CAJA DE TIPO DE CAMBIO */
 .tipo-cambio-box {
   background-color: #1e293b;
@@ -199,102 +245,6 @@ header nav a.active {
   border-bottom: 2px solid #38bdf8;
   padding-bottom: 2px;
 }
-
-/* SECCIÓN PUENTES INTERNACIONALES (OPTIMIZADA Y MÁS LIMPIA) */
-.seccion-puentes {
-  background-color: #ffffff;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  border-top: 4px solid #38bdf8;
-  margin-bottom: 25px;
-}
-
-.puentes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.puentes-header h3 {
-  font-size: 1.2rem;
-  color: #0f172a;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.puentes-header h3 span {
-  background-color: #38bdf8;
-  color: #0f172a;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.puentes-header small {
-  color: #64748b;
-  font-size: 0.8rem;
-}
-
-.grid-puentes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 16px;
-}
-
-.tarjeta-puente {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Espacio extra entre líneas para que no se amontone */
-  transition: transform 0.2s ease, border-color 0.2s ease;
-}
-
-.tarjeta-puente:hover {
-  border-color: #cbd5e1;
-  transform: translateY(-2px);
-}
-
-.puente-nombre {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #0f172a;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 6px;
-  margin-bottom: 2px;
-}
-
-.puente-fila {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-}
-
-.puente-fila .linea {
-  color: #64748b;
-  font-weight: 600;
-}
-
-.puente-fila .minutos {
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-.tiempo-rapido { background-color: #dcfce7; color: #15803d; }
-.tiempo-medio { background-color: #fef9c3; color: #b45309; }
-.tiempo-lento { background-color: #fee2e2; color: #b91c1c; }
 
 /* CONTENEDOR PRINCIPAL CON PUBLICIDAD LATERAL */
 .layout-principal {
@@ -439,30 +389,17 @@ header nav a.active {
 .categoria.clima { background-color: #0284c7; }
 .categoria.cultura { background-color: #db2777; }
 
-/* PUBLICIDAD INTERNA */
-.publicidad-tarjeta {
-  grid-column: span 2;
+/* INDICADORES DE TIEMPO (MINUTOS) */
+.minutos {
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
 }
 
-.publicidad-tarjeta span {
-  display: block;
-  font-size: 0.65rem;
-  color: #94a3b8;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.caja-anuncio {
-  background-color: #f8fafc;
-  border: 2px dashed #cbd5e1;
-  border-radius: 6px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  font-weight: bold;
-}
+.tiempo-rapido { background-color: #dcfce7; color: #15803d; }
+.tiempo-medio { background-color: #fef9c3; color: #b45309; }
+.tiempo-lento { background-color: #fee2e2; color: #b91c1c; }
 
 /* SECCIÓN CRONOLÓGICA DESLIZABLE */
 .seccion-cronologica {
@@ -559,18 +496,20 @@ header nav a.active {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 750px) {
   .banner-flex-container {
     flex-direction: column;
   }
   .tipo-cambio-box,
-  .clima-box {
+  .clima-box,
+  .puentes-mini-box {
     width: 100%;
+    max-width: 100%;
   }
   .contenedor-noticias {
     grid-template-columns: 1fr;
   }
-  .principal, .publicidad-tarjeta {
+  .principal {
     grid-column: span 1;
   }
 }
