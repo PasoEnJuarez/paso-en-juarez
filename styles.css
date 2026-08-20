@@ -19,58 +19,71 @@ header.header-oficial {
 .banner-flex-container {
   max-width: 1450px;
   margin: 0 auto;
-  padding: 10px 15px;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
+  justify-content: center;
 }
 
-/* LOGOTIPO CENTRAL (LIBRE DE ELEMENTOS ENCIMA) */
+/* LOGOTIPO PRINCIPAL (EXPANDIDO AL MÁXIMO) */
 .banner-img-container {
-  flex-grow: 1;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 10px;
 }
 
 .header-banner-img {
   width: 100%;
-  max-width: 650px;
-  max-height: 120px;
+  max-width: 950px;
+  max-height: 140px;
   object-fit: contain;
   display: block;
 }
 
-/* WIDGETS LATERALES ULTRA-PEQUEÑOS Y DISCRETOS */
-.widget-mini-lateral {
+/* BARRA DE WIDGETS INFERIORES (DISTRIBUIDOS Y UNIFORMES) */
+.header-widgets-bar {
+  max-width: 1200px;
+  margin: 0 auto 10px auto;
+  padding: 0 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.hw-card {
   background-color: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 6px;
-  padding: 6px 8px;
-  width: 175px;
-  flex-shrink: 0;
-  font-size: 0.7rem;
-  color: #cbd5e1;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: #f8fafc;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.wm-titulo {
+.hw-titulo {
   display: block;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #38bdf8;
   border-bottom: 1px solid #1e293b;
-  padding-bottom: 2px;
-  margin-bottom: 3px;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
   letter-spacing: 0.5px;
 }
 
-.wm-contenido {
+.hw-puentes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.hw-content-row {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
 }
 
 /* COLORES PARA LOS TIEMPOS DE PUENTES */
@@ -212,4 +225,11 @@ footer {
   font-size: 0.85rem;
   margin-top: 40px;
   border-top: 3px solid #38bdf8;
+}
+
+/* RESPONSIVE PARA MÓVILES */
+@media (max-width: 750px) {
+  .header-widgets-bar {
+    grid-template-columns: 1fr;
+  }
 }
