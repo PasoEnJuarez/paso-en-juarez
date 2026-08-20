@@ -60,6 +60,24 @@ function abrirModalNoticia(idNota) {
       </div>
     `;
   }
+
+  // Generar enlaces de compartir con la información de la noticia
+  const urlActual = window.encodeURIComponent(window.location.href);
+  const textoCompartir = window.encodeURIComponent(`¡Lee esto en PasóEnJuárez: "${nota.titulo || 'Noticia'}"!`);
+
+  const compartirHTML = `
+    <div class="modal-compartir" style="margin-top: 25px; border-top: 1px solid #334155; padding-top: 15px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <span style="color: #94a3b8; font-size: 0.85rem; font-weight: bold;">Compartir noticia:</span>
+      <a href="https://api.whatsapp.com/send?text=${textoCompartir}%20${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir whatsapp" style="background: #25d366; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">WhatsApp</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir facebook" style="background: #1877f2; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold;">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?text=${textoCompartir}&url=${urlActual}" target="_blank" rel="noopener noreferrer" class="btn-compartir twitter" style="background: #0f172a; color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: bold; border: 1px solid #334155;">X / Twitter</a>
+    </div>
+  `;
+  
+  modalGaleria.innerHTML = galeriaHTML + compartirHTML;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
   
   modalGaleria.innerHTML = galeriaHTML;
   modal.style.display = 'flex';
