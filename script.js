@@ -11,6 +11,17 @@ const supabaseClient = window.supabase
 // Variable global para almacenar las noticias cargadas
 let listaNoticiasCargadas = [];
 
+// Función auxiliar para procesar imágenes (Evita código duplicado)
+function obtenerListaFotos(nota) {
+  const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
+  if (!textoImagenes) return [];
+
+  let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
+  return listaFotos
+    .map(img => String(img).replace(/\\/g, '/').trim())
+    .filter(img => img.length > 0);
+}
+
 // ==========================================
 // 2. MOSTRAR MODAL CON IMÁGENES AJUSTADAS AL FINAL
 // ==========================================
@@ -37,30 +48,25 @@ function abrirModalNoticia(idNota) {
 
   // Procesar e insertar imágenes AL FINAL con tamaños controlados
   let galeriaHTML = '';
-  const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
+  const listaFotos = obtenerListaFotos(nota);
 
-  if (textoImagenes) {
-    let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-    listaFotos = listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
-
-    if (listaFotos.length === 1) {
-      galeriaHTML = `
-        <div style="text-align: center; margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px;">
-          <img src="${listaFotos[0]}" alt="${nota.titulo}" style="max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #334155;">
+  if (listaFotos.length === 1) {
+    galeriaHTML = `
+      <div style="text-align: center; margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px;">
+        <img src="${listaFotos[0]}" alt="${nota.titulo}" style="max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #334155;">
+      </div>
+    `;
+  } else if (listaFotos.length > 1) {
+    galeriaHTML = `
+      <div style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;">
+        <small style="color: #94a3b8; display: block; margin-bottom: 8px; font-weight: bold;">Galería de imágenes:</small>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
+          ${listaFotos.map(img => `
+            <img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">
+          `).join('')}
         </div>
-      `;
-    } else if (listaFotos.length > 1) {
-      galeriaHTML = `
-        <div style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;">
-          <small style="color: #94a3b8; display: block; margin-bottom: 8px; font-weight: bold;">Galería de imágenes:</small>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">
-            ${listaFotos.map(img => `
-              <img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">
-            `).join('')}
-          </div>
-        </div>
-      `;
-    }
+      </div>
+    `;
   }
   
   modalGaleria.innerHTML = galeriaHTML;
@@ -84,7 +90,10 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
   const contenedorNoticias = document.querySelector('.contenedor-noticias');
   const carruselCronologico = document.getElementById('carrusel-cronologico');
 
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    console.error("Cliente de Supabase no inicializado.");
+    return;
+  }
 
   try {
     let { data: noticias, error } = await supabaseClient
@@ -92,6 +101,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
       .select('*')
       .order('created_at', { ascending: false });
 
+    // Intento alternativo en minúsculas si la tabla original falla por sensibilidad de mayúsculas
     if (error && error.code === '42P01') {
       const res = await supabaseClient.from('noticias').select('*').order('created_at', { ascending: false });
       noticias = res.data;
@@ -100,6 +110,9 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
 
     if (error) {
       console.error("Error al consultar Supabase:", error);
+      if (contenedorNoticias) {
+        contenedorNoticias.innerHTML = `<p style="color: #ef4444; text-align: center; width: 100%;">Error al cargar las noticias. Intenta recargar la página.</p>`;
+      }
       return;
     }
 
@@ -124,26 +137,16 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
       return;
     }
 
-    // RENDERIZAR TARJETAS EN PORTADA USANDO CLASES CSS
+    // RENDERIZAR TARJETAS EN PORTADA
     if (contenedorNoticias) {
       contenedorNoticias.innerHTML = noticiasFiltradas.map(nota => {
-        let galeriaHTML = '';
-        const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
-
-        if (textoImagenes) {
-          let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-          listaFotos = listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
-
-          if (listaFotos.length > 0) {
-            galeriaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo}">`;
-          }
-        }
+        const listaFotos = obtenerListaFotos(nota);
+        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}">` : '';
 
         const resumen = nota.contenido && nota.contenido.length > 140 
           ? nota.contenido.substring(0, 140) + '...' 
           : nota.contenido || '';
 
-        // Limpiar formato de categoría para que coincida con las clases del CSS (ej: "seguridad", "medio-ambiente")
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
         return `
@@ -180,7 +183,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
 }
 
 // ==========================================
-// 4. INICIALIZACIÓN
+// 4. INICIALIZACIÓN Y EVENTOS
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo();
@@ -196,6 +199,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === modal) cerrarModalNoticia();
     });
   }
+
+  // Cerrar modal al presionar la tecla ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      cerrarModalNoticia();
+    }
+  });
 
   const botonesNav = document.querySelectorAll('#menu-navegacion .nav-btn');
   botonesNav.forEach(btn => {
