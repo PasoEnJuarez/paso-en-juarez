@@ -18,55 +18,43 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS HORIZONTALES (LOS 3 EN LA MISMA FILA Y COMPACTOS) -->
+    <!-- BARRA DE WIDGETS EN UNA SOLA LÍNEA COMPACTA -->
     <div class="barra-widgets">
       <div class="widgets-container">
         
         <!-- MÓDULO DE CLIMA -->
-        <div class="clima-box" id="widget-clima">
-          <span class="clima-titulo">Clima Juárez</span>
-          <div class="clima-contenido-linea">
-            <span class="cargando-texto">Cargando clima...</span>
+        <div class="widget-grupo" id="widget-clima">
+          <span class="widget-titulo">Clima:</span>
+          <div class="clima-inline">
+            <span class="cargando-texto">Cargando...</span>
           </div>
         </div>
 
-        <!-- MÓDULO DE PUENTES COMPACTO EN HORIZONTAL -->
-        <div class="puentes-mini-box">
-          <span class="pm-titulo">Puentes Internacionales</span>
-          <div class="pm-grid-horizontal" id="widget-puentes-mini">
-            <div class="pm-item-h">
-              <span class="pm-nombre">P. Norte</span>
-              <span class="minutos tiempo-medio">45m</span>
-            </div>
-            <div class="pm-item-h">
-              <span class="pm-nombre">Zaragoza</span>
-              <span class="minutos tiempo-lento">75m</span>
-            </div>
-            <div class="pm-item-h">
-              <span class="pm-nombre">Córdova</span>
-              <span class="minutos tiempo-medio">60m</span>
-            </div>
-            <div class="pm-item-h">
-              <span class="pm-nombre">Jerónimo</span>
-              <span class="minutos tiempo-rapido">15m</span>
-            </div>
+        <!-- MÓDULO DE PUENTES -->
+        <div class="widget-grupo">
+          <span class="widget-titulo">Puentes:</span>
+          <div class="puentes-inline" id="widget-puentes-mini">
+            <div class="puente-item"><span>P. Norte:</span> <span class="minutos tiempo-medio">45m</span></div>
+            <div class="puente-item"><span>Zaragoza:</span> <span class="minutos tiempo-lento">75m</span></div>
+            <div class="puente-item"><span>Córdova:</span> <span class="minutos tiempo-medio">60m</span></div>
+            <div class="puente-item"><span>Jerónimo:</span> <span class="minutos tiempo-rapido">15m</span></div>
           </div>
         </div>
 
-        <!-- TIPO DE CAMBIO EN HORIZONTAL (CORREGIDO Y VISIBLE) -->
-        <div class="tipo-cambio-box">
-          <span class="tc-titulo">Tipo de Cambio</span>
-          <div class="tc-grid-horizontal">
-            <div class="tc-item">
-              <span class="moneda">USD Compra</span>
+        <!-- MÓDULO DE TIPO DE CAMBIO -->
+        <div class="widget-grupo">
+          <span class="widget-titulo">Divisas:</span>
+          <div class="tc-inline">
+            <div class="tc-item-inline">
+              <span class="moneda">USD Compra:</span>
               <span class="valor" id="usd-compra">$--.--</span>
             </div>
-            <div class="tc-item">
-              <span class="moneda">USD Venta</span>
+            <div class="tc-item-inline">
+              <span class="moneda">USD Venta:</span>
               <span class="valor" id="usd-venta">$--.--</span>
             </div>
-            <div class="tc-item">
-              <span class="moneda">EUR / MXN</span>
+            <div class="tc-item-inline">
+              <span class="moneda">EUR:</span>
               <span class="valor" id="eur-mxn">$--.--</span>
             </div>
           </div>
