@@ -10,52 +10,74 @@
 
   <!-- ENCABEZADO -->
   <header class="header-oficial">
-    
-    <!-- LOGO PROPORCIONAL Y LIMPIO -->
-    <div class="banner-contenedor-original">
-      <img src="images/header-bg.jpg" alt="Pasó En Juárez" class="logo-original">
-    </div>
-
-    <!-- WIDGETS HORIZONTALES COMPACTOS (UN SOLA LÍNEA) -->
-    <div class="header-widgets-linea">
-      <div class="widget-item">
-        <span class="wi-label">Puentes:</span>
-        <span>PdN <strong class="tiempo-medio">45m</strong></span>
-        <span>Zar <strong class="tiempo-lento">75m</strong></span>
-        <span>Lib <strong class="tiempo-medio">60m</strong></span>
-        <span>Jer <strong class="tiempo-rapido">15m</strong></span>
-      </div>
+    <div class="banner-flex-container">
       
-      <div class="widget-divisorio"></div>
-
-      <div class="widget-item">
-        <span class="wi-label">Tipo de Cambio:</span>
-        <span>Compra <strong>$16.57</strong></span>
-        <span>Venta <strong>$16.97</strong></span>
+      <!-- MÓDULO DE CLIMA -->
+      <div class="clima-box" id="widget-clima">
+        <span class="clima-titulo">Clima Juárez</span>
+        <span class="cargando-texto">Cargando clima...</span>
       </div>
 
-      <div class="widget-divisorio"></div>
-
-      <div class="widget-item">
-        <span class="wi-label">Clima:</span>
-        <span style="color: #38bdf8; font-weight: bold;">28°C</span>
-        <span>Parcialmente Nublado</span>
+      <!-- MÓDULO DE PUENTES COMPACTO -->
+      <div class="puentes-mini-box">
+        <span class="pm-titulo">Puentes Internacionales</span>
+        <div class="pm-grid" id="widget-puentes-mini">
+          <div class="pm-item">
+            <span class="pm-nombre">Paso del Norte</span>
+            <span class="minutos tiempo-medio">45m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Zaragoza</span>
+            <span class="minutos tiempo-lento">75m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Córdova (Libre)</span>
+            <span class="minutos tiempo-medio">60m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Jerónimo-St. Teresa</span>
+            <span class="minutos tiempo-rapido">15m</span>
+          </div>
+        </div>
       </div>
+
+      <!-- BANNER CENTRAL -->
+      <div class="banner-img-container">
+        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+      </div>
+
+      <!-- TIPO DE CAMBIO -->
+      <div class="tipo-cambio-box">
+        <span class="tc-titulo">Tipo de Cambio</span>
+        <div class="tc-fila">
+          <span class="moneda">USD Compra:</span>
+          <span class="valor" id="usd-compra">$--.--</span>
+        </div>
+        <div class="tc-fila">
+          <span class="moneda">USD Venta:</span>
+          <span class="valor" id="usd-venta">$--.--</span>
+        </div>
+        <div class="tc-fila" style="margin-top: 4px; border-top: 1px dashed #334155; padding-top: 4px;">
+          <span class="moneda">EUR / MXN:</span>
+          <span class="valor" id="eur-mxn">$--.--</span>
+        </div>
+      </div>
+
     </div>
 
     <!-- MENÚ DE NAVEGACIÓN -->
     <nav id="menu-navegacion">
-      <a href="#" class="active">Inicio</a>
-      <a href="#">Seguridad</a>
-      <a href="#">Economía</a>
-      <a href="#">Puentes</a>
-      <a href="#">Política</a>
-      <a href="#">Tecnología</a>
-      <a href="#">Medio Ambiente</a>
-      <a href="#">Historia</a>
-      <a href="#">Migración</a>
-      <a href="#">Clima</a>
-      <a href="#">Cultura</a>
+      <a href="#" class="nav-btn active" data-categoria="todas">Inicio</a>
+      <a href="#" class="nav-btn" data-categoria="seguridad">Seguridad</a>
+      <a href="#" class="nav-btn" data-categoria="economia">Economía</a>
+      <a href="#" class="nav-btn" data-categoria="puentes">Puentes</a>
+      <a href="#" class="nav-btn" data-categoria="politica">Política</a>
+      <a href="#" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
+      <a href="#" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
+      <a href="#" class="nav-btn" data-categoria="historia">Historia</a>
+      <a href="#" class="nav-btn" data-categoria="migracion">Migración</a>
+      <a href="#" class="nav-btn" data-categoria="clima">Clima</a>
+      <a href="#" class="nav-btn" data-categoria="cultura">Cultura</a>
     </nav>
   </header>
 
@@ -63,7 +85,7 @@
   <div class="layout-principal">
 
     <!-- PUBLICIDAD IZQUIERDA -->
-    <aside class="columna-publicidad">
+    <aside class="columna-publicidad publicidad-izquierda">
       <span>PUBLICIDAD</span>
       <div class="caja-banner-vertical">
         <p>Anuncio Vertical</p>
@@ -73,15 +95,13 @@
 
     <!-- BLOQUE CENTRAL -->
     <div class="bloque-central">
+
+      <!-- NOTICIAS -->
       <main class="contenedor-noticias">
-        <!-- Contenido de prueba -->
-        <div class="noticia">
-          <span style="font-size: 0.75rem; color: #64748b; font-weight: bold;">SEGURIDAD</span>
-          <h3 style="font-size: 1rem; margin-top: 5px;">Prueba de administrador</h3>
-          <p style="font-size: 0.85rem; color: #475569; margin-top: 8px;">Contenido de la noticia de prueba...</p>
-        </div>
+        <p style="color: #94a3b8; text-align: center; width: 100%;">Cargando noticias...</p>
       </main>
 
+      <!-- CRONOLOGÍA -->
       <section class="seccion-cronologica">
         <div class="cronologica-header">
           <h3><span>Última Hora</span> Cronología de noticias</h3>
@@ -91,10 +111,11 @@
           <p style="color: #94a3b8; padding: 10px;">Cargando cronología...</p>
         </div>
       </section>
+
     </div>
 
     <!-- PUBLICIDAD DERECHA -->
-    <aside class="columna-publicidad">
+    <aside class="columna-publicidad publicidad-derecha">
       <span>PUBLICIDAD</span>
       <div class="caja-banner-vertical">
         <p>Anuncio Vertical</p>
@@ -108,7 +129,28 @@
     <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
   </footer>
 
+  <!-- LIBRERÍA SUPABASE MÁS SCRIPT PRINCIPAL -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
+
+  <!-- MODAL PARA VER NOTICIA COMPLETA -->
+  <div id="modal-noticia" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 9999; justify-content: center; align-items: center; padding: 15px;">
+    <div style="background: #1e293b; color: #fff; width: 100%; max-width: 650px; max-height: 85vh; border-radius: 12px; border: 1px solid #334155; overflow-y: auto; padding: 25px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+      <!-- Botón Cerrar -->
+      <button id="cerrar-modal" style="position: absolute; top: 15px; right: 15px; background: #334155; color: #fff; border: none; font-size: 1.2rem; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+      
+      <!-- Encabezado de la noticia -->
+      <span id="modal-categoria" style="background: #2563eb; color: #fff; padding: 3px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; text-transform: uppercase;"></span>
+      <small id="modal-fecha" style="color: #94a3b8; margin-left: 10px; font-size: 0.85rem;"></small>
+      
+      <h1 id="modal-titulo" style="font-size: 1.5rem; color: #f8fafc; margin: 15px 0 12px 0; line-height: 1.3;"></h1>
+      
+      <!-- CONTENIDO (TEXTO DE LA NOTICIA) -->
+      <div id="modal-contenido" style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; white-space: pre-line; margin-bottom: 20px;"></div>
+      
+      <!-- GALERÍA DE IMÁGENES -->
+      <div id="modal-galeria"></div>
+    </div>
+  </div>
 </body>
 </html>
