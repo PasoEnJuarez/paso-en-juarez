@@ -90,25 +90,20 @@ async function cargarTipoCambio() {
 }
 
 // ==========================================================
-// 4. CARGAR TIEMPOS DE PUENTES (PROXIED VÍA SUPABASE)
+// 4. CARGAR TIEMPOS DE PUENTES (A TRAVÉS DE SUPABASE PROXY)
 // ==========================================================
 async function cargarTiemposPuentes() {
   const widgetPuentesMini = document.getElementById('widget-puentes-mini');
   if (!widgetPuentesMini) return;
 
   try {
+    // URL de tu función pública en Supabase
     const urlProxy = 'https://akwnmorymjhthdkcebri.supabase.co/functions/v1/obtener-puentes';
     
-    const response = await fetch(urlProxy, {
-      method: 'GET',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    // Petición simple: al ser pública, ya no requiere headers de autenticación
+    const response = await fetch(urlProxy);
 
-    if (!response.ok) throw new Error('Error en proxy Supabase');
+    if (!response.ok) throw new Error('Error al conectar con el proxy de Supabase');
     
     const data = await response.json();
     
@@ -143,7 +138,7 @@ async function cargarTiemposPuentes() {
 }
 
 // ==========================================================
-// 5. MODALES Y NOTICIAS (Tu código original mantenido)
+// 5. MODALES Y NOTICIAS
 // ==========================================================
 function abrirModalNoticia(idNota) {
   const nota = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
@@ -168,7 +163,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
   listaNoticiasCargadas = noticias || [];
   if (contenedorNoticias) {
     contenedorNoticias.innerHTML = listaNoticiasCargadas.map(nota => `
-      <article class="noticia" onclick="abrirModalNoticia('${nota.id}')">
+      <article class="noticia" onclick="abrirModalNoticia('${nota.id}')" style="cursor:pointer;">
         <h2>${nota.titulo}</h2>
         <p>${nota.contenido?.substring(0,100)}...</p>
       </article>
@@ -176,10 +171,16 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
   }
 }
 
+// ==========================================================
+// 6. INICIALIZACIÓN
+// ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
   cargarClimaJuarez();
   cargarTipoCambio();
   cargarTiemposPuentes();
   cargarNoticiasEnVivo();
+
+  setInterval(cargarClimaJuarez, 600000);
   setInterval(cargarTiemposPuentes, 300000);
+  setInterval(cargarTipoCambio, 300000);
 });
