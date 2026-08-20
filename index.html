@@ -12,58 +12,56 @@
   <header class="header-oficial">
     <div class="banner-flex-container">
       
-      <!-- BLOQUE IZQUIERDO: CLIMA Y PUENTES JUNTOS -->
-      <div class="info-izquierda">
-        <!-- MÓDULO DE CLIMA -->
-        <div class="clima-box" id="widget-clima">
-          <span class="clima-titulo">Clima Juárez</span>
-          <span class="cargando-texto">Cargando clima...</span>
-        </div>
-
-        <!-- MÓDULO DE PUENTES COMPACTO -->
-        <div class="puentes-mini-box">
-          <span class="pm-titulo">Puentes Internacionales</span>
-          <div class="pm-grid" id="widget-puentes-mini">
-            <div class="pm-item">
-              <span class="pm-nombre">Paso del Norte</span>
-              <span class="minutos tiempo-medio">45m</span>
-            </div>
-            <div class="pm-item">
-              <span class="pm-nombre">Zaragoza</span>
-              <span class="minutos tiempo-lento">75m</span>
-            </div>
-            <div class="pm-item">
-              <span class="pm-nombre">Córdova (Libre)</span>
-              <span class="minutos tiempo-medio">60m</span>
-            </div>
-            <div class="pm-item">
-              <span class="pm-nombre">Jerónimo-St. Teresa</span>
-              <span class="minutos tiempo-rapido">15m</span>
-            </div>
+      <!-- BLOQUE IZQUIERDO: PUENTES COMPACTOS -->
+      <div class="puentes-mini-box">
+        <span class="pm-titulo">Puentes Int.</span>
+        <div class="pm-grid" id="widget-puentes-mini">
+          <div class="pm-item">
+            <span class="pm-nombre">Paso del Norte</span>
+            <span class="minutos tiempo-medio">45m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Zaragoza</span>
+            <span class="minutos tiempo-lento">75m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Córdova (Libre)</span>
+            <span class="minutos tiempo-medio">60m</span>
+          </div>
+          <div class="pm-item">
+            <span class="pm-nombre">Jerónimo-St. Teresa</span>
+            <span class="minutos tiempo-rapido">15m</span>
           </div>
         </div>
       </div>
 
-      <!-- BANNER CENTRAL (LOGOTIPO PRINCIPAL - GRANDE) -->
+      <!-- BANNER CENTRAL (LOGOTIPO PRINCIPAL - MÁXIMO PROTAGONISMO) -->
       <div class="banner-img-container">
         <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
       </div>
 
-      <!-- BLOQUE DERECHO: TIPO DE CAMBIO -->
-      <div class="tipo-cambio-box">
-        <span class="tc-titulo">Tipo de Cambio</span>
-        <div class="tc-fila">
-          <span class="moneda">USD Compra:</span>
-          <span class="valor" id="usd-compra">$--.--</span>
+      <!-- BLOQUE DERECHO: TIPO DE CAMBIO Y CLIMA COMPACTOS -->
+      <div class="bloque-derecho">
+        
+        <!-- TIPO DE CAMBIO -->
+        <div class="tipo-cambio-box">
+          <span class="tc-titulo">Tipo de Cambio</span>
+          <div class="tc-fila">
+            <span class="moneda">Compra:</span>
+            <span class="valor" id="usd-compra">$--.--</span>
+          </div>
+          <div class="tc-fila">
+            <span class="moneda">Venta:</span>
+            <span class="valor" id="usd-venta">$--.--</span>
+          </div>
         </div>
-        <div class="tc-fila">
-          <span class="moneda">USD Venta:</span>
-          <span class="valor" id="usd-venta">$--.--</span>
+
+        <!-- MÓDULO DE CLIMA -->
+        <div class="clima-box" id="widget-clima">
+          <span class="clima-titulo">Clima</span>
+          <span class="cargando-texto">Cargando...</span>
         </div>
-        <div class="tc-fila" style="margin-top: 4px; border-top: 1px dashed #334155; padding-top: 4px;">
-          <span class="moneda">EUR / MXN:</span>
-          <span class="valor" id="eur-mxn">$--.--</span>
-        </div>
+
       </div>
 
     </div>
