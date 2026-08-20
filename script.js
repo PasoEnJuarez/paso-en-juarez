@@ -26,9 +26,9 @@ function abrirModalNoticia(idNota) {
   let galeriaHTML = '';
 
   if (listaFotos.length === 1) {
-    galeriaHTML = `<div style="text-align: center; margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px;"><img src="${listaFotos[0]}" alt="${nota.titulo}" style="max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #334155;"></div>`;
+    galeriaHTML = `<div style="text-align: center; margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px;"><img src="${listaFotos[0]}" alt="${nota.titulo}" style="max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 8px; border: 1px solid #334155;" loading="lazy"></div>`;
   } else if (listaFotos.length > 1) {
-    galeriaHTML = `<div style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;"><small style="color: #94a3b8; display: block; margin-bottom: 8px; font-weight: bold;">Galeria:</small><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">${listaFotos.map(img => `<img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;">`).join('')}</div></div>`;
+    galeriaHTML = `<div style="border-top: 1px solid #334155; padding-top: 15px; margin-top: 15px;"><small style="color: #94a3b8; display: block; margin-bottom: 8px; font-weight: bold;">Galeria:</small><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px;">${listaFotos.map(img => `<img src="${img}" alt="${nota.titulo}" style="width: 100%; height: 130px; object-fit: cover; border-radius: 6px; border: 1px solid #334155;" loading="lazy">`).join('')}</div></div>`;
   }
 
   const urlActual = window.encodeURIComponent(window.location.href);
@@ -56,10 +56,11 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
   if (!supabaseClient) return;
 
   try {
-    let { data: noticias, error } = await supabaseClient.from('Noticias').select('*').order('created_at', { ascending: false });
+    // MODIFICADO: Agregado .limit(15) para evitar saturación
+    let { data: noticias, error } = await supabaseClient.from('Noticias').select('*').order('created_at', { ascending: false }).limit(15);
 
     if (error && error.code === '42P01') {
-      const res = await supabaseClient.from('noticias').select('*').order('created_at', { ascending: false });
+      const res = await supabaseClient.from('noticias').select('*').order('created_at', { ascending: false }).limit(15);
       noticias = res.data;
     }
 
@@ -80,7 +81,8 @@ async function cargarNoticiasEnVivo(categoria = 'todas') {
     if (contenedorNoticias) {
       contenedorNoticias.innerHTML = noticiasFiltradas.map(nota => {
         const listaFotos = obtenerListaFotos(nota);
-        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}">` : '';
+        // MODIFICADO: Añadido loading="lazy" en las imágenes principales
+        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">` : '';
         const resumen = nota.contenido && nota.contenido.length > 140 ? nota.contenido.substring(0, 140) + '...' : nota.contenido || '';
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
