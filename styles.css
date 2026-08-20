@@ -382,3 +382,12 @@ footer {
   white-space: pre-line;
   margin-bottom: 20px;
 }
+/* Estilos para los botones de compartir en el modal */
+.btn-compartir {
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.btn-compartir:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
