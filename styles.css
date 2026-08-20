@@ -135,8 +135,8 @@ header.header-oficial {
   border: 1px solid #334155;
   border-radius: 6px;
   padding: 10px 12px;
-  min-width: 220px;
-  max-width: 240px;
+  min-width: 230px;
+  max-width: 260px;
   flex-shrink: 0;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
@@ -156,7 +156,7 @@ header.header-oficial {
 .pm-grid {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .pm-item {
@@ -164,15 +164,18 @@ header.header-oficial {
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
+  background-color: #0f172a;
+  padding: 3px 6px;
+  border-radius: 4px;
 }
 
 .pm-nombre {
-  color: #cbd5e1;
-  font-weight: 500;
+  color: #f8fafc;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 140px;
+  max-width: 150px;
 }
 
 /* CAJA DE TIPO DE CAMBIO */
