@@ -42,10 +42,10 @@ header.header-oficial {
   margin: 0 auto;
 }
 
-/* BARRA DE WIDGETS HORIZONTALES (MÁS COMPACTA) */
+/* BARRA DE WIDGETS INTEGRADA EN UNA SOLA FILA COMPACTA */
 .barra-widgets {
   background-color: #111827;
-  padding: 8px 15px;
+  padding: 8px 20px;
   border-bottom: 1px solid #1f2937;
 }
 
@@ -54,106 +54,97 @@ header.header-oficial {
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  align-items: stretch;
-  gap: 10px;
-}
-
-/* CADA WIDGET OCUPA UN TERCIO EXACTO Y TIENE MENOS ALTURA */
-.clima-box,
-.puentes-mini-box,
-.tipo-cambio-box {
-  flex: 1;
-  background-color: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  padding: 6px 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* TÍTULOS DE LOS WIDGETS */
-.clima-titulo,
-.pm-titulo,
-.tc-titulo {
-  display: block;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #38bdf8;
-  border-bottom: 1px solid #334155;
-  padding-bottom: 2px;
-  margin-bottom: 4px;
-  letter-spacing: 0.5px;
-}
-
-/* CLIMA COMPACTO EN LÍNEA */
-.clima-contenido-linea {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 0.7rem;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* GRUPOS DENTRO DE LA BARRA */
+.widget-grupo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8rem;
   color: #cbd5e1;
 }
 
-.clima-temp-main {
-  font-size: 1rem;
+.widget-titulo {
+  color: #38bdf8;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+/* CLIMA EN LÍNEA */
+.clima-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clima-inline .temp {
+  font-size: 1.1rem;
   font-weight: 800;
   color: #ffffff;
 }
 
-/* PUENTES EN LÍNEA HORIZONTAL */
-.pm-grid-horizontal {
-  display: flex;
-  justify-content: space-between;
-  gap: 4px;
-}
-
-.pm-item-h {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.65rem;
-  text-align: center;
-}
-
-.pm-nombre {
+.clima-inline .desc {
   color: #94a3b8;
-  font-weight: 500;
-  font-size: 0.6rem;
-  margin-bottom: 1px;
-}
-
-/* TIPO DE CAMBIO EN FILA HORIZONTAL */
-.tc-grid-horizontal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 6px;
-}
-
-.tc-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.tc-item .moneda {
-  color: #94a3b8;
-  font-size: 0.6rem;
-  font-weight: 600;
-}
-
-.tc-item .valor {
-  color: #f8fafc;
-  font-weight: 700;
   font-size: 0.75rem;
 }
 
+/* PUENTES EN LÍNEA */
+.puentes-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.puente-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  background-color: #1e293b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #334155;
+}
+
+.puente-item span:first-child {
+  color: #94a3b8;
+}
+
+/* TIPO DE CAMBIO EN LÍNEA */
+.tc-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tc-item-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  background-color: #1e293b;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #334155;
+}
+
+.tc-item-inline .moneda {
+  color: #94a3b8;
+}
+
+.tc-item-inline .valor {
+  color: #f8fafc;
+  font-weight: 700;
+}
+
 .cargando-texto {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #94a3b8;
 }
 
@@ -173,7 +164,7 @@ header nav a {
   text-decoration: none;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   transition: color 0.2s ease;
 }
 
@@ -334,8 +325,8 @@ header nav a.active {
 .minutos {
   font-weight: 700;
   padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 0.65rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
 }
 
 .tiempo-rapido { background-color: #dcfce7; color: #15803d; }
@@ -440,11 +431,11 @@ header nav a.active {
 @media (max-width: 900px) {
   .widgets-container {
     flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
-  .clima-box,
-  .puentes-mini-box,
-  .tipo-cambio-box {
-    width: 100%;
+  .widget-grupo {
+    justify-content: space-between;
   }
   .contenedor-noticias {
     grid-template-columns: 1fr;
