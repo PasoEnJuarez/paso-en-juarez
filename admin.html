@@ -24,6 +24,8 @@
     .item-info h4 { margin: 0; font-size: 15px; color: #f8fafc; }
     .oculto { display: none; }
     #mensaje-login, #mensaje-publicacion { text-align: center; font-weight: bold; margin-top: 15px; }
+    /* Estilo para la previsualización de la imagen al editar */
+    #preview-imagen-actual { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid #38bdf8; margin-bottom: 10px; display: none; }
   </style>
 </head>
 <body>
@@ -68,8 +70,17 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Imagen (déjalo vacío si no deseas cambiar la actual al editar):</label>
+        <label>Imagen principal:</label>
+        <!-- Previsualización de la imagen actual al editar -->
+        <div id="contenedor-preview" class="oculto">
+          <p style="font-size: 13px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
+          <img id="preview-imagen-actual" src="" alt="Imagen actual">
+        </div>
         <input type="file" id="imagen" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label>🔗 URL de Video de Facebook (Opcional):</label>
+        <input type="url" id="video-url" placeholder="https://www.facebook.com/watch?v=...">
       </div>
       <div class="form-group">
         <label>Contenido:</label>
@@ -96,12 +107,10 @@
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Asegurar que la contraseña inicie vacía
     window.onload = () => {
       document.getElementById('login-password').value = '';
     };
 
-    // Inicio de sesión
     document.getElementById('form-login').onsubmit = async (e) => {
       e.preventDefault();
       const pass = document.getElementById('login-password').value;
@@ -116,7 +125,6 @@
       }
     };
 
-    // Cargar listado en el panel con soporte para imágenes previas
     async function cargarNoticiasAdmin() {
       const contenedor = document.getElementById('lista-admin-noticias');
       const { data, error } = await supabaseClient.from('Noticias').select('*').order('id', { ascending: false });
@@ -143,7 +151,7 @@
               <p style="margin: 3px 0 0 0; font-size: 12px; color: #94a3b8;">Cat: ${n.categoria}</p>
             </div>
             <div style="display:flex; gap:8px;">
-              <button class="btn-warning" style="padding:8px 12px; font-size:13px; width:auto;" onclick="prepararEdicion(${n.id}, '${n.titulo.replace(/'/g, "\\'")}', '${n.categoria}', '${n.contenido.replace(/'/g, "\\'").replace(/\n/g, "\\n")}')">Editar</button>
+              <button class="btn-warning" style="padding:8px 12px; font-size:13px; width:auto;" onclick="prepararEdicion(${n.id}, '${n.titulo.replace(/'/g, "\\'")}', '${n.categoria}', '${n.contenido.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '${n.video_url || ''}', '${fotoNoticia}')">Editar</button>
               <button class="btn-danger" style="padding:8px 12px; font-size:13px; width:auto; margin-top:0;" onclick="eliminarNoticia(${n.id})">Borrar</button>
             </div>
           </div>
@@ -151,7 +159,6 @@
       });
     }
 
-    // Publicar o Actualizar Noticia
     document.getElementById('form-noticia').onsubmit = async (e) => {
       e.preventDefault();
       const btnPublicar = document.getElementById('btn-publicar');
@@ -176,7 +183,8 @@
         const datosNoticia = {
           titulo: document.getElementById('titulo').value,
           categoria: document.getElementById('categoria').value,
-          contenido: document.getElementById('contenido').value
+          contenido: document.getElementById('contenido').value,
+          video_url: document.getElementById('video-url').value
         };
 
         if (urlImagen) {
@@ -204,12 +212,24 @@
       }
     };
 
-    function prepararEdicion(id, titulo, categoria, contenido) {
+    function prepararEdicion(id, titulo, categoria, contenido, videoUrl, imagenUrl) {
       document.getElementById('edit-id').value = id;
       document.getElementById('titulo').value = titulo;
       document.getElementById('categoria').value = categoria;
       document.getElementById('contenido').value = contenido;
+      document.getElementById('video-url').value = videoUrl !== 'undefined' ? videoUrl : '';
       
+      // Mostrar la imagen actual en el formulario de edición
+      const imgPreview = document.getElementById('preview-imagen-actual');
+      const contenedorPreview = document.getElementById('contenedor-preview');
+      if (imagenUrl && imagenUrl !== 'undefined') {
+        imgPreview.src = imagenUrl;
+        contenedorPreview.classList.remove('oculto');
+        imgPreview.style.display = 'block';
+      } else {
+        contenedorPreview.classList.add('oculto');
+      }
+
       document.getElementById('titulo-modo').textContent = 'Editar Noticia';
       document.getElementById('btn-publicar').textContent = 'Guardar Cambios';
       document.getElementById('btn-cancelar-edit').classList.remove('oculto');
@@ -222,6 +242,8 @@
       document.getElementById('titulo-modo').textContent = 'Nueva Noticia';
       document.getElementById('btn-publicar').textContent = 'Publicar Noticia';
       document.getElementById('btn-cancelar-edit').classList.add('oculto');
+      document.getElementById('contenedor-preview').classList.add('oculto');
+      document.getElementById('preview-imagen-actual').style.display = 'none';
     }
 
     async function eliminarNoticia(id) {
