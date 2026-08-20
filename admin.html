@@ -5,74 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Admin | PasóEnJuárez</title>
   <style>
-    /* Diseño general estilo moderno */
-    body { 
-      font-family: 'Segoe UI', Roboto, sans-serif; 
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-      color: #f8fafc; 
-      margin: 0; 
-      padding: 20px; 
-      min-height: 100vh;
-    }
-    .admin-container { 
-      max-width: 650px; 
-      margin: 30px auto; 
-      background: rgba(30, 41, 59, 0.7); 
-      backdrop-filter: blur(10px);
-      padding: 40px; 
-      border-radius: 25px; /* Esquinas muy redondeadas */
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
+    body { font-family: 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; margin: 0; padding: 20px; min-height: 100vh; }
+    .admin-container { max-width: 650px; margin: 30px auto; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
     h2, h3 { color: #38bdf8; text-align: center; margin-bottom: 25px; }
-    
-    /* Inputs y formularios suaves */
     .form-group { margin-bottom: 20px; }
     label { display: block; margin-bottom: 8px; color: #94a3b8; font-weight: 500; }
-    input, select, textarea { 
-      width: 100%; padding: 14px; border-radius: 15px; /* Redondeados */
-      border: 2px solid #334155; background: #0f172a; color: #fff; 
-      transition: border-color 0.3s;
-    }
+    input, select, textarea { width: 100%; padding: 14px; border-radius: 15px; border: 2px solid #334155; background: #0f172a; color: #fff; transition: border-color 0.3s; box-sizing: border-box; }
     input:focus { border-color: #38bdf8; outline: none; }
-    
-    /* Botones estilo redondeado */
-    button { 
-      background: #38bdf8; color: #0f172a; border: none; 
-      padding: 14px; border-radius: 15px; cursor: pointer; 
-      font-weight: bold; width: 100%; transition: transform 0.2s, background 0.3s;
-    }
+    button { background: #38bdf8; color: #0f172a; border: none; padding: 14px; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; transition: transform 0.2s, background 0.3s; margin-top: 5px; }
     button:hover { background: #7dd3fc; transform: scale(1.02); }
     .btn-danger { background: #f43f5e; color: white; margin-top: 10px; }
     .btn-warning { background: #fbbf24; color: #000; }
-    
-    /* Lista de noticias */
-    .item-noticia { 
-      display: flex; align-items: center; background: rgba(15, 23, 42, 0.5); 
-      padding: 15px; border-radius: 20px; margin-bottom: 12px;
-    }
+    .item-noticia { display: flex; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 20px; margin-bottom: 12px; }
     .item-noticia img { width: 60px; height: 60px; object-fit: cover; border-radius: 15px; margin-right: 15px; }
-    .item-info h4 { margin: 0 0 5px 0; }
+    .item-info { flex-grow: 1; }
     .oculto { display: none; }
   </style>
 </head>
 <body>
-
   <!-- LOGIN -->
   <div id="seccion-login" class="admin-container">
     <h2>🔐 Ingresar</h2>
     <form id="form-login">
-      <div class="form-group">
-        <label>Correo:</label>
-        <input type="email" value="pasoenjuarez@gmail.com" readonly>
-      </div>
-      <div class="form-group">
-        <label>Contraseña:</label>
-        <input type="password" id="login-password" required autocomplete="new-password" placeholder="••••••••">
-      </div>
+      <div class="form-group"><label>Correo:</label><input type="email" value="pasoenjuarez@gmail.com" readonly></div>
+      <div class="form-group"><label>Contraseña:</label><input type="password" id="login-password" required autocomplete="new-password" placeholder="••••••••"></div>
       <button type="submit">Iniciar Sesión</button>
     </form>
-    <p id="mensaje-login"></p>
+    <p id="mensaje-login" style="text-align:center; color:#f43f5e;"></p>
   </div>
 
   <!-- PANEL -->
@@ -80,64 +39,34 @@
     <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
     <form id="form-noticia">
       <input type="hidden" id="edit-id">
-      <div class="form-group">
-        <label>Título:</label>
-        <input type="text" id="titulo" required>
-      </div>
-      <div class="form-group">
-        <label>Categoría:</label>
-        <select id="categoria">
-          <option value="seguridad">Seguridad</option>
-          <option value="economia">Economía</option>
-          <option value="puentes">Puentes</option>
-          <option value="politica">Política</option>
-          <option value="tecnologia">Tecnología</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Imagen:</label>
-        <input type="file" id="imagen" accept="image/*">
-      </div>
-      <div class="form-group">
-        <label>Contenido:</label>
-        <textarea id="contenido" required rows="4"></textarea>
-      </div>
+      <div class="form-group"><label>Título:</label><input type="text" id="titulo" required></div>
+      <div class="form-group"><label>Categoría:</label><select id="categoria"><option value="seguridad">Seguridad</option><option value="economia">Economía</option><option value="puentes">Puentes</option><option value="politica">Política</option></select></div>
+      <div class="form-group"><label>Imagen:</label><input type="file" id="imagen" accept="image/*"></div>
+      <div class="form-group"><label>Contenido:</label><textarea id="contenido" required rows="4"></textarea></div>
       <button type="submit" id="btn-publicar">Publicar Noticia</button>
       <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
     </form>
-    
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
+    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:30px 0;">
     <h3>📰 Noticias Publicadas</h3>
     <div id="lista-admin-noticias"></div>
-    
     <button class="btn-danger" onclick="location.reload()">Cerrar Sesión</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ... (Tu misma lógica de JS se mantiene igual)
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    const supabaseClient = window.supabase.createClient('https://akwnmorymjhthdkcebri.supabase.co', 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT');
     window.onload = () => { document.getElementById('login-password').value = ''; };
 
     document.getElementById('form-login').onsubmit = async (e) => {
       e.preventDefault();
-      const pass = document.getElementById('login-password').value;
-      const { error } = await supabaseClient.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: pass });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: document.getElementById('login-password').value });
       if (error) document.getElementById('mensaje-login').textContent = 'Contraseña incorrecta';
-      else {
-        document.getElementById('seccion-login').classList.add('oculto');
-        document.getElementById('seccion-panel').classList.remove('oculto');
-        cargarNoticiasAdmin();
-      }
+      else { document.getElementById('seccion-login').classList.add('oculto'); document.getElementById('seccion-panel').classList.remove('oculto'); cargarNoticiasAdmin(); }
     };
 
     async function cargarNoticiasAdmin() {
-      const contenedor = document.getElementById('lista-admin-noticias');
       const { data } = await supabaseClient.from('Noticias').select('*').order('id', { ascending: false });
+      const contenedor = document.getElementById('lista-admin-noticias');
       contenedor.innerHTML = '';
       data.forEach(n => {
         contenedor.innerHTML += `
@@ -153,8 +82,24 @@
       });
     }
 
-    // ... (Mantén aquí las funciones de Guardar/Editar/Eliminar que ya teníamos)
-    // (Simplemente copia las funciones restantes que ya tenías de tu versión anterior para que no ocupe tanto espacio aquí)
+    document.getElementById('form-noticia').onsubmit = async (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('edit-id').value;
+      const archivo = document.getElementById('imagen').files[0];
+      let urlImagen = null;
+      if (archivo) {
+        const { data } = await supabaseClient.storage.from('imagenes-noticias').upload(`${Date.now()}_${archivo.name}`, archivo);
+        urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(data.path).data.publicUrl;
+      }
+      const datos = { titulo: document.getElementById('titulo').value, categoria: document.getElementById('categoria').value, contenido: document.getElementById('contenido').value, ...(urlImagen && {imagen_url: urlImagen}) };
+      if (editId) await supabaseClient.from('Noticias').update(datos).eq('id', editId);
+      else await supabaseClient.from('Noticias').insert(datos);
+      cancelarEdicion(); cargarNoticiasAdmin();
+    };
+
+    function prepararEdicion(id, t, c, cont) { document.getElementById('edit-id').value = id; document.getElementById('titulo').value = t; document.getElementById('categoria').value = c; document.getElementById('contenido').value = cont; document.getElementById('titulo-modo').textContent = 'Editar Noticia'; document.getElementById('btn-publicar').textContent = 'Guardar Cambios'; document.getElementById('btn-cancelar-edit').classList.remove('oculto'); }
+    function cancelarEdicion() { document.getElementById('form-noticia').reset(); document.getElementById('edit-id').value = ''; document.getElementById('titulo-modo').textContent = 'Nueva Noticia'; document.getElementById('btn-publicar').textContent = 'Publicar Noticia'; document.getElementById('btn-cancelar-edit').classList.add('oculto'); }
+    async function eliminarNoticia(id) { if(confirm('¿Borrar?')) { await supabaseClient.from('Noticias').delete().eq('id', id); cargarNoticiasAdmin(); } }
   </script>
 </body>
 </html>
