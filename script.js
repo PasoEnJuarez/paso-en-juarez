@@ -15,21 +15,29 @@ function obtenerListaFotos(nota) {
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
 }
 
-// Inicializa la publicidad en los 4 espacios laterales
-function inicializarPublicidad() {
+// Función para inyectar anuncios dinámicamente desde la tabla Anuncios de Supabase
+async function inicializarPublicidad() {
   const espacios = document.querySelectorAll('.caja-banner-vertical');
-  
-  espacios.forEach((contenedor, index) => {
-    if (typeof MIS_ANUNCIOS !== 'undefined' && MIS_ANUNCIOS[index]) {
-      const anuncio = MIS_ANUNCIOS[index];
+  if (!supabaseClient) return;
+
+  try {
+    const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
+    if (error || !anuncios) return;
+
+    espacios.forEach((contenedor, index) => {
+      // Buscamos si hay un anuncio guardado para este espacio (0, 1, 2 o 3)
+      const anuncio = anuncios.find(a => Number(a.posicion) === index);
       
-      contenedor.innerHTML = `
-        <a href="${anuncio.link}" target="_blank" style="display: block; width: 100%;">
-          <img src="${anuncio.imagen}" alt="${anuncio.nombre || 'Anuncio'}" style="width: 100%; border-radius: 8px; display: block; height: auto;">
-        </a>
-      `;
-    }
-  });
+      if (anuncio) {
+        contenedor.innerHTML = `
+          <a href="${anuncio.link}" target="_blank" style="width:100%; height:100%; display:block;">
+            <img src="${anuncio.imagen}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
+          </a>`;
+      }
+    });
+  } catch (err) {
+    console.error("Error al cargar publicidad:", err);
+  }
 }
 
 function abrirModalNoticia(idNota) {
@@ -167,6 +175,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
       });
     }
 
+    // Inyectar la publicidad actualizada desde Supabase
     inicializarPublicidad();
 
   } catch (err) {
@@ -174,8 +183,10 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   }
 }
 
+// Inicialización general al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo('todas', 0);
+  inicializarPublicidad(); // Carga los 4 banners laterales
 
   document.getElementById('cerrar-modal')?.addEventListener('click', cerrarModalNoticia);
   document.getElementById('modal-noticia')?.addEventListener('click', (e) => {
