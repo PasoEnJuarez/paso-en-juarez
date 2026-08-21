@@ -23,8 +23,7 @@
     .item-info { flex-grow: 1; margin-right: 10px; }
     .item-info h4 { margin: 0; font-size: 15px; color: #f8fafc; }
     .oculto { display: none; }
-    #mensaje-login, #mensaje-publicacion { text-align: center; font-weight: bold; margin-top: 15px; }
-    /* Estilo para la previsualización de la imagen al editar */
+    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio { text-align: center; font-weight: bold; margin-top: 15px; }
     #preview-imagen-actual { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid #38bdf8; margin-bottom: 10px; display: none; }
   </style>
 </head>
@@ -48,7 +47,7 @@
   </div>
 
   <!-- PANEL DE GESTIÓN -->
-  <div id="seccion-panel" class="admin-container oculto">
+  <div id="seccion-panel" class="admin-container oculto" style="max-width: 800px;">
     <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
     <form id="form-noticia">
       <input type="hidden" id="edit-id">
@@ -71,7 +70,6 @@
       </div>
       <div class="form-group">
         <label>Imagen principal:</label>
-        <!-- Previsualización de la imagen actual al editar -->
         <div id="contenedor-preview" class="oculto">
           <p style="font-size: 13px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
           <img id="preview-imagen-actual" src="" alt="Imagen actual">
@@ -90,6 +88,41 @@
       <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
     </form>
     <p id="mensaje-publicacion" style="color: #38bdf8;"></p>
+
+    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
+    <!-- NUEVA SECCIÓN: GESTIÓN DE ANUNCIOS -->
+    <h3>📢 Gestionar Banners Publicitarios (4 Espacios)</h3>
+    <form id="form-anuncio" style="background: rgba(15,23,42,0.4); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
+      <input type="hidden" id="anuncio-id">
+      <div class="form-group">
+        <label>Posición del Anuncio:</label>
+        <select id="anuncio-posicion" required>
+          <option value="0">Espacio 1 (Superior Izquierda)</option>
+          <option value="1">Espacio 2 (Inferior Izquierda)</option>
+          <option value="2">Espacio 3 (Superior Derecha)</option>
+          <option value="3">Espacio 4 (Inferior Derecha)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Patrocinador:</label>
+        <input type="text" id="anuncio-nombre" placeholder="Ej. Negocio Local" required>
+      </div>
+      <div class="form-group">
+        <label>Imagen o GIF / WebP Animado:</label>
+        <input type="file" id="anuncio-imagen" accept="image/jpeg,image/png,image/webp,image/gif">
+      </div>
+      <div class="form-group">
+        <label>Enlace Web (URL del cliente):</label>
+        <input type="url" id="anuncio-link" placeholder="https://sitio-del-cliente.com" required>
+      </div>
+      <button type="submit" id="btn-guardar-anuncio" style="background: #10b981; color: white;">Guardar / Actualizar Anuncio</button>
+    </form>
+    <p id="mensaje-anuncio" style="color: #34d399;"></p>
+
+    <div id="lista-admin-anuncios" style="margin-bottom: 30px;">
+      <p style="text-align: center; color: #94a3b8;">Cargando anuncios actuales...</p>
+    </div>
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
@@ -122,9 +155,11 @@
         document.getElementById('seccion-login').classList.add('oculto');
         document.getElementById('seccion-panel').classList.remove('oculto');
         cargarNoticiasAdmin();
+        cargarAnunciosAdmin();
       }
     };
 
+    // --- GESTIÓN DE NOTICIAS ---
     async function cargarNoticiasAdmin() {
       const contenedor = document.getElementById('lista-admin-noticias');
       const { data, error } = await supabaseClient.from('Noticias').select('*').order('id', { ascending: false });
@@ -133,7 +168,6 @@
         contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar noticias</p>';
         return;
       }
-
       if (data.length === 0) {
         contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8;">No hay noticias publicadas.</p>';
         return;
@@ -142,7 +176,6 @@
       contenedor.innerHTML = '';
       data.forEach(n => {
         const fotoNoticia = n.imagen_url || n.imagen || 'https://via.placeholder.com/60';
-        
         contenedor.innerHTML += `
           <div class="item-noticia">
             <img src="${fotoNoticia}" alt="Miniatura" onerror="this.src='https://via.placeholder.com/60'">
@@ -176,7 +209,6 @@
           const nombreArchivo = `${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
           const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
           if (uploadError) throw new Error('Error al subir la imagen');
-          
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
 
@@ -187,17 +219,13 @@
           video_url: document.getElementById('video-url').value
         };
 
-        if (urlImagen) {
-          datosNoticia.imagen_url = urlImagen;
-        }
+        if (urlImagen) datosNoticia.imagen_url = urlImagen;
 
         if (editId) {
-          const { error: updateError } = await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
-          if (updateError) throw new Error('Error al actualizar');
+          await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
           mensajePub.textContent = '¡Noticia actualizada con éxito!';
         } else {
-          const { error: insertError } = await supabaseClient.from('Noticias').insert(datosNoticia);
-          if (insertError) throw new Error('Error al guardar');
+          await supabaseClient.from('Noticias').insert(datosNoticia);
           mensajePub.textContent = '¡Noticia publicada con éxito!';
         }
 
@@ -219,7 +247,6 @@
       document.getElementById('contenido').value = contenido;
       document.getElementById('video-url').value = videoUrl !== 'undefined' ? videoUrl : '';
       
-      // Mostrar la imagen actual en el formulario de edición
       const imgPreview = document.getElementById('preview-imagen-actual');
       const contenedorPreview = document.getElementById('contenedor-preview');
       if (imagenUrl && imagenUrl !== 'undefined') {
@@ -248,14 +275,89 @@
 
     async function eliminarNoticia(id) {
       if (confirm('¿Estás seguro de eliminar esta noticia?')) {
-        const { error } = await supabaseClient.from('Noticias').delete().eq('id', id);
-        if (error) {
-          alert('Error al eliminar');
-        } else {
-          cargarNoticiasAdmin();
-        }
+        await supabaseClient.from('Noticias').delete().eq('id', id);
+        cargarNoticiasAdmin();
       }
     }
+
+    // --- GESTIÓN DE ANUNCIOS ---
+    async function cargarAnunciosAdmin() {
+      const contenedor = document.getElementById('lista-admin-anuncios');
+      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
+
+      if (error || !data) {
+        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios</p>';
+        return;
+      }
+      if (data.length === 0) {
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8;">No hay anuncios configurados.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px;">Anuncios Actuales:</h4>';
+      data.forEach(a => {
+        const nombresEspacios = ["Izq. Superior", "Izq. Inferior", "Der. Superior", "Der. Inferior"];
+        contenedor.innerHTML += `
+          <div class="item-noticia">
+            <img src="${a.imagen}" alt="Anuncio" onerror="this.src='https://via.placeholder.com/60'">
+            <div class="item-info">
+              <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre}</h4>
+              <p style="margin: 3px 0 0 0; font-size: 12px; color: #94a3b8; word-break: break-all;">Link: ${a.link}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('form-anuncio').onsubmit = async (e) => {
+      e.preventDefault();
+      const btnGuardar = document.getElementById('btn-guardar-anuncio');
+      const mensajeAnuncio = document.getElementById('mensaje-anuncio');
+      const posicion = parseInt(document.getElementById('anuncio-posicion').value);
+      const nombre = document.getElementById('anuncio-nombre').value;
+      const link = document.getElementById('anuncio-link').value;
+      const archivo = document.getElementById('anuncio-imagen').files[0];
+
+      btnGuardar.disabled = true;
+      mensajeAnuncio.textContent = 'Subiendo anuncio...';
+
+      try {
+        let urlImagen = null;
+
+        if (archivo) {
+          const nombreArchivo = `anuncio_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
+          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          if (uploadError) throw new Error('Error al subir la imagen del anuncio');
+          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+        }
+
+        // Verificamos si ya existe un anuncio en esa posición
+        const { data: existente } = await supabaseClient.from('Anuncios').select('*').eq('posicion', posicion);
+
+        const datosAnuncio = { posicion, nombre, link };
+        if (urlImagen) datosAnuncio.imagen = urlImagen;
+
+        if (existente && existente.length > 0) {
+          // Si ya existe, lo actualizamos
+          if (!urlImagen) delete datosAnuncio.imagen; // Si no subió nueva imagen, mantenemos la anterior
+          await supabaseClient.from('Anuncios').update(datosAnuncio).eq('posicion', posicion);
+        } else {
+          if (!urlImagen) throw new Error('Debes seleccionar una imagen para el nuevo anuncio');
+          await supabaseClient.from('Anuncios').insert(datosAnuncio);
+        }
+
+        mensajeAnuncio.textContent = '¡Anuncio guardado con éxito!';
+        document.getElementById('form-anuncio').reset();
+        cargarAnunciosAdmin();
+        setTimeout(() => mensajeAnuncio.textContent = '', 3000);
+      } catch (err) {
+        mensajeAnuncio.style.color = '#f43f5e';
+        mensajeAnuncio.textContent = err.message;
+      } finally {
+        btnGuardar.disabled = false;
+        mensajeAnuncio.style.color = '#34d399';
+      }
+    };
   </script>
 </body>
 </html>
