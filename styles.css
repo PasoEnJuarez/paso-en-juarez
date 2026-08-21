@@ -87,12 +87,15 @@ header nav a.active {
   min-width: 0;
 }
 
-/* BANNERS LATERALES (170px) */
+/* BANNERS LATERALES (170px) - ACTUALIZADO PARA 2 ESPACIOS CADA UNO */
 .columna-publicidad {
   width: 170px;
   flex-shrink: 0;
   position: sticky;
   top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio vertical exacto entre el banner superior e inferior */
 }
 
 .columna-publicidad span {
@@ -115,8 +118,23 @@ header nav a.active {
   justify-content: center;
   color: #64748b;
   text-align: center;
-  padding: 10px;
+  padding: 0; /* Sin padding interno para que la imagen o GIF ocupe toda la caja */
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  overflow: hidden; /* Evita que las imágenes se salgan de los bordes redondeados */
+}
+
+/* Ajuste para que las imágenes o GIFs llenen perfectamente los espacios de 600px */
+.caja-banner-vertical img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.caja-banner-vertical a:hover img {
+  transform: scale(1.02); /* Sutil efecto de zoom al pasar el mouse */
 }
 
 .caja-banner-vertical p {
@@ -223,11 +241,6 @@ header nav a.active {
   text-transform: uppercase;
 }
 
-.cronologica-header small {
-  color: #64748b;
-  font-size: 0.8rem;
-}
-
 .carrusel-deslizable {
   display: flex;
   gap: 15px;
@@ -292,6 +305,7 @@ footer {
   margin-top: 40px;
   border-top: 3px solid #38bdf8;
 }
+
 /* ==========================================
    MODAL DE NOTICIA COMPLETA
    ========================================== */
@@ -381,13 +395,4 @@ footer {
   line-height: 1.6;
   white-space: pre-line;
   margin-bottom: 20px;
-}
-/* Estilos para los botones de compartir en el modal */
-.btn-compartir {
-  transition: opacity 0.2s ease, transform 0.1s ease;
-}
-
-.btn-compartir:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
 }
