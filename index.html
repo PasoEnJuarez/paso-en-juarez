@@ -4,44 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PasóEnJuárez | Noticias de la Frontera</title>
+  
+  <!-- SEO y Open Graph -->
+  <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera.">
+  <meta property="og:title" content="PasóEnJuárez | Noticias de la Frontera">
+  <meta property="og:description" content="Entérate de lo que pasa en Ciudad Juárez: seguridad, economía, clima, puentes y más.">
+  <meta property="og:image" content="images/header-bg.jpg">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <!-- ENCABEZADO -->
   <header class="header-oficial">
     <div class="banner-imagen-full">
-      <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+      <div class="banner-img-container">
+        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+      </div>
     </div>
-    <nav id="menu-navegacion">
+
+    <nav id="menu-navegacion" aria-label="Menú principal de categorías">
       <a href="#" class="nav-btn active" data-categoria="todas">Inicio</a>
       <a href="#" class="nav-btn" data-categoria="seguridad">Seguridad</a>
       <a href="#" class="nav-btn" data-categoria="economia">Economía</a>
       <a href="#" class="nav-btn" data-categoria="puentes">Puentes</a>
+      <a href="#" class="nav-btn" data-categoria="politica">Política</a>
+      <a href="#" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
+      <a href="#" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
+      <a href="#" class="nav-btn" data-categoria="historia">Historia</a>
+      <a href="#" class="nav-btn" data-categoria="migracion">Migración</a>
+      <a href="#" class="nav-btn" data-categoria="clima">Clima</a>
+      <a href="#" class="nav-btn" data-categoria="cultura">Cultura</a>
     </nav>
   </header>
 
+  <!-- LAYOUT PRINCIPAL -->
   <div class="layout-principal">
-    <!-- COLUMNA IZQUIERDA: 2 espacios -->
-    <aside class="columna-publicidad publicidad-izquierda">
+
+    <!-- PUBLICIDAD IZQUIERDA (2 espacios) -->
+    <aside class="columna-publicidad publicidad-izquierda" aria-label="Publicidad lateral izquierda">
       <div class="caja-banner-vertical"></div>
       <div class="caja-banner-vertical"></div>
     </aside>
 
+    <!-- BLOQUE CENTRAL -->
     <div class="bloque-central">
-      <main class="contenedor-noticias">Cargando...</main>
+      <main class="contenedor-noticias">
+        <p style="color: #94a3b8; text-align: center; width: 100%;">Cargando noticias...</p>
+      </main>
+
       <section class="seccion-cronologica">
-        <div id="carrusel-cronologico"></div>
+        <div class="cronologica-header">
+          <h3><span>Última Hora</span> Cronología de noticias</h3>
+        </div>
+        <div class="carrusel-deslizable" id="carrusel-cronologico">
+          <p style="color: #94a3b8; padding: 10px;">Cargando cronología...</p>
+        </div>
       </section>
     </div>
 
-    <!-- COLUMNA DERECHA: 2 espacios -->
-    <aside class="columna-publicidad publicidad-derecha">
+    <!-- PUBLICIDAD DERECHA (2 espacios) -->
+    <aside class="columna-publicidad publicidad-derecha" aria-label="Publicidad lateral derecha">
       <div class="caja-banner-vertical"></div>
       <div class="caja-banner-vertical"></div>
     </aside>
   </div>
 
+  <footer>
+    <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
+  </footer>
+
+  <!-- ORDEN CORRECTO DE CARGA DE SCRIPTS -->
   <script src="anuncios.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
+
+  <!-- MODAL DE NOTICIA -->
+  <div id="modal-noticia" class="modal-overlay" style="display: none;">
+    <div class="modal-contenedor">
+      <button id="cerrar-modal" class="modal-btn-cerrar">✕</button>
+      <div class="modal-meta">
+        <span id="modal-categoria" class="modal-tag"></span>
+        <small id="modal-fecha" class="modal-date"></small>
+      </div>
+      <h1 id="modal-titulo" class="modal-title"></h1>
+      <div id="modal-contenido" class="modal-body-content"></div>
+      <div id="modal-galeria"></div>
+    </div>
+  </div>
+
 </body>
 </html>
