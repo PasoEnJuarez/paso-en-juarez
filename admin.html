@@ -5,26 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel Admin | PasóEnJuárez</title>
   <style>
-    body { font-family: 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; margin: 0; padding: 20px; min-height: 100vh; box-sizing: border-box; }
-    .admin-container { max-width: 650px; margin: 30px auto; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); }
-    h2, h3 { color: #38bdf8; text-align: center; margin-bottom: 25px; }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; color: #94a3b8; font-weight: 500; }
-    input, select, textarea { width: 100%; padding: 14px; border-radius: 15px; border: 2px solid #334155; background: #0f172a; color: #fff; transition: border-color 0.3s; box-sizing: border-box; }
-    input:focus, select:focus, textarea:focus { border-color: #38bdf8; outline: none; }
-    button { background: #38bdf8; color: #0f172a; border: none; padding: 14px; border-radius: 15px; cursor: pointer; font-weight: bold; width: 100%; transition: transform 0.2s, background 0.3s; margin-top: 5px; }
-    button:hover { background: #7dd3fc; transform: scale(1.02); }
+    body { 
+      font-family: 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+      color: #f8fafc; 
+      margin: 0; 
+      padding: 10px; 
+      min-height: 100vh; 
+      box-sizing: border-box; 
+    }
+    .admin-container { 
+      width: 100%;
+      max-width: 750px; 
+      margin: 15px auto; 
+      background: rgba(30, 41, 59, 0.85); 
+      backdrop-filter: blur(10px); 
+      padding: 20px; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+      border: 1px solid rgba(255,255,255,0.1); 
+      box-sizing: border-box;
+    }
+    h2, h3 { 
+      color: #38bdf8; 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 1.4rem;
+    }
+    .form-group { 
+      margin-bottom: 15px; 
+    }
+    label { 
+      display: block; 
+      margin-bottom: 6px; 
+      color: #94a3b8; 
+      font-weight: 500; 
+      font-size: 0.95rem;
+    }
+    input, select, textarea { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 12px; 
+      border: 2px solid #334155; 
+      background: #0f172a; 
+      color: #fff; 
+      transition: border-color 0.3s; 
+      box-sizing: border-box; 
+      font-size: 16px; /* Evita zoom automático en iOS */
+    }
+    input:focus, select:focus, textarea:focus { 
+      border-color: #38bdf8; 
+      outline: none; 
+    }
+    button { 
+      background: #38bdf8; 
+      color: #0f172a; 
+      border: none; 
+      padding: 14px; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      width: 100%; 
+      transition: transform 0.2s, background 0.3s; 
+      margin-top: 5px; 
+      font-size: 1rem;
+    }
+    button:active { 
+      transform: scale(0.98); 
+    }
     .btn-danger { background: #f43f5e; color: white; margin-top: 10px; }
-    .btn-danger:hover { background: #e11d48; }
     .btn-warning { background: #fbbf24; color: #000; }
-    .btn-warning:hover { background: #f59e0b; }
-    .item-noticia { display: flex; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 15px; border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    .item-noticia img { width: 60px; height: 60px; object-fit: cover; border-radius: 15px; margin-right: 15px; flex-shrink: 0; }
-    .item-info { flex-grow: 1; margin-right: 10px; }
-    .item-info h4 { margin: 0; font-size: 15px; color: #f8fafc; }
+    
+    .item-noticia { 
+      display: flex; 
+      flex-direction: row;
+      align-items: center; 
+      background: rgba(15, 23, 42, 0.6); 
+      padding: 12px; 
+      border-radius: 15px; 
+      margin-bottom: 10px; 
+      border: 1px solid rgba(255,255,255,0.05); 
+      gap: 10px;
+    }
+    .item-noticia img { 
+      width: 50px; 
+      height: 50px; 
+      object-fit: cover; 
+      border-radius: 10px; 
+      flex-shrink: 0; 
+    }
+    .item-info { 
+      flex-grow: 1; 
+      min-width: 0; /* Permite que el texto haga wrap y no rompa el flex */
+    }
+    .item-info h4 { 
+      margin: 0; 
+      font-size: 14px; 
+      color: #f8fafc; 
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .botones-accion {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .botones-accion button {
+      padding: 6px 10px;
+      font-size: 12px;
+      margin-top: 0;
+      width: auto;
+    }
     .oculto { display: none; }
-    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio { text-align: center; font-weight: bold; margin-top: 15px; }
-    #preview-imagen-actual { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid #38bdf8; margin-bottom: 10px; display: none; }
+    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
+    #preview-imagen-actual { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #38bdf8; margin-bottom: 8px; display: none; }
+
+    /* Media queries para pantallas todavía más pequeñas (móviles compactos) */
+    @media (min-width: 600px) {
+      body { padding: 20px; }
+      .admin-container { padding: 35px; }
+      .botones-accion { flex-direction: row; }
+      .botones-accion button { padding: 8px 12px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -47,7 +151,9 @@
   </div>
 
   <!-- PANEL DE GESTIÓN -->
-  <div id="seccion-panel" class="admin-container oculto" style="max-width: 800px;">
+  <div id="seccion-panel" class="admin-container oculto">
+    
+    <!-- GESTIÓN DE NOTICIAS -->
     <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
     <form id="form-noticia">
       <input type="hidden" id="edit-id">
@@ -71,7 +177,7 @@
       <div class="form-group">
         <label>Imagen principal:</label>
         <div id="contenedor-preview" class="oculto">
-          <p style="font-size: 13px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
+          <p style="font-size: 12px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
           <img id="preview-imagen-actual" src="" alt="Imagen actual">
         </div>
         <input type="file" id="imagen" accept="image/*">
@@ -91,10 +197,9 @@
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
-    <!-- NUEVA SECCIÓN: GESTIÓN DE ANUNCIOS -->
-    <h3>📢 Gestionar Banners Publicitarios (4 Espacios)</h3>
-    <form id="form-anuncio" style="background: rgba(15,23,42,0.4); padding: 20px; border-radius: 15px; margin-bottom: 25px;">
-      <input type="hidden" id="anuncio-id">
+    <!-- GESTIÓN DE ANUNCIOS PUBLICITARIOS -->
+    <h2>📢 Gestionar Anuncios (4 Espacios)</h2>
+    <form id="form-anuncio">
       <div class="form-group">
         <label>Posición del Anuncio:</label>
         <select id="anuncio-posicion" required>
@@ -109,29 +214,29 @@
         <input type="text" id="anuncio-nombre" placeholder="Ej. Negocio Local" required>
       </div>
       <div class="form-group">
-        <label>Imagen o GIF / WebP Animado:</label>
+        <label>Imagen (GIF o WebP animado):</label>
         <input type="file" id="anuncio-imagen" accept="image/jpeg,image/png,image/webp,image/gif">
       </div>
       <div class="form-group">
-        <label>Enlace Web (URL del cliente):</label>
+        <label>🔗 Enlace Web (URL):</label>
         <input type="url" id="anuncio-link" placeholder="https://sitio-del-cliente.com" required>
       </div>
       <button type="submit" id="btn-guardar-anuncio" style="background: #10b981; color: white;">Guardar / Actualizar Anuncio</button>
     </form>
     <p id="mensaje-anuncio" style="color: #34d399;"></p>
 
-    <div id="lista-admin-anuncios" style="margin-bottom: 30px;">
-      <p style="text-align: center; color: #94a3b8;">Cargando anuncios actuales...</p>
+    <div id="lista-admin-anuncios" style="margin-top: 20px;">
+      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Cargando anuncios actuales...</p>
     </div>
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
     <h3>📰 Noticias Publicadas</h3>
     <div id="lista-admin-noticias">
-      <p style="text-align: center; color: #94a3b8;">Cargando noticias...</p>
+      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Cargando noticias...</p>
     </div>
 
-    <button class="btn-danger" onclick="location.reload()" style="margin-top: 30px;">Cerrar Sesión</button>
+    <button class="btn-danger" onclick="location.reload()" style="margin-top: 25px;">Cerrar Sesión</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -159,7 +264,7 @@
       }
     };
 
-    // --- GESTIÓN DE NOTICIAS ---
+    // --- NOTICIAS ---
     async function cargarNoticiasAdmin() {
       const contenedor = document.getElementById('lista-admin-noticias');
       const { data, error } = await supabaseClient.from('Noticias').select('*').order('id', { ascending: false });
@@ -169,23 +274,23 @@
         return;
       }
       if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8;">No hay noticias publicadas.</p>';
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay noticias publicadas.</p>';
         return;
       }
 
       contenedor.innerHTML = '';
       data.forEach(n => {
-        const fotoNoticia = n.imagen_url || n.imagen || 'https://via.placeholder.com/60';
+        const fotoNoticia = n.imagen_url || n.imagen || 'https://via.placeholder.com/50';
         contenedor.innerHTML += `
           <div class="item-noticia">
-            <img src="${fotoNoticia}" alt="Miniatura" onerror="this.src='https://via.placeholder.com/60'">
+            <img src="${fotoNoticia}" alt="Miniatura" onerror="this.src='https://via.placeholder.com/50'">
             <div class="item-info">
               <h4>${n.titulo}</h4>
-              <p style="margin: 3px 0 0 0; font-size: 12px; color: #94a3b8;">Cat: ${n.categoria}</p>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8;">Cat: ${n.categoria}</p>
             </div>
-            <div style="display:flex; gap:8px;">
-              <button class="btn-warning" style="padding:8px 12px; font-size:13px; width:auto;" onclick="prepararEdicion(${n.id}, '${n.titulo.replace(/'/g, "\\'")}', '${n.categoria}', '${n.contenido.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '${n.video_url || ''}', '${fotoNoticia}')">Editar</button>
-              <button class="btn-danger" style="padding:8px 12px; font-size:13px; width:auto; margin-top:0;" onclick="eliminarNoticia(${n.id})">Borrar</button>
+            <div class="botones-accion">
+              <button class="btn-warning" onclick="prepararEdicion(${n.id}, '${n.titulo.replace(/'/g, "\\'")}', '${n.categoria}', '${n.contenido.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '${n.video_url || ''}', '${fotoNoticia}')">Editar</button>
+              <button class="btn-danger" onclick="eliminarNoticia(${n.id})">Borrar</button>
             </div>
           </div>
         `;
@@ -280,7 +385,7 @@
       }
     }
 
-    // --- GESTIÓN DE ANUNCIOS ---
+    // --- ANUNCIOS ---
     async function cargarAnunciosAdmin() {
       const contenedor = document.getElementById('lista-admin-anuncios');
       const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
@@ -290,19 +395,19 @@
         return;
       }
       if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8;">No hay anuncios configurados.</p>';
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay anuncios configurados.</p>';
         return;
       }
 
-      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px;">Anuncios Actuales:</h4>';
+      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Activos:</h4>';
       data.forEach(a => {
-        const nombresEspacios = ["Izq. Superior", "Izq. Inferior", "Der. Superior", "Der. Inferior"];
+        const nombresEspacios = ["Espacio 1 (Sup. Izq)", "Espacio 2 (Inf. Izq)", "Espacio 3 (Sup. Der)", "Espacio 4 (Inf. Der)"];
         contenedor.innerHTML += `
           <div class="item-noticia">
-            <img src="${a.imagen}" alt="Anuncio" onerror="this.src='https://via.placeholder.com/60'">
+            <img src="${a.imagen}" alt="Anuncio" onerror="this.src='https://via.placeholder.com/50'">
             <div class="item-info">
               <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre}</h4>
-              <p style="margin: 3px 0 0 0; font-size: 12px; color: #94a3b8; word-break: break-all;">Link: ${a.link}</p>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link}</p>
             </div>
           </div>
         `;
@@ -319,7 +424,7 @@
       const archivo = document.getElementById('anuncio-imagen').files[0];
 
       btnGuardar.disabled = true;
-      mensajeAnuncio.textContent = 'Subiendo anuncio...';
+      mensajeAnuncio.textCont = 'Guardando anuncio...';
 
       try {
         let urlImagen = null;
@@ -331,18 +436,16 @@
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
 
-        // Verificamos si ya existe un anuncio en esa posición
         const { data: existente } = await supabaseClient.from('Anuncios').select('*').eq('posicion', posicion);
 
         const datosAnuncio = { posicion, nombre, link };
         if (urlImagen) datosAnuncio.imagen = urlImagen;
 
         if (existente && existente.length > 0) {
-          // Si ya existe, lo actualizamos
-          if (!urlImagen) delete datosAnuncio.imagen; // Si no subió nueva imagen, mantenemos la anterior
+          if (!urlImagen) delete datosAnuncio.imagen;
           await supabaseClient.from('Anuncios').update(datosAnuncio).eq('posicion', posicion);
         } else {
-          if (!urlImagen) throw new Error('Debes seleccionar una imagen para el nuevo anuncio');
+          if (!urlImagen) throw new Error('Debes seleccionar una imagen para este nuevo anuncio');
           await supabaseClient.from('Anuncios').insert(datosAnuncio);
         }
 
