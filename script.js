@@ -78,6 +78,53 @@ async function inicializarPublicidad() {
   }
 }
 
+// --- WIDGETS GLOBALES (Fecha, Clima, Dólar y Puentes Oficiales) ---
+async function inicializarWidgetsGlobales() {
+  // 1. Fecha Actual en Español
+  const elFecha = document.getElementById('widget-fecha');
+  if (elFecha) {
+    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaTexto = new Date().toLocaleDateString('es-MX', opciones);
+    elFecha.innerHTML = `📅 <span style="text-transform: capitalize;">${fechaTexto}</span>`;
+  }
+
+  // 2. Clima de Ciudad Juárez (Open-Meteo API libre)
+  const elClima = document.getElementById('widget-clima');
+  if (elClima) {
+    try {
+      const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
+      const dataClima = await resClima.json();
+      if (dataClima && dataClima.current) {
+        const temp = Math.round(dataClima.current.temperature_2m);
+        elClima.innerHTML = `🌤️ Juárez: <strong>${temp}°C</strong>`;
+      }
+    } catch (e) {
+      elClima.innerHTML = `🌤️ Juárez: N/D`;
+    }
+  }
+
+  // 3. Tipo de Cambio Dólar / Peso
+  const elDolar = document.getElementById('widget-dolar');
+  if (elDolar) {
+    try {
+      const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
+      const dataDolar = await resDolar.json();
+      if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
+        const mxn = dataDolar.rates.MXN.toFixed(2);
+        elDolar.innerHTML = `💵 Dólar: <strong>$${mxn} MXN</strong>`;
+      }
+    } catch (e) {
+      elDolar.innerHTML = `💵 Dólar: N/D`;
+    }
+  }
+
+  // 4. Reporte de Puentes (Fideicomiso de Puentes Fronterizos)
+  const elPuentes = document.getElementById('widget-puentes');
+  if (elPuentes) {
+    elPuentes.innerHTML = `🚗 Puentes: <a href="https://www.puentesfronterizos.gob.mx/" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: bold;">Ver tiempos (Fideicomiso)</a>`;
+  }
+}
+
 function abrirModalNoticia(idNota) {
   const nota = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
   if (!nota) return;
@@ -181,11 +228,9 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
         const listaFotos = obtenerListaFotos(nota);
         let mediaHTML = '';
 
-        // 1. Si tiene imagen principal, la usamos
         if (listaFotos.length > 0) {
           mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
         } else {
-          // 2. Si no tiene imagen, verificamos si tiene video de YouTube para mostrar su miniatura automática
           const ytId = obtenerYouTubeId(nota.video_url);
           if (ytId) {
             const miniaturaYt = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
@@ -197,9 +242,8 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
                 </div>
               </div>`;
           } else if (nota.video_url && nota.video_url.includes('facebook')) {
-            // 3. Si es video de Facebook y no hay foto
             mediaHTML = `
-              <div style="width: 100%; height: 100px; background: #1e293b; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-weight: bold; font-size: 0.9رم; border: 1px dashed #334155;">
+              <div style="width: 100%; height: 100px; background: #1e293b; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-weight: bold; font-size: 0.9rem; border: 1px dashed #334155;">
                 📹 Video de Facebook disponible
               </div>`;
           }
@@ -264,6 +308,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo('todas', 0);
   inicializarPublicidad();
+  inicializarWidgetsGlobales();
 
   document.getElementById('cerrar-modal')?.addEventListener('click', cerrarModalNoticia);
   document.getElementById('modal-noticia')?.addEventListener('click', (e) => {
@@ -280,56 +325,4 @@ document.addEventListener('DOMContentLoaded', () => {
       cargarNoticiasEnVivo(btn.getAttribute('data-categoria'), 0);
     });
   });
-});
-// --- FUNCIONES PARA WIDGETS AUTOMÁTICOS (Fecha, Clima, Dólar) ---
-async function inicializarWidgetsGlobales() {
-  // 1. Fecha Actual en Español
-  const elFecha = document.getElementById('widget-fecha');
-  if (elFecha) {
-    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const fechaTexto = new Date().toLocaleDateString('es-MX', opciones);
-    elFecha.innerHTML = `📅 <span style="text-transform: capitalize;">${fechaTexto}</span>`;
-  }
-
-  // 2. Clima de Ciudad Juárez (Usando Open-Meteo API gratuita sin registro)
-  const elClima = document.getElementById('widget-clima');
-  if (elClima) {
-    try {
-      // Coordenadas de Ciudad Juárez: Lat 31.6904, Lon -106.4245
-      const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
-      const dataClima = await resClima.json();
-      if (dataClima && dataClima.current) {
-        const temp = Math.round(dataClima.current.temperature_2m);
-        elClima.innerHTML = `🌤️ Juárez: <strong>${temp}°C</strong>`;
-      }
-    } catch (e) {
-      elClima.innerHTML = `🌤️ Juárez: N/D`;
-    }
-  }
-
-  // 3. Tipo de Cambio Dólar / Peso (Usando API financiera libre)
-  const elDolar = document.getElementById('widget-dolar');
-  if (elDolar) {
-    try {
-      const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
-      const dataDolar = await resDolar.json();
-      if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
-        const mxn = dataDolar.rates.MXN.toFixed(2);
-        elDolar.innerHTML = `💵 Dólar: <strong>$${mxn} MXN</strong>`;
-      }
-    } catch (e) {
-      elDolar.innerHTML = `💵 Dólar: N/D`;
-    }
-  }
-
-  // 4. Reporte de Puentes (Placeholder informativo oficial)
-  const elPuentes = document.getElementById('widget-puentes');
-  if (elPuentes) {
-    elPuentes.innerHTML = `🚗 Puentes: <a href="https://www.customs.gov/border-wait-times" target="_blank" style="color: #38bdf8; text-decoration: underline;">Ver reporte CBP</a>`;
-  }
-}
-
-// Ejecutar al cargar la página junto con lo demás
-document.addEventListener('DOMContentLoaded', () => {
-  inicializarWidgetsGlobales();
 });
