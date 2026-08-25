@@ -25,10 +25,22 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS (Fecha, Clima, Dólar y Puentes con Menú Desplegable) -->
+    <!-- BARRA DE WIDGETS -->
     <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
+      
+      <!-- Widget Fecha -->
       <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
-      <div id="widget-clima" style="font-weight: 500;">🌤️ Clima Juárez: Cargando...</div>
+      
+      <!-- Widget Clima Detallado -->
+      <div id="widget-clima-container" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.2rem;">🌤️</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+          <span id="clima-principal" style="font-size: 0.85rem; font-weight: 600;">Juárez: Cargando...</span>
+          <span id="clima-detalles" style="font-size: 0.75rem; color: #94a3b8;">Sensación y humedad...</span>
+        </div>
+      </div>
+
+      <!-- Widget Dólar -->
       <div id="widget-dolar" style="font-weight: 500;">💵 Dólar: Cargando...</div>
       
       <!-- WIDGET DE PUENTES CON MENÚ DESPLEGABLE OFICIAL -->
@@ -36,7 +48,7 @@
         <button id="btn-menu-puentes" style="background: transparent; border: none; color: #f8fafc; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px;">
           🚗 Puentes en Vivo ▾
         </button>
-        <div id="dropdown-puentes" style="display: none; position: absolute; top: 100%; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 250px; padding: 6px 0; margin-top: 5px;">
+        <div id="dropdown-puentes" style="display: none; position: absolute; top: 100%; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 260px; padding: 6px 0; margin-top: 5px;">
           <a href="https://www.youtube.com/@fpfch/streams" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Canal General FPFCH</a>
           <a href="https://www.youtube.com/watch?v=mp3RS0y77tY" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Libre (Córdova)</a>
           <a href="https://www.youtube.com/watch?v=0Pg3S6s76IE" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Paso del Norte (Santa Fe)</a>
@@ -45,6 +57,7 @@
       </div>
     </div>
 
+    <!-- MENÚ DE NAVEGACIÓN -->
     <nav id="menu-navegacion" aria-label="Menú principal de categorías">
       <a href="#" class="nav-btn active" data-categoria="todas">Inicio</a>
       <a href="#" class="nav-btn" data-categoria="seguridad">Seguridad</a>
@@ -63,7 +76,7 @@
   <!-- LAYOUT PRINCIPAL -->
   <div class="layout-principal">
 
-    <!-- PUBLICIDAD IZQUIERDA (2 espacios) -->
+    <!-- PUBLICIDAD IZQUIERDA -->
     <aside class="columna-publicidad publicidad-izquierda" aria-label="Publicidad lateral izquierda">
       <div class="caja-banner-vertical"></div>
       <div class="caja-banner-vertical"></div>
@@ -85,7 +98,7 @@
       </section>
     </div>
 
-    <!-- PUBLICIDAD DERECHA (2 espacios) -->
+    <!-- PUBLICIDAD DERECHA -->
     <aside class="columna-publicidad publicidad-derecha" aria-label="Publicidad lateral derecha">
       <div class="caja-banner-vertical"></div>
       <div class="caja-banner-vertical"></div>
