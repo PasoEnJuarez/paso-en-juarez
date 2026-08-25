@@ -22,19 +22,25 @@
       min-height: 100vh;
     }
 
-    /* Cabecera / Banner Superior */
+    /* Cabecera / Banner Superior Extendido */
     header {
       background-color: #020617;
       border-bottom: 2px solid #1e293b;
-      padding: 15px 20px;
+      padding: 0;
       text-align: center;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .banner-principal {
+      width: 100%;
     }
 
     .banner-principal img {
-      max-width: 100%;
-      height: auto;
-      max-height: 120px;
-      object-fit: contain;
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
     }
 
     /* Barra de Widgets Superiores (Fecha, Clima, Dólar, Puentes) */
@@ -260,7 +266,7 @@
 </head>
 <body>
 
-  <!-- Cabecera / Banner -->
+  <!-- Cabecera / Banner Extendido -->
   <header>
     <div class="banner-principal">
       <img src="https://akwnmorymjhthdkcebri.supabase.co/storage/v1/object/public/imagenes//pasoenjuarezbanner.jpg" alt="Pasó En Juárez - Sitio Web de Noticias en Ciudad Juárez">
@@ -274,7 +280,7 @@
       📅 Cargando fecha...
     </div>
 
-    <!-- Clima Detallado (IDs sincronizados con el script.js) -->
+    <!-- Clima Detallado -->
     <div class="widget-item" style="display: flex; align-items: center; gap: 8px;">
       <span style="font-size: 1.2rem;">🌤️</span>
       <div style="display: flex; flex-direction: column; line-height: 1.2;">
