@@ -197,7 +197,7 @@
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
-    <!-- GESTIÓN DE ANUNCIOS PUBLICITARIOS (ESCRITORIO) -->
+    <!-- GESTIÓN DE ANUNCIOS ESCRITORIO -->
     <h2>📢 Anuncios Escritorio</h2>
     <form id="form-anuncio">
       <input type="hidden" id="anuncio-edit-id" value="">
@@ -286,7 +286,6 @@
     let anunciosAdminCache = []; 
     let anunciosMovilAdminCache = []; 
 
-    // Imagen transparente/gris por defecto para evitar errores de red externos
     const IMG_DEFAULT = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect width='50' height='50' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' fill='%2394a3b8' font-size='10' text-anchor='middle' dominant-baseline='central'%3ES/I%3C/text%3E%3C/svg%3E";
 
     window.onload = () => {
@@ -460,13 +459,13 @@
       contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Escritorio Activos:</h4>';
       data.forEach(a => {
         const nombresEspacios = ["Espacio 1 (Sup. Izq)", "Espacio 2 (Inf. Izq)", "Espacio 3 (Sup. Der)", "Espacio 4 (Inf. Der)"];
-        const fotoAnuncio = a.imagen || IMG_DEFAULT;
+        const fotoAnuncio = a.imagen_desktop || a.imagen || IMG_DEFAULT;
         contenedor.innerHTML += `
           <div class="item-noticia">
             <img src="${fotoAnuncio}" alt="Anuncio" onerror="this.src='${IMG_DEFAULT}'">
             <div class="item-info">
-              <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre}</h4>
-              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link}</p>
+              <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre || 'Sin nombre'}</h4>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
             </div>
             <div class="botones-accion">
               <button class="btn-warning" onclick="prepararEdicionAnuncio(${a.id})">Editar</button>
@@ -482,7 +481,7 @@
       if (!anuncio) return;
 
       document.getElementById('anuncio-edit-id').value = anuncio.id;
-      document.getElementById('anuncio-posicion').value = anuncio.posicion;
+      document.getElementById('anuncio-posicion').value = anuncio.posicion ?? 0;
       document.getElementById('anuncio-nombre').value = anuncio.nombre || '';
       document.getElementById('anuncio-link').value = anuncio.link || '';
 
@@ -526,14 +525,17 @@
         let urlImagen = null;
 
         if (archivo) {
-          const nombreArchivo = `anuncio_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
+          const nombreArchivo = `desktop_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
           const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
           if (uploadError) throw new Error('Error al subir la imagen');
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
 
         const datosAnuncio = { posicion, nombre, link };
-        if (urlImagen) datosAnuncio.imagen = urlImagen;
+        if (urlImagen) {
+          datosAnuncio.imagen_desktop = urlImagen;
+          datosAnuncio.imagen = urlImagen; // Compatibilidad por si usas la columna genérica
+        }
 
         if (editId) {
           const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
@@ -558,10 +560,10 @@
       }
     };
 
-    // --- ANUNCIOS MÓVIL ---
+    // --- ANUNCIOS MÓVIL (Usa la misma tabla "Anuncios") ---
     async function cargarAnunciosMovilAdmin() {
       const contenedor = document.getElementById('lista-admin-anuncios-movil');
-      const { data, error } = await supabaseClient.from('AnunciosMovil').select('*').order('posicion', { ascending: true });
+      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
 
       if (error || !data) {
         contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios móviles</p>';
@@ -578,17 +580,16 @@
       contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Móvil Activos:</h4>';
       data.forEach(a => {
         const nombresEspacios = ["Banner Móvil 1 (Sup.)", "Banner Móvil 2 (Medio)", "Banner Móvil 3 (Inf.)"];
-        const fotoMovil = a.imagen || IMG_DEFAULT;
+        const fotoMovil = a.imagen_movil || IMG_DEFAULT;
         contenedor.innerHTML += `
           <div class="item-noticia">
             <img src="${fotoMovil}" alt="Anuncio Móvil" onerror="this.src='${IMG_DEFAULT}'">
             <div class="item-info">
-              <h4>[${nombresEspacios[a.posicion] || 'Banner'}] ${a.nombre}</h4>
-              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link}</p>
+              <h4>[${nombresEspacios[a.posicion] || 'Banner'}] ${a.nombre || 'Sin nombre'}</h4>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
             </div>
             <div class="botones-accion">
               <button class="btn-warning" onclick="prepararEdicionAnuncioMovil(${a.id})">Editar</button>
-              <button class="btn-danger" onclick="eliminarAnuncioMovil(${a.id})">Borrar</button>
             </div>
           </div>
         `;
@@ -600,7 +601,7 @@
       if (!anuncio) return;
 
       document.getElementById('anuncio-movil-edit-id').value = anuncio.id;
-      document.getElementById('anuncio-movil-posicion').value = anuncio.posicion;
+      document.getElementById('anuncio-movil-posicion').value = anuncio.posicion ?? 0;
       document.getElementById('anuncio-movil-nombre').value = anuncio.nombre || '';
       document.getElementById('anuncio-movil-link').value = anuncio.link || '';
 
@@ -614,17 +615,6 @@
       document.getElementById('anuncio-movil-edit-id').value = '';
       document.getElementById('btn-guardar-anuncio-movil').textContent = 'Guardar / Actualizar Anuncio Móvil';
       document.getElementById('btn-cancelar-anuncio-movil').classList.add('oculto');
-    }
-
-    async function eliminarAnuncioMovil(id) {
-      if (confirm('¿Estás seguro de eliminar este anuncio móvil?')) {
-        const { error } = await supabaseClient.from('AnunciosMovil').delete().eq('id', id);
-        if (!error) {
-          cargarAnunciosMovilAdmin();
-        } else {
-          alert('Error al eliminar el anuncio móvil');
-        }
-      }
     }
 
     document.getElementById('form-anuncio-movil').onsubmit = async (e) => {
@@ -651,15 +641,15 @@
         }
 
         const datosAnuncio = { posicion, nombre, link };
-        if (urlImagen) datosAnuncio.imagen = urlImagen;
+        if (urlImagen) datosAnuncio.imagen_movil = urlImagen;
 
         if (editId) {
-          const { error: updateError } = await supabaseClient.from('AnunciosMovil').update(datosAnuncio).eq('id', editId);
+          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
           if (updateError) throw new Error(updateError.message);
           mensajeAnuncioMovil.textContent = '¡Anuncio móvil actualizado con éxito!';
         } else {
-          if (!urlImagen) throw new Error('Debes seleccionar una imagen para este nuevo anuncio móvil');
-          const { error: insertError } = await supabaseClient.from('AnunciosMovil').insert(datosAnuncio);
+          if (!urlImagen) throw new Error('Debes seleccionar una imagen móvil');
+          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
           if (insertError) throw new Error(insertError.message);
           mensajeAnuncioMovil.textContent = '¡Anuncio móvil guardado con éxito!';
         }
