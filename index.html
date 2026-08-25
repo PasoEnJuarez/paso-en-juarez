@@ -76,17 +76,24 @@
   <!-- LAYOUT PRINCIPAL -->
   <div class="layout-principal">
 
-    <!-- PUBLICIDAD IZQUIERDA -->
+    <!-- PUBLICIDAD IZQUIERDA (Escritorio) -->
     <aside class="columna-publicidad publicidad-izquierda" aria-label="Publicidad lateral izquierda">
-      <div class="caja-banner-vertical"></div>
-      <div class="caja-banner-vertical"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="0"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="1"></div>
     </aside>
 
     <!-- BLOQUE CENTRAL -->
     <div class="bloque-central">
+      
+      <!-- BANNER MÓVIL SUPERIOR (Visible solo en celulares/tablets) -->
+      <div class="caja-banner-movil caja-banner-vertical" data-posicion-anuncio="0" style="margin-bottom: 20px;"></div>
+
       <main class="contenedor-noticias">
         <p style="color: #94a3b8; text-align: center; width: 100%;">Cargando noticias...</p>
       </main>
+
+      <!-- BANNER MÓVIL INFERIOR (Visible solo en celulares/tablets, entre noticias y cronología) -->
+      <div class="caja-banner-movil caja-banner-vertical" data-posicion-anuncio="1" style="margin-bottom: 20px;"></div>
 
       <section class="seccion-cronologica">
         <div class="cronologica-header">
@@ -98,10 +105,10 @@
       </section>
     </div>
 
-    <!-- PUBLICIDAD DERECHA -->
+    <!-- PUBLICIDAD DERECHA (Escritorio) -->
     <aside class="columna-publicidad publicidad-derecha" aria-label="Publicidad lateral derecha">
-      <div class="caja-banner-vertical"></div>
-      <div class="caja-banner-vertical"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="2"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="3"></div>
     </aside>
   </div>
 
