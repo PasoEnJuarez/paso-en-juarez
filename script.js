@@ -281,3 +281,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+// --- FUNCIONES PARA WIDGETS AUTOMÁTICOS (Fecha, Clima, Dólar) ---
+async function inicializarWidgetsGlobales() {
+  // 1. Fecha Actual en Español
+  const elFecha = document.getElementById('widget-fecha');
+  if (elFecha) {
+    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaTexto = new Date().toLocaleDateString('es-MX', opciones);
+    elFecha.innerHTML = `📅 <span style="text-transform: capitalize;">${fechaTexto}</span>`;
+  }
+
+  // 2. Clima de Ciudad Juárez (Usando Open-Meteo API gratuita sin registro)
+  const elClima = document.getElementById('widget-clima');
+  if (elClima) {
+    try {
+      // Coordenadas de Ciudad Juárez: Lat 31.6904, Lon -106.4245
+      const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
+      const dataClima = await resClima.json();
+      if (dataClima && dataClima.current) {
+        const temp = Math.round(dataClima.current.temperature_2m);
+        elClima.innerHTML = `🌤️ Juárez: <strong>${temp}°C</strong>`;
+      }
+    } catch (e) {
+      elClima.innerHTML = `🌤️ Juárez: N/D`;
+    }
+  }
+
+  // 3. Tipo de Cambio Dólar / Peso (Usando API financiera libre)
+  const elDolar = document.getElementById('widget-dolar');
+  if (elDolar) {
+    try {
+      const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
+      const dataDolar = await resDolar.json();
+      if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
+        const mxn = dataDolar.rates.MXN.toFixed(2);
+        elDolar.innerHTML = `💵 Dólar: <strong>$${mxn} MXN</strong>`;
+      }
+    } catch (e) {
+      elDolar.innerHTML = `💵 Dólar: N/D`;
+    }
+  }
+
+  // 4. Reporte de Puentes (Placeholder informativo oficial)
+  const elPuentes = document.getElementById('widget-puentes');
+  if (elPuentes) {
+    elPuentes.innerHTML = `🚗 Puentes: <a href="https://www.customs.gov/border-wait-times" target="_blank" style="color: #38bdf8; text-decoration: underline;">Ver reporte CBP</a>`;
+  }
+}
+
+// Ejecutar al cargar la página junto con lo demás
+document.addEventListener('DOMContentLoaded', () => {
+  inicializarWidgetsGlobales();
+});
