@@ -51,7 +51,7 @@
       color: #fff; 
       transition: border-color 0.3s; 
       box-sizing: border-box; 
-      font-size: 16px; /* Evita zoom automático en iOS */
+      font-size: 16px;
     }
     input:focus, select:focus, textarea:focus { 
       border-color: #38bdf8; 
@@ -96,7 +96,7 @@
     }
     .item-info { 
       flex-grow: 1; 
-      min-width: 0; /* Permite que el texto haga wrap y no rompa el flex */
+      min-width: 0; 
     }
     .item-info h4 { 
       margin: 0; 
@@ -122,7 +122,6 @@
     #mensaje-login, #mensaje-publicacion, #mensaje-anuncio { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
     #preview-imagen-actual { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #38bdf8; margin-bottom: 8px; display: none; }
 
-    /* Media queries para pantallas todavía más pequeñas (móviles compactos) */
     @media (min-width: 600px) {
       body { padding: 20px; }
       .admin-container { padding: 35px; }
@@ -183,8 +182,8 @@
         <input type="file" id="imagen" accept="image/*">
       </div>
       <div class="form-group">
-        <label>🔗 URL de Video de Facebook (Opcional):</label>
-        <input type="url" id="video-url" placeholder="https://www.facebook.com/watch?v=...">
+        <label>🔗 URL de Video de Facebook o YouTube (Opcional):</label>
+        <input type="url" id="video-url" placeholder="https://www.youtube.com/watch?v=...">
       </div>
       <div class="form-group">
         <label>Contenido:</label>
@@ -245,6 +244,8 @@
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let noticiasAdminCache = []; // Almacena temporalmente las noticias para edición segura
+
     window.onload = () => {
       document.getElementById('login-password').value = '';
     };
@@ -273,6 +274,9 @@
         contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar noticias</p>';
         return;
       }
+      
+      noticiasAdminCache = data; // Guardamos en caché localmente
+
       if (data.length === 0) {
         contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay noticias publicadas.</p>';
         return;
@@ -289,7 +293,7 @@
               <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8;">Cat: ${n.categoria}</p>
             </div>
             <div class="botones-accion">
-              <button class="btn-warning" onclick="prepararEdicion(${n.id}, '${n.titulo.replace(/'/g, "\\'")}', '${n.categoria}', '${n.contenido.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '${n.video_url || ''}', '${fotoNoticia}')">Editar</button>
+              <button class="btn-warning" onclick="prepararEdicion(${n.id})">Editar</button>
               <button class="btn-danger" onclick="eliminarNoticia(${n.id})">Borrar</button>
             </div>
           </div>
@@ -327,10 +331,12 @@
         if (urlImagen) datosNoticia.imagen_url = urlImagen;
 
         if (editId) {
-          await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
+          const { error: updateError } = await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
+          if (updateError) throw new Error(updateError.message);
           mensajePub.textContent = '¡Noticia actualizada con éxito!';
         } else {
-          await supabaseClient.from('Noticias').insert(datosNoticia);
+          const { error: insertError } = await supabaseClient.from('Noticias').insert(datosNoticia);
+          if (insertError) throw new Error(insertError.message);
           mensajePub.textContent = '¡Noticia publicada con éxito!';
         }
 
@@ -345,16 +351,22 @@
       }
     };
 
-    function prepararEdicion(id, titulo, categoria, contenido, videoUrl, imagenUrl) {
-      document.getElementById('edit-id').value = id;
-      document.getElementById('titulo').value = titulo;
-      document.getElementById('categoria').value = categoria;
-      document.getElementById('contenido').value = contenido;
-      document.getElementById('video-url').value = videoUrl !== 'undefined' ? videoUrl : '';
+    function prepararEdicion(id) {
+      // Buscamos la noticia directamente en el caché por su ID de manera segura
+      const nota = noticiasAdminCache.find(n => String(n.id) === String(id));
+      if (!nota) return;
+
+      document.getElementById('edit-id').value = nota.id;
+      document.getElementById('titulo').value = nota.titulo || '';
+      document.getElementById('categoria').value = nota.categoria || 'seguridad';
+      document.getElementById('contenido').value = nota.contenido || '';
+      document.getElementById('video-url').value = nota.video_url || '';
       
       const imgPreview = document.getElementById('preview-imagen-actual');
       const contenedorPreview = document.getElementById('contenedor-preview');
-      if (imagenUrl && imagenUrl !== 'undefined') {
+      const imagenUrl = nota.imagen_url || nota.imagen;
+
+      if (imagenUrl) {
         imgPreview.src = imagenUrl;
         contenedorPreview.classList.remove('oculto');
         imgPreview.style.display = 'block';
@@ -424,7 +436,7 @@
       const archivo = document.getElementById('anuncio-imagen').files[0];
 
       btnGuardar.disabled = true;
-      mensajeAnuncio.textCont = 'Guardando anuncio...';
+      mensajeAnuncio.textContent = 'Guardando anuncio...';
 
       try {
         let urlImagen = null;
