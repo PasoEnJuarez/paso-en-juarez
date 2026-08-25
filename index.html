@@ -25,12 +25,24 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS (Fecha, Clima, Dólar y Puentes) -->
+    <!-- BARRA DE WIDGETS (Fecha, Clima, Dólar y Puentes con Menú Desplegable) -->
     <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
       <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
       <div id="widget-clima" style="font-weight: 500;">🌤️ Clima Juárez: Cargando...</div>
       <div id="widget-dolar" style="font-weight: 500;">💵 Dólar: Cargando...</div>
-      <div id="widget-puentes" style="font-weight: 500;">🚗 Puentes: Consultando...</div>
+      
+      <!-- WIDGET DE PUENTES CON MENÚ DESPLEGABLE OFICIAL -->
+      <div id="widget-puentes" style="font-weight: 500; position: relative; display: inline-block;">
+        <button id="btn-menu-puentes" style="background: transparent; border: none; color: #f8fafc; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+          🚗 Puentes en Vivo ▾
+        </button>
+        <div id="dropdown-puentes" style="display: none; position: absolute; top: 100%; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 220px; padding: 6px 0; margin-top: 5px;">
+          <a href="https://www.youtube.com/@fpfch/streams" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Canal General (En Vivo)</a>
+          <a href="https://www.puentesfronterizos.gob.mx/puente-internacional-coporativo.php" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Córdova (Libre)</a>
+          <a href="https://www.puentesfronterizos.gob.mx/puente-internacional-paso-del-norte.php" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Paso del Norte (Santa Fe)</a>
+          <a href="https://www.puentesfronterizos.gob.mx/puente-internacional-zaragoza-ysleta.php" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem;">• Puente Zaragoza</a>
+        </div>
+      </div>
     </div>
 
     <nav id="menu-navegacion" aria-label="Menú principal de categorías">
