@@ -5,7 +5,7 @@ const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_U
 
 let listaNoticiasCargadas = [];
 let paginaActual = 0;
-const NOTICIAS_POR_PAGINA = 15;
+const NOTICIAS_POR_PAGINA = 10; // <--- Cambiado a 10
 let categoriaActual = 'todas';
 
 function obtenerListaFotos(nota) {
