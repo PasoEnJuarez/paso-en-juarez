@@ -78,7 +78,7 @@ async function inicializarPublicidad() {
   }
 }
 
-// --- WIDGETS GLOBALES (Fecha, Clima, Dólar y Puentes Oficiales) ---
+// --- WIDGETS GLOBALES (Fecha, Clima, Dólar) ---
 async function inicializarWidgetsGlobales() {
   // 1. Fecha Actual en Español
   const elFecha = document.getElementById('widget-fecha');
@@ -116,12 +116,6 @@ async function inicializarWidgetsGlobales() {
     } catch (e) {
       elDolar.innerHTML = `💵 Dólar: N/D`;
     }
-  }
-
-  // 4. Reporte de Puentes (Fideicomiso de Puentes Fronterizos)
-  const elPuentes = document.getElementById('widget-puentes');
-  if (elPuentes) {
-    elPuentes.innerHTML = `🚗 Puentes: <a href="https://www.puentesfronterizos.gob.mx/" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: bold;">Ver tiempos (Fideicomiso)</a>`;
   }
 }
 
@@ -309,6 +303,23 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo('todas', 0);
   inicializarPublicidad();
   inicializarWidgetsGlobales();
+
+  // Lógica para abrir/cerrar el menú desplegable de puentes en la barra superior
+  const btnMenuPuentes = document.getElementById('btn-menu-puentes');
+  const dropdownPuentes = document.getElementById('dropdown-puentes');
+
+  if (btnMenuPuentes && dropdownPuentes) {
+    btnMenuPuentes.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const estaAbierto = dropdownPuentes.style.display === 'block';
+      dropdownPuentes.style.display = estaAbierto ? 'none' : 'block';
+    });
+
+    // Cerrar el menú si el usuario hace clic en cualquier otra parte de la pantalla
+    document.addEventListener('click', () => {
+      dropdownPuentes.style.display = 'none';
+    });
+  }
 
   document.getElementById('cerrar-modal')?.addEventListener('click', cerrarModalNoticia);
   document.getElementById('modal-noticia')?.addEventListener('click', (e) => {
