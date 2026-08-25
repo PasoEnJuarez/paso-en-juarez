@@ -78,28 +78,44 @@ async function inicializarPublicidad() {
   }
 }
 
-// --- WIDGETS GLOBALES (Fecha, Clima, Dólar) ---
+// --- WIDGETS GLOBALES (Fecha, Clima Detallado, Dólar) ---
 async function inicializarWidgetsGlobales() {
   // 1. Fecha Actual en Español
   const elFecha = document.getElementById('widget-fecha');
   if (elFecha) {
-    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const fechaTexto = new Date().toLocaleDateString('es-MX', opciones);
-    elFecha.innerHTML = `📅 <span style="text-transform: capitalize;">${fechaTexto}</span>`;
+    elFecha.innerHTML = `📅 ${fechaTexto}`;
   }
 
-  // 2. Clima de Ciudad Juárez (Open-Meteo API libre)
-  const elClima = document.getElementById('widget-clima');
-  if (elClima) {
+  // 2. Clima Detallado de Ciudad Juárez (Open-Meteo API libre con temperatura, sensación y humedad)
+  const elClimaPrincipal = document.getElementById('clima-principal');
+  const elClimaDetalles = document.getElementById('clima-detalles');
+  
+  if (elClimaPrincipal && elClimaDetalles) {
     try {
-      const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
+      const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code');
       const dataClima = await resClima.json();
+      
       if (dataClima && dataClima.current) {
         const temp = Math.round(dataClima.current.temperature_2m);
-        elClima.innerHTML = `🌤️ Juárez: <strong>${temp}°C</strong>`;
+        const sensacion = Math.round(dataClima.current.apparent_temperature);
+        const humedad = dataClima.current.relative_humidity_2m;
+        
+        const codigo = dataClima.current.weather_code;
+        let condicion = "Despejado";
+        if (codigo > 0 && codigo <= 3) condicion = "Parcialmente nublado";
+        else if (codigo >= 45 && codigo <= 48) condicion = "Neblina";
+        else if (codigo >= 51 && codigo <= 67) condicion = "Lluvia";
+        else if (codigo >= 71 && codigo <= 77) condicion = "Nieve";
+        else if (codigo >= 95) condicion = "Tormenta";
+
+        elClimaPrincipal.innerText = `Juárez: ${temp}°C - ${condicion}`;
+        elClimaDetalles.innerText = `Sensación: ${sensacion}°C | Humedad: ${humedad}%`;
       }
     } catch (e) {
-      elClima.innerHTML = `🌤️ Juárez: N/D`;
+      elClimaPrincipal.innerText = `Juárez: N/D`;
+      elClimaDetalles.innerText = `No disponible`;
     }
   }
 
