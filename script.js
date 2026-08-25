@@ -15,27 +15,32 @@ function obtenerListaFotos(nota) {
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
 }
 
+// Función auxiliar para extraer el ID de un video de YouTube
+function obtenerYouTubeId(videoUrl) {
+  if (!videoUrl) return '';
+  const urlTrim = videoUrl.trim();
+  let videoId = '';
+  if (urlTrim.includes('youtu.be/')) {
+    videoId = urlTrim.split('youtu.be/')[1]?.split('?')[0];
+  } else if (urlTrim.includes('watch?v=')) {
+    videoId = urlTrim.split('watch?v=')[1]?.split('&')[0];
+  } else if (urlTrim.includes('embed/')) {
+    videoId = urlTrim.split('embed/')[1]?.split('?')[0];
+  }
+  return videoId;
+}
+
 // Función para generar reproductor de video (YouTube / Facebook)
 function generarReproductorVideo(videoUrl) {
   if (!videoUrl) return '';
   const urlTrim = videoUrl.trim();
+  const videoId = obtenerYouTubeId(urlTrim);
   
-  if (urlTrim.includes('youtube.com') || urlTrim.includes('youtu.be')) {
-    let videoId = '';
-    if (urlTrim.includes('youtu.be/')) {
-      videoId = urlTrim.split('youtu.be/')[1]?.split('?')[0];
-    } else if (urlTrim.includes('watch?v=')) {
-      videoId = urlTrim.split('watch?v=')[1]?.split('&')[0];
-    } else if (urlTrim.includes('embed/')) {
-      videoId = urlTrim.split('embed/')[1]?.split('?')[0];
-    }
-    
-    if (videoId) {
-      return `
-        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 8px; overflow: hidden; border: 1px solid #334155;">
-          <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
-        </div>`;
-    }
+  if (videoId) {
+    return `
+      <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin-top: 15px; border-radius: 8px; overflow: hidden; border: 1px solid #334155;">
+        <iframe src="https://www.youtube.com/embed/${videoId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
+      </div>`;
   }
   
   if (urlTrim.includes('facebook.com') || urlTrim.includes('fb.watch')) {
@@ -117,7 +122,6 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
   if (!supabaseClient) return;
 
-  // Indicador de carga visual (Spinner)
   if (contenedorNoticias) {
     contenedorNoticias.innerHTML = `
       <div style="grid-column: span 2; text-align: center; padding: 50px; color: #64748b;">
@@ -175,11 +179,43 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
     if (contenedorNoticias) {
       let htmlNoticias = noticias.map(nota => {
         const listaFotos = obtenerListaFotos(nota);
-        const galeriaHTML = listaFotos.length > 0 ? `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">` : '';
+        let mediaHTML = '';
+
+        // 1. Si tiene imagen principal, la usamos
+        if (listaFotos.length > 0) {
+          mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
+        } else {
+          // 2. Si no tiene imagen, verificamos si tiene video de YouTube para mostrar su miniatura automática
+          const ytId = obtenerYouTubeId(nota.video_url);
+          if (ytId) {
+            const miniaturaYt = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+            mediaHTML = `
+              <div style="position: relative; width: 100%; height: 180px; background: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                <img src="${miniaturaYt}" alt="${nota.titulo || 'Video'}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" loading="lazy">
+                <div style="position: absolute; background: rgba(0,0,0,0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.3);">
+                  ▶ Ver Video
+                </div>
+              </div>`;
+          } else if (nota.video_url && nota.video_url.includes('facebook')) {
+            // 3. Si es video de Facebook y no hay foto
+            mediaHTML = `
+              <div style="width: 100%; height: 100px; background: #1e293b; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-weight: bold; font-size: 0.9رم; border: 1px dashed #334155;">
+                📹 Video de Facebook disponible
+              </div>`;
+          }
+        }
+
         const resumen = nota.contenido && nota.contenido.length > 140 ? nota.contenido.substring(0, 140) + '...' : nota.contenido || '';
         const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
-        return `<article class="noticia" data-id="${nota.id}" style="cursor: pointer;"><span class="categoria ${catClase}">${nota.categoria || 'General'}</span><h2>${nota.titulo || 'Sin título'}</h2>${galeriaHTML}<p>${resumen}</p><span style="color: #0284c7; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-top: 8px;">Leer noticia completa →</span></article>`;
+        return `
+          <article class="noticia" data-id="${nota.id}" style="cursor: pointer;">
+            <span class="categoria ${catClase}">${nota.categoria || 'General'}</span>
+            <h2>${nota.titulo || 'Sin título'}</h2>
+            ${mediaHTML}
+            <p>${resumen}</p>
+            <span style="color: #0284c7; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-top: 8px;">Leer noticia completa →</span>
+          </article>`;
       }).join('');
 
       const botonesPaginacion = `
