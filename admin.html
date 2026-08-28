@@ -3,166 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Admin | PasóEnJuárez</title>
+  <title>Panel de Administración - PasóEnJuárez</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { 
-      font-family: 'Segoe UI', Roboto, sans-serif; 
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-      color: #f8fafc; 
-      margin: 0; 
-      padding: 10px; 
-      min-height: 100vh; 
-      box-sizing: border-box; 
-    }
-    .admin-container { 
-      width: 100%;
-      max-width: 750px; 
-      margin: 15px auto; 
-      background: rgba(30, 41, 59, 0.85); 
-      backdrop-filter: blur(10px); 
-      padding: 20px; 
-      border-radius: 20px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
-      border: 1px solid rgba(255,255,255,0.1); 
+    * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    h2, h3 { 
-      color: #38bdf8; 
-      text-align: center; 
-      margin-bottom: 20px; 
-      font-size: 1.4rem;
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 20px;
     }
-    .form-group { 
-      margin-bottom: 15px; 
+    .admin-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #1e293b;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-    label { 
-      display: block; 
-      margin-bottom: 6px; 
-      color: #94a3b8; 
-      font-weight: 500; 
-      font-size: 0.95rem;
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      color: #38bdf8;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 12px;
     }
-    input, select, textarea { 
-      width: 100%; 
-      padding: 12px; 
-      border-radius: 12px; 
-      border: 2px solid #334155; 
-      background: #0f172a; 
-      color: #fff; 
-      transition: border-color 0.3s; 
-      box-sizing: border-box; 
-      font-size: 16px;
+    .form-group {
+      margin-bottom: 20px;
     }
-    input:focus, select:focus, textarea:focus { 
-      border-color: #38bdf8; 
-      outline: none; 
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #cbd5e1;
+      margin-bottom: 8px;
     }
-    button { 
-      background: #38bdf8; 
-      color: #0f172a; 
-      border: none; 
-      padding: 14px; 
-      border-radius: 12px; 
-      cursor: pointer; 
-      font-weight: bold; 
-      width: 100%; 
-      transition: transform 0.2s, background 0.3s; 
-      margin-top: 5px; 
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      background: #0f172a;
+      border: 1px solid #475569;
+      color: #fff;
+      border-radius: 6px;
       font-size: 1rem;
     }
-    button:active { 
-      transform: scale(0.98); 
+    textarea {
+      resize: vertical;
+      min-height: 150px;
     }
-    .btn-danger { background: #f43f5e; color: white; margin-top: 10px; }
-    .btn-warning { background: #fbbf24; color: #000; }
-    
-    .item-noticia { 
-      display: flex; 
-      flex-direction: row;
-      align-items: center; 
-      background: rgba(15, 23, 42, 0.6); 
-      padding: 12px; 
-      border-radius: 15px; 
-      margin-bottom: 10px; 
-      border: 1px solid rgba(255,255,255,0.05); 
-      gap: 10px;
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #38bdf8;
     }
-    .item-noticia img { 
-      width: 50px; 
-      height: 50px; 
-      object-fit: cover; 
-      border-radius: 10px; 
-      flex-shrink: 0; 
-      background: #334155;
+    .btn-publicar {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .item-info { 
-      flex-grow: 1; 
-      min-width: 0; 
+    .btn-publicar:hover {
+      background: #0369a1;
     }
-    .item-info h4 { 
-      margin: 0; 
-      font-size: 14px; 
-      color: #f8fafc; 
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .botones-accion {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-    .botones-accion button {
-      padding: 6px 10px;
-      font-size: 12px;
-      margin-top: 0;
-      width: auto;
-    }
-    .oculto { display: none; }
-    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio, #mensaje-anuncio-movil { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
-    #preview-imagen-actual { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #38bdf8; margin-bottom: 8px; display: none; }
-
-    @media (min-width: 600px) {
-      body { padding: 20px; }
-      .admin-container { padding: 35px; }
-      .botones-accion { flex-direction: row; }
-      .botones-accion button { padding: 8px 12px; font-size: 13px; }
+    #mensaje-estado {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-
-  <!-- LOGIN -->
-  <div id="seccion-login" class="admin-container">
-    <h2>🔐 Ingresar</h2>
-    <form id="form-login">
-      <div class="form-group">
-        <label>Correo:</label>
-        <input type="email" value="pasoenjuarez@gmail.com" readonly>
-      </div>
-      <div class="form-group">
-        <label>Contraseña:</label>
-        <input type="password" id="login-password" required autocomplete="new-password" placeholder="••••••••">
-      </div>
-      <button type="submit">Iniciar Sesión</button>
-    </form>
-    <p id="mensaje-login" style="color: #f43f5e;"></p>
-  </div>
-
-  <!-- PANEL DE GESTIÓN -->
-  <div id="seccion-panel" class="admin-container oculto">
-    
-    <!-- GESTIÓN DE NOTICIAS -->
-    <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
+  <div class="admin-container">
+    <h1>Panel de Administración - Publicar Noticia</h1>
     <form id="form-noticia">
-      <input type="hidden" id="edit-id">
       <div class="form-group">
-        <label>Título:</label>
-        <input type="text" id="titulo" required>
+        <label for="titulo">Título de la Noticia:</label>
+        <input type="text" id="titulo" required placeholder="Escribe el título aquí...">
       </div>
+
       <div class="form-group">
-        <label>Categoría:</label>
+        <label for="categoria">Categoría:</label>
         <select id="categoria">
           <option value="seguridad">Seguridad</option>
           <option value="economia">Economía</option>
@@ -170,501 +100,79 @@
           <option value="politica">Política</option>
           <option value="tecnologia">Tecnología</option>
           <option value="medio ambiente">Medio Ambiente</option>
-          <option value="cultura">Cultura</option>
+          <option value="historia">Historia</option>
           <option value="migracion">Migración</option>
+          <option value="clima">Clima</option>
+          <option value="cultura">Cultura</option>
         </select>
       </div>
+
       <div class="form-group">
-        <label>Imagen principal:</label>
-        <div id="contenedor-preview" class="oculto">
-          <p style="font-size: 12px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
-          <img id="preview-imagen-actual" src="" alt="Imagen actual">
-        </div>
-        <input type="file" id="imagen" accept="image/*">
+        <label for="imagen_url">URL de la Imagen Principal:</label>
+        <input type="text" id="imagen_url" placeholder="https://ejemplo.com/foto.jpg">
       </div>
+
       <div class="form-group">
-        <label>🔗 URL de Video de Facebook o YouTube (Opcional):</label>
-        <input type="url" id="video-url" placeholder="https://www.youtube.com/watch?v=...">
+        <label for="video_url">URL de Video (YouTube o Facebook opcional):</label>
+        <input type="text" id="video_url" placeholder="https://www.youtube.com/watch?v=...">
       </div>
+
       <div class="form-group">
-        <label>Contenido:</label>
-        <textarea id="contenido" required rows="4"></textarea>
+        <label for="contenido">Contenido de la Noticia:</label>
+        <textarea id="contenido" required placeholder="Escribe la noticia completa..."></textarea>
       </div>
-      <button type="submit" id="btn-publicar">Publicar Noticia</button>
-      <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
+
+      <button type="submit" class="btn-publicar">Publicar Noticia</button>
+      <div id="mensaje-estado"></div>
     </form>
-    <p id="mensaje-publicacion" style="color: #38bdf8;"></p>
-
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
-    <!-- GESTIÓN DE ANUNCIOS ESCRITORIO -->
-    <h2>📢 Anuncios Escritorio</h2>
-    <form id="form-anuncio">
-      <input type="hidden" id="anuncio-edit-id" value="">
-      <div class="form-group">
-        <label>Posición del Anuncio:</label>
-        <select id="anuncio-posicion" required>
-          <option value="0">Espacio 1 (Superior Izquierda)</option>
-          <option value="1">Espacio 2 (Inferior Izquierda)</option>
-          <option value="2">Espacio 3 (Superior Derecha)</option>
-          <option value="3">Espacio 4 (Inferior Derecha)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Nombre del Patrocinador:</label>
-        <input type="text" id="anuncio-nombre" placeholder="Ej. Negocio Local" required>
-      </div>
-      <div class="form-group">
-        <label>Imagen del Anuncio <span style="color: #38bdf8; font-size: 0.85rem;">(Recomendado: 170 x 600 px)</span>:</label>
-        <input type="file" id="anuncio-imagen" accept="image/jpeg,image/png,image/webp,image/gif">
-      </div>
-      <div class="form-group">
-        <label>🔗 Enlace Web (URL):</label>
-        <input type="url" id="anuncio-link" placeholder="https://sitio-del-cliente.com" required>
-      </div>
-      <button type="submit" id="btn-guardar-anuncio" style="background: #10b981; color: white;">Guardar / Actualizar Anuncio</button>
-      <button type="button" id="btn-cancelar-anuncio" class="btn-danger oculto" onclick="cancelarEdicionAnuncio()" style="margin-top: 5px;">Cancelar Edición</button>
-    </form>
-    <p id="mensaje-anuncio" style="color: #34d399;"></p>
-
-    <div id="lista-admin-anuncios" style="margin-top: 20px;">
-      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Cargando anuncios actuales...</p>
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
-    <!-- GESTIÓN DE ANUNCIOS MÓVIL -->
-    <h2>📱 Anuncios para Móvil (Banners Horizontales)</h2>
-    <form id="form-anuncio-movil">
-      <input type="hidden" id="anuncio-movil-edit-id" value="">
-      <div class="form-group">
-        <label>Posición del Banner Móvil:</label>
-        <select id="anuncio-movil-posicion" required>
-          <option value="0">Banner Móvil 1 (Superior)</option>
-          <option value="1">Banner Móvil 2 (Medio)</option>
-          <option value="2">Banner Móvil 3 (Inferior)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Nombre del Patrocinador (Móvil):</label>
-        <input type="text" id="anuncio-movil-nombre" placeholder="Ej. Negocio Móvil" required>
-      </div>
-      <div class="form-group">
-        <label>Imagen Móvil <span style="color: #38bdf8; font-size: 0.85rem;">(Recomendado: 600 x 150 px)</span>:</label>
-        <input type="file" id="anuncio-movil-imagen" accept="image/jpeg,image/png,image/webp,image/gif">
-      </div>
-      <div class="form-group">
-        <label>🔗 Enlace Web (URL):</label>
-        <input type="url" id="anuncio-movil-link" placeholder="https://sitio-del-cliente.com" required>
-      </div>
-      <button type="submit" id="btn-guardar-anuncio-movil" style="background: #38bdf8; color: #0f172a;">Guardar / Actualizar Anuncio Móvil</button>
-      <button type="button" id="btn-cancelar-anuncio-movil" class="btn-danger oculto" onclick="cancelarEdicionAnuncioMovil()" style="margin-top: 5px;">Cancelar Edición</button>
-    </form>
-    <p id="mensaje-anuncio-movil" style="color: #38bdf8;"></p>
-
-    <div id="lista-admin-anuncios-movil" style="margin-top: 20px;">
-      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Cargando anuncios móviles...</p>
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
-    <h3>📰 Noticias Publicadas</h3>
-    <div id="lista-admin-noticias">
-      <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;">Cargando noticias...</p>
-    </div>
-
-    <button class="btn-danger" onclick="location.reload()" style="margin-top: 25px;">Cerrar Sesión</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    let noticiasAdminCache = []; 
-    let anunciosAdminCache = []; 
-    let anunciosMovilAdminCache = []; 
-
-    const IMG_DEFAULT = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect width='50' height='50' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' fill='%2394a3b8' font-size='10' text-anchor='middle' dominant-baseline='central'%3ES/I%3C/text%3E%3C/svg%3E";
-
-    window.onload = () => {
-      document.getElementById('login-password').value = '';
-    };
-
-    document.getElementById('form-login').onsubmit = async (e) => {
+    document.getElementById('form-noticia').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const pass = document.getElementById('login-password').value;
-      const { error } = await supabaseClient.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: pass });
-      
-      if (error) {
-        document.getElementById('mensaje-login').textContent = 'Contraseña incorrecta';
-      } else {
-        document.getElementById('seccion-login').classList.add('oculto');
-        document.getElementById('seccion-panel').classList.remove('oculto');
-        cargarNoticiasAdmin();
-        cargarAnunciosAdmin();
-        cargarAnunciosMovilAdmin();
-      }
-    };
+      const estado = document.getElementById('mensaje-estado');
+      estado.style.color = '#38bdf8';
+      estado.textContent = 'Publicando...';
 
-    // --- NOTICIAS ---
-    async function cargarNoticiasAdmin() {
-      const contenedor = document.getElementById('lista-admin-noticias');
-      const { data, error } = await supabaseClient.from('Noticias').select('*').order('id', { ascending: false });
-
-      if (error || !data) {
-        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar noticias</p>';
-        return;
-      }
-      
-      noticiasAdminCache = data;
-
-      if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay noticias publicadas.</p>';
+      if (!supabaseClient) {
+        estado.style.color = '#ef4444';
+        estado.textContent = 'Error: Cliente de Supabase no inicializado.';
         return;
       }
 
-      contenedor.innerHTML = '';
-      data.forEach(n => {
-        const fotoNoticia = n.imagen_url || n.imagen || IMG_DEFAULT;
-        contenedor.innerHTML += `
-          <div class="item-noticia">
-            <img src="${fotoNoticia}" alt="Miniatura" onerror="this.src='${IMG_DEFAULT}'">
-            <div class="item-info">
-              <h4>${n.titulo}</h4>
-              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8;">Cat: ${n.categoria}</p>
-            </div>
-            <div class="botones-accion">
-              <button class="btn-warning" onclick="prepararEdicion(${n.id})">Editar</button>
-              <button class="btn-danger" onclick="eliminarNoticia(${n.id})">Borrar</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById('form-noticia').onsubmit = async (e) => {
-      e.preventDefault();
-      const btnPublicar = document.getElementById('btn-publicar');
-      const mensajePub = document.getElementById('mensaje-publicacion');
-      const editId = document.getElementById('edit-id').value;
-
-      btnPublicar.disabled = true;
-      mensajePub.textContent = 'Guardando...';
+      const titulo = document.getElementById('titulo').value.trim();
+      const categoria = document.getElementById('categoria').value;
+      const imagen_url = document.getElementById('imagen_url').value.trim();
+      const video_url = document.getElementById('video_url').value.trim();
+      const contenido = document.getElementById('contenido').value.trim();
 
       try {
-        const archivo = document.getElementById('imagen').files[0];
-        let urlImagen = null;
+        const { data, error } = await supabaseClient
+          .from('Noticias')
+          .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
 
-        if (archivo) {
-          const nombreArchivo = `${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
-          if (uploadError) throw new Error('Error al subir la imagen');
-          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+        if (error) {
+          // Intento de respaldo si la tabla se registró en minúsculas en Supabase
+          const { error: errorAlt } = await supabaseClient
+            .from('noticias')
+            .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
+          
+          if (errorAlt) throw errorAlt;
         }
 
-        const datosNoticia = {
-          titulo: document.getElementById('titulo').value,
-          categoria: document.getElementById('categoria').value,
-          contenido: document.getElementById('contenido').value,
-          video_url: document.getElementById('video-url').value
-        };
-
-        if (urlImagen) datosNoticia.imagen_url = urlImagen;
-
-        if (editId) {
-          const { error: updateError } = await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
-          if (updateError) throw new Error(updateError.message);
-          mensajePub.textContent = '¡Noticia actualizada con éxito!';
-        } else {
-          const { error: insertError } = await supabaseClient.from('Noticias').insert(datosNoticia);
-          if (insertError) throw new Error(insertError.message);
-          mensajePub.textContent = '¡Noticia publicada con éxito!';
-        }
-
-        cancelarEdicion();
-        cargarNoticiasAdmin();
-        setTimeout(() => mensajePub.textContent = '', 3000);
+        estado.style.color = '#22c55e';
+        estado.textContent = '¡Noticia publicada con éxito!';
+        document.getElementById('form-noticia').reset();
       } catch (err) {
-        mensajePub.style.color = '#f43f5e';
-        mensajePub.textContent = err.message;
-      } finally {
-        btnPublicar.disabled = false;
+        console.error(err);
+        estado.style.color = '#ef4444';
+        estado.textContent = 'Error al publicar: ' + (err.message || 'Desconocido');
       }
-    };
-
-    function prepararEdicion(id) {
-      const nota = noticiasAdminCache.find(n => String(n.id) === String(id));
-      if (!nota) return;
-
-      document.getElementById('edit-id').value = nota.id;
-      document.getElementById('titulo').value = nota.titulo || '';
-      document.getElementById('categoria').value = nota.categoria || 'seguridad';
-      document.getElementById('contenido').value = nota.contenido || '';
-      document.getElementById('video-url').value = nota.video_url || '';
-      
-      const imgPreview = document.getElementById('preview-imagen-actual');
-      const contenedorPreview = document.getElementById('contenedor-preview');
-      const imagenUrl = nota.imagen_url || nota.imagen;
-
-      if (imagenUrl) {
-        imgPreview.src = imagenUrl;
-        contenedorPreview.classList.remove('oculto');
-        imgPreview.style.display = 'block';
-      } else {
-        contenedorPreview.classList.add('oculto');
-      }
-
-      document.getElementById('titulo-modo').textContent = 'Editar Noticia';
-      document.getElementById('btn-publicar').textContent = 'Guardar Cambios';
-      document.getElementById('btn-cancelar-edit').classList.remove('oculto');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelarEdicion() {
-      document.getElementById('form-noticia').reset();
-      document.getElementById('edit-id').value = '';
-      document.getElementById('titulo-modo').textContent = 'Nueva Noticia';
-      document.getElementById('btn-publicar').textContent = 'Publicar Noticia';
-      document.getElementById('btn-cancelar-edit').classList.add('oculto');
-      document.getElementById('contenedor-preview').classList.add('oculto');
-      document.getElementById('preview-imagen-actual').style.display = 'none';
-    }
-
-    async function eliminarNoticia(id) {
-      if (confirm('¿Estás seguro de eliminar esta noticia?')) {
-        await supabaseClient.from('Noticias').delete().eq('id', id);
-        cargarNoticiasAdmin();
-      }
-    }
-
-    // --- ANUNCIOS ESCRITORIO ---
-    async function cargarAnunciosAdmin() {
-      const contenedor = document.getElementById('lista-admin-anuncios');
-      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
-
-      if (error || !data) {
-        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios</p>';
-        return;
-      }
-      
-      anunciosAdminCache = data;
-
-      if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay anuncios de escritorio configurados.</p>';
-        return;
-      }
-
-      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Escritorio Activos:</h4>';
-      data.forEach(a => {
-        const nombresEspacios = ["Espacio 1 (Sup. Izq)", "Espacio 2 (Inf. Izq)", "Espacio 3 (Sup. Der)", "Espacio 4 (Inf. Der)"];
-        const fotoAnuncio = a.imagen_desktop || a.imagen || IMG_DEFAULT;
-        contenedor.innerHTML += `
-          <div class="item-noticia">
-            <img src="${fotoAnuncio}" alt="Anuncio" onerror="this.src='${IMG_DEFAULT}'">
-            <div class="item-info">
-              <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre || 'Sin nombre'}</h4>
-              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
-            </div>
-            <div class="botones-accion">
-              <button class="btn-warning" onclick="prepararEdicionAnuncio(${a.id})">Editar</button>
-              <button class="btn-danger" onclick="eliminarAnuncio(${a.id})">Borrar</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function prepararEdicionAnuncio(id) {
-      const anuncio = anunciosAdminCache.find(a => String(a.id) === String(id));
-      if (!anuncio) return;
-
-      document.getElementById('anuncio-edit-id').value = anuncio.id;
-      document.getElementById('anuncio-posicion').value = anuncio.posicion ?? 0;
-      document.getElementById('anuncio-nombre').value = anuncio.nombre || '';
-      document.getElementById('anuncio-link').value = anuncio.link || '';
-
-      document.getElementById('btn-guardar-anuncio').textContent = 'Actualizar Anuncio';
-      document.getElementById('btn-cancelar-anuncio').classList.remove('oculto');
-      window.scrollTo({ top: document.getElementById('form-anuncio').offsetTop, behavior: 'smooth' });
-    }
-
-    function cancelarEdicionAnuncio() {
-      document.getElementById('form-anuncio').reset();
-      document.getElementById('anuncio-edit-id').value = '';
-      document.getElementById('btn-guardar-anuncio').textContent = 'Guardar / Actualizar Anuncio';
-      document.getElementById('btn-cancelar-anuncio').classList.add('oculto');
-    }
-
-    async function eliminarAnuncio(id) {
-      if (confirm('¿Estás seguro de eliminar este anuncio de escritorio?')) {
-        const { error } = await supabaseClient.from('Anuncios').delete().eq('id', id);
-        if (!error) {
-          cargarAnunciosAdmin();
-        } else {
-          alert('Error al eliminar el anuncio');
-        }
-      }
-    }
-
-    document.getElementById('form-anuncio').onsubmit = async (e) => {
-      e.preventDefault();
-      const btnGuardar = document.getElementById('btn-guardar-anuncio');
-      const mensajeAnuncio = document.getElementById('mensaje-anuncio');
-      const editId = document.getElementById('anuncio-edit-id').value;
-      const posicion = parseInt(document.getElementById('anuncio-posicion').value);
-      const nombre = document.getElementById('anuncio-nombre').value;
-      const link = document.getElementById('anuncio-link').value;
-      const archivo = document.getElementById('anuncio-imagen').files[0];
-
-      btnGuardar.disabled = true;
-      mensajeAnuncio.textContent = 'Guardando anuncio...';
-
-      try {
-        let urlImagen = null;
-
-        if (archivo) {
-          const nombreArchivo = `desktop_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
-          if (uploadError) throw new Error('Error al subir la imagen');
-          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
-        }
-
-        const datosAnuncio = { posicion, nombre, link };
-        if (urlImagen) {
-          datosAnuncio.imagen_desktop = urlImagen;
-          datosAnuncio.imagen = urlImagen; // Compatibilidad por si usas la columna genérica
-        }
-
-        if (editId) {
-          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
-          if (updateError) throw new Error(updateError.message);
-          mensajeAnuncio.textContent = '¡Anuncio actualizado con éxito!';
-        } else {
-          if (!urlImagen) throw new Error('Debes seleccionar una imagen para este nuevo anuncio');
-          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
-          if (insertError) throw new Error(insertError.message);
-          mensajeAnuncio.textContent = '¡Anuncio guardado con éxito!';
-        }
-
-        cancelarEdicionAnuncio();
-        cargarAnunciosAdmin();
-        setTimeout(() => mensajeAnuncio.textContent = '', 3000);
-      } catch (err) {
-        mensajeAnuncio.style.color = '#f43f5e';
-        mensajeAnuncio.textContent = err.message;
-      } finally {
-        btnGuardar.disabled = false;
-        mensajeAnuncio.style.color = '#34d399';
-      }
-    };
-
-    // --- ANUNCIOS MÓVIL (Usa la misma tabla "Anuncios") ---
-    async function cargarAnunciosMovilAdmin() {
-      const contenedor = document.getElementById('lista-admin-anuncios-movil');
-      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
-
-      if (error || !data) {
-        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios móviles</p>';
-        return;
-      }
-      
-      anunciosMovilAdminCache = data;
-
-      if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay anuncios móviles configurados.</p>';
-        return;
-      }
-
-      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Móvil Activos:</h4>';
-      data.forEach(a => {
-        const nombresEspacios = ["Banner Móvil 1 (Sup.)", "Banner Móvil 2 (Medio)", "Banner Móvil 3 (Inf.)"];
-        const fotoMovil = a.imagen_movil || IMG_DEFAULT;
-        contenedor.innerHTML += `
-          <div class="item-noticia">
-            <img src="${fotoMovil}" alt="Anuncio Móvil" onerror="this.src='${IMG_DEFAULT}'">
-            <div class="item-info">
-              <h4>[${nombresEspacios[a.posicion] || 'Banner'}] ${a.nombre || 'Sin nombre'}</h4>
-              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
-            </div>
-            <div class="botones-accion">
-              <button class="btn-warning" onclick="prepararEdicionAnuncioMovil(${a.id})">Editar</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function prepararEdicionAnuncioMovil(id) {
-      const anuncio = anunciosMovilAdminCache.find(a => String(a.id) === String(id));
-      if (!anuncio) return;
-
-      document.getElementById('anuncio-movil-edit-id').value = anuncio.id;
-      document.getElementById('anuncio-movil-posicion').value = anuncio.posicion ?? 0;
-      document.getElementById('anuncio-movil-nombre').value = anuncio.nombre || '';
-      document.getElementById('anuncio-movil-link').value = anuncio.link || '';
-
-      document.getElementById('btn-guardar-anuncio-movil').textContent = 'Actualizar Anuncio Móvil';
-      document.getElementById('btn-cancelar-anuncio-movil').classList.remove('oculto');
-      window.scrollTo({ top: document.getElementById('form-anuncio-movil').offsetTop, behavior: 'smooth' });
-    }
-
-    function cancelarEdicionAnuncioMovil() {
-      document.getElementById('form-anuncio-movil').reset();
-      document.getElementById('anuncio-movil-edit-id').value = '';
-      document.getElementById('btn-guardar-anuncio-movil').textContent = 'Guardar / Actualizar Anuncio Móvil';
-      document.getElementById('btn-cancelar-anuncio-movil').classList.add('oculto');
-    }
-
-    document.getElementById('form-anuncio-movil').onsubmit = async (e) => {
-      e.preventDefault();
-      const btnGuardar = document.getElementById('btn-guardar-anuncio-movil');
-      const mensajeAnuncioMovil = document.getElementById('mensaje-anuncio-movil');
-      const editId = document.getElementById('anuncio-movil-edit-id').value;
-      const posicion = parseInt(document.getElementById('anuncio-movil-posicion').value);
-      const nombre = document.getElementById('anuncio-movil-nombre').value;
-      const link = document.getElementById('anuncio-movil-link').value;
-      const archivo = document.getElementById('anuncio-movil-imagen').files[0];
-
-      btnGuardar.disabled = true;
-      mensajeAnuncioMovil.textContent = 'Guardando anuncio móvil...';
-
-      try {
-        let urlImagen = null;
-
-        if (archivo) {
-          const nombreArchivo = `movil_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
-          if (uploadError) throw new Error('Error al subir la imagen móvil');
-          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
-        }
-
-        const datosAnuncio = { posicion, nombre, link };
-        if (urlImagen) datosAnuncio.imagen_movil = urlImagen;
-
-        if (editId) {
-          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
-          if (updateError) throw new Error(updateError.message);
-          mensajeAnuncioMovil.textContent = '¡Anuncio móvil actualizado con éxito!';
-        } else {
-          if (!urlImagen) throw new Error('Debes seleccionar una imagen móvil');
-          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
-          if (insertError) throw new Error(insertError.message);
-          mensajeAnuncioMovil.textContent = '¡Anuncio móvil guardado con éxito!';
-        }
-
-        cancelarEdicionAnuncioMovil();
-        cargarAnunciosMovilAdmin();
-        setTimeout(() => mensajeAnuncioMovil.textContent = '', 3000);
-      } catch (err) {
-        mensajeAnuncioMovil.style.color = '#f43f5e';
-        mensajeAnuncioMovil.textContent = err.message;
-      } finally {
-        btnGuardar.disabled = false;
-        mensajeAnuncioMovil.style.color = '#38bdf8';
-      }
-    };
+    });
   </script>
 </body>
 </html>
