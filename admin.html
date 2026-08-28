@@ -3,96 +3,163 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administración - PasóEnJuárez</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Panel Admin | PasóEnJuárez</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    body { 
+      font-family: 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+      color: #f8fafc; 
+      margin: 0; 
+      padding: 10px; 
+      min-height: 100vh; 
+      box-sizing: border-box; 
     }
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
-      padding: 20px;
-    }
-    .admin-container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #1e293b;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
-      color: #38bdf8;
-      border-bottom: 2px solid #334155;
-      padding-bottom: 12px;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #cbd5e1;
-      margin-bottom: 8px;
-    }
-    input[type="text"],
-    select,
-    textarea {
+    .admin-container { 
       width: 100%;
-      padding: 12px;
-      background: #0f172a;
-      border: 1px solid #475569;
-      color: #fff;
-      border-radius: 6px;
+      max-width: 750px; 
+      margin: 15px auto; 
+      background: rgba(30, 41, 59, 0.85); 
+      backdrop-filter: blur(10px); 
+      padding: 20px; 
+      border-radius: 20px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+      border: 1px solid rgba(255,255,255,0.1); 
+      box-sizing: border-box;
+    }
+    h2, h3 { 
+      color: #38bdf8; 
+      text-align: center; 
+      margin-bottom: 20px; 
+      font-size: 1.4rem;
+    }
+    .form-group { 
+      margin-bottom: 15px; 
+    }
+    label { 
+      display: block; 
+      margin-bottom: 6px; 
+      color: #94a3b8; 
+      font-weight: 500; 
+      font-size: 0.95rem;
+    }
+    input, select, textarea { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 12px; 
+      border: 2px solid #334155; 
+      background: #0f172a; 
+      color: #fff; 
+      transition: border-color 0.3s; 
+      box-sizing: border-box; 
+      font-size: 16px;
+    }
+    input:focus, select:focus, textarea:focus { 
+      border-color: #38bdf8; 
+      outline: none; 
+    }
+    button { 
+      background: #38bdf8; 
+      color: #0f172a; 
+      border: none; 
+      padding: 14px; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      width: 100%; 
+      transition: transform 0.2s, background 0.3s; 
+      margin-top: 5px; 
       font-size: 1rem;
     }
-    textarea {
-      resize: vertical;
-      min-height: 150px;
+    button:active { 
+      transform: scale(0.98); 
     }
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #38bdf8;
+    .btn-danger { background: #f43f5e; color: white; margin-top: 10px; }
+    .btn-warning { background: #fbbf24; color: #000; }
+    
+    .item-noticia { 
+      display: flex; 
+      flex-direction: row;
+      align-items: center; 
+      background: rgba(15, 23, 42, 0.6); 
+      padding: 12px; 
+      border-radius: 15px; 
+      margin-bottom: 10px; 
+      border: 1px solid rgba(255,255,255,0.05); 
+      gap: 10px;
     }
-    .btn-publicar {
-      background: #0284c7;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
+    .item-noticia img { 
+      width: 50px; 
+      height: 50px; 
+      object-fit: cover; 
+      border-radius: 10px; 
+      flex-shrink: 0; 
+      background: #334155;
     }
-    .btn-publicar:hover {
-      background: #0369a1;
+    .item-info { 
+      flex-grow: 1; 
+      min-width: 0; 
     }
-    #mensaje-estado {
-      margin-top: 15px;
-      font-weight: bold;
+    .item-info h4 { 
+      margin: 0; 
+      font-size: 14px; 
+      color: #f8fafc; 
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .botones-accion {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .botones-accion button {
+      padding: 6px 10px;
+      font-size: 12px;
+      margin-top: 0;
+      width: auto;
+    }
+    .oculto { display: none; }
+    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio, #mensaje-anuncio-movil { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
+    #preview-imagen-actual { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #38bdf8; margin-bottom: 8px; display: none; }
+
+    @media (min-width: 600px) {
+      body { padding: 20px; }
+      .admin-container { padding: 35px; }
+      .botones-accion { flex-direction: row; }
+      .botones-accion button { padding: 8px 12px; font-size: 13px; }
     }
   </style>
 </head>
 <body>
-  <div class="admin-container">
-    <h1>Panel de Administración - Publicar Noticia</h1>
-    <form id="form-noticia">
-      <div class="form-group">
-        <label for="titulo">Título de la Noticia:</label>
-        <input type="text" id="titulo" required placeholder="Escribe el título aquí...">
-      </div>
 
+  <div id="seccion-login" class="admin-container">
+    <h2>🔐 Ingresar</h2>
+    <form id="form-login">
       <div class="form-group">
-        <label for="categoria">Categoría:</label>
+        <label>Correo:</label>
+        <input type="email" value="pasoenjuarez@gmail.com" readonly>
+      </div>
+      <div class="form-group">
+        <label>Contraseña:</label>
+        <input type="password" id="login-password" required autocomplete="new-password" placeholder="••••••••">
+      </div>
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+    <p id="mensaje-login" style="color: #f43f5e;"></p>
+  </div>
+
+  <div id="seccion-panel" class="admin-container oculto">
+    
+    <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
+    <form id="form-noticia">
+      <input type="hidden" id="edit-id">
+      <div class="form-group">
+        <label>Título:</label>
+        <input type="text" id="titulo" required>
+      </div>
+      <div class="form-group">
+        <label>Categoría:</label>
         <select id="categoria">
           <option value="seguridad">Seguridad</option>
           <option value="economia">Economía</option>
@@ -106,73 +173,44 @@
           <option value="cultura">Cultura</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label for="imagen_url">URL de la Imagen Principal:</label>
-        <input type="text" id="imagen_url" placeholder="https://ejemplo.com/foto.jpg">
+        <label>Imagen principal:</label>
+        <div id="contenedor-preview" class="oculto">
+          <p style="font-size: 12px; color: #38bdf8; margin: 0 0 5px 0;">Imagen actual:</p>
+          <img id="preview-imagen-actual" src="" alt="Imagen actual">
+        </div>
+        <input type="file" id="imagen" accept="image/*">
       </div>
-
       <div class="form-group">
-        <label for="video_url">URL de Video (YouTube o Facebook opcional):</label>
-        <input type="text" id="video_url" placeholder="https://www.youtube.com/watch?v=...">
+        <label>🔗 URL de Video de Facebook o YouTube (Opcional):</label>
+        <input type="url" id="video-url" placeholder="https://www.youtube.com/watch?v=...">
       </div>
-
       <div class="form-group">
-        <label for="contenido">Contenido de la Noticia:</label>
-        <textarea id="contenido" required placeholder="Escribe la noticia completa..."></textarea>
+        <label>Contenido:</label>
+        <textarea id="contenido" required rows="4"></textarea>
       </div>
-
-      <button type="submit" class="btn-publicar">Publicar Noticia</button>
-      <div id="mensaje-estado"></div>
+      <button type="submit" id="btn-publicar">Publicar Noticia</button>
+      <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
     </form>
-  </div>
+    <p id="mensaje-publicacion" style="color: #38bdf8;"></p>
 
-  <script>
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
-    document.getElementById('form-noticia').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const estado = document.getElementById('mensaje-estado');
-      estado.style.color = '#38bdf8';
-      estado.textContent = 'Publicando...';
-
-      if (!supabaseClient) {
-        estado.style.color = '#ef4444';
-        estado.textContent = 'Error: Cliente de Supabase no inicializado.';
-        return;
-      }
-
-      const titulo = document.getElementById('titulo').value.trim();
-      const categoria = document.getElementById('categoria').value;
-      const imagen_url = document.getElementById('imagen_url').value.trim();
-      const video_url = document.getElementById('video_url').value.trim();
-      const contenido = document.getElementById('contenido').value.trim();
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('Noticias')
-          .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
-
-        if (error) {
-          const { error: errorAlt } = await supabaseClient
-            .from('noticias')
-            .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
-          
-          if (errorAlt) throw errorAlt;
-        }
-
-        estado.style.color = '#22c55e';
-        estado.textContent = '¡Noticia publicada con éxito!';
-        document.getElementById('form-noticia').reset();
-      } catch (err) {
-        console.error(err);
-        estado.style.color = '#ef4444';
-        estado.textContent = 'Error al publicar: ' + (err.message || 'Desconocido');
-      }
-    });
-  </script>
-</body>
-</html>
-```[cite: 1]
+    <h2>📢 Anuncios Escritorio</h2>
+    <form id="form-anuncio">
+      <input type="hidden" id="anuncio-edit-id" value="">
+      <div class="form-group">
+        <label>Posición del Anuncio:</label>
+        <select id="anuncio-posicion" required>
+          <option value="0">Espacio 1 (Superior Izquierda)</option>
+          <option value="1">Espacio 2 (Inferior Izquierda)</option>
+          <option value="2">Espacio 3 (Superior Derecha)</option>
+          <option value="3">Espacio 4 (Inferior Derecha)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nombre del Patrocinador:</label>
+        <input type="text" id="anuncio-nombre" placeholder="Ej. Negocio Local" required>
+      </div>
+      <div class="form-group">
+        <label>Imagen del Anuncio <span style="color: #38bdf8; font-size: 0.85rem;">(Recomendado: 170 x 600 px)</span>:</label>
