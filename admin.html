@@ -156,7 +156,6 @@
           .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
 
         if (error) {
-          // Intento de respaldo si la tabla se registró en minúsculas en Supabase
           const { error: errorAlt } = await supabaseClient
             .from('noticias')
             .insert([{ titulo, categoria, imagen_url, video_url, contenido }]);
@@ -176,3 +175,4 @@
   </script>
 </body>
 </html>
+```[cite: 1]
