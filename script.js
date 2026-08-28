@@ -56,23 +56,44 @@ function generarReproductorVideo(videoUrl) {
 
 // Función para inyectar anuncios dinámicamente desde la tabla Anuncios de Supabase
 async function inicializarPublicidad() {
-  const espacios = document.querySelectorAll('.caja-banner-vertical');
   if (!supabaseClient) return;
 
   try {
     const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
     if (error || !anuncios) return;
 
-    espacios.forEach((contenedor, index) => {
+    // 1. Inyectar en banners de escritorio
+    const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
+    espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
+      const foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
       
-      if (anuncio) {
+      if (anuncio && foto) {
         contenedor.innerHTML = `
-          <a href="${anuncio.link}" target="_blank" style="width:100%; height:100%; display:block;">
-            <img src="${anuncio.imagen}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
+          <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
+            <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
           </a>`;
       }
     });
+
+    // 2. Inyectar en banners móviles
+    const espaciosMovil = document.querySelectorAll('.caja-banner-movil');
+    espaciosMovil.forEach((contenedor) => {
+      const indexStr = contenedor.getAttribute('data-posicion-anuncio');
+      if (indexStr !== null) {
+        const index = Number(indexStr);
+        const anuncio = anuncios.find(a => Number(a.posicion) === index);
+        const fotoMovil = anuncio ? (anuncio.imagen_movil || anuncio.imagen) : null;
+
+        if (anuncio && fotoMovil) {
+          contenedor.innerHTML = `
+            <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
+              <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;">
+            </a>`;
+        }
+      }
+    });
+
   } catch (err) {
     console.error("Error al cargar publicidad:", err);
   }
@@ -88,7 +109,7 @@ async function inicializarWidgetsGlobales() {
     elFecha.innerHTML = `📅 ${fechaTexto}`;
   }
 
-  // 2. Clima Detallado de Ciudad Juárez (Open-Meteo API libre con temperatura, sensación y humedad)
+  // 2. Clima Detallado de Ciudad Juárez (Open-Meteo API)
   const elClimaPrincipal = document.getElementById('clima-principal');
   const elClimaDetalles = document.getElementById('clima-detalles');
   
@@ -320,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarPublicidad();
   inicializarWidgetsGlobales();
 
-  // Lógica para abrir/cerrar el menú desplegable de puentes en la barra superior
+  // Menú desplegable de puentes en la barra superior
   const btnMenuPuentes = document.getElementById('btn-menu-puentes');
   const dropdownPuentes = document.getElementById('dropdown-puentes');
 
@@ -331,7 +352,6 @@ document.addEventListener('DOMContentLoaded', () => {
       dropdownPuentes.style.display = estaAbierto ? 'none' : 'block';
     });
 
-    // Cerrar el menú si el usuario hace clic en cualquier otra parte de la pantalla
     document.addEventListener('click', () => {
       dropdownPuentes.style.display = 'none';
     });
