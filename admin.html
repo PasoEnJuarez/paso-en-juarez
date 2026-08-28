@@ -167,10 +167,10 @@
           <option value="politica">Política</option>
           <option value="tecnologia">Tecnología</option>
           <option value="medio ambiente">Medio Ambiente</option>
-          <option value="historia">Historia</option>
-          <option value="migracion">Migración</option>
-          <option value="clima">Clima</option>
           <option value="cultura">Cultura</option>
+          <option value="migracion">Migración</option>
+          <option value="historia">Historia</option>
+          <option value="clima">Clima</option>
         </select>
       </div>
       <div class="form-group">
@@ -214,3 +214,13 @@
       </div>
       <div class="form-group">
         <label>Imagen del Anuncio <span style="color: #38bdf8; font-size: 0.85rem;">(Recomendado: 170 x 600 px)</span>:</label>
+        <input type="file" id="anuncio-imagen" accept="image/jpeg,image/png,image/webp,image/gif">
+      </div>
+      <div class="form-group">
+        <label>🔗 Enlace Web (URL):</label>
+        <input type="url" id="anuncio-link" placeholder="https://sitio-del-cliente.com" required>
+      </div>
+      <button type="submit" id="btn-guardar-anuncio" style="background: #10b981; color: white;">Guardar / Actualizar Anuncio</button>
+      <button type="button" id="btn-cancelar-anuncio" class="btn-danger oculto" onclick="cancelarEdicionAnuncio()" style="margin-top: 5px;">Cancelar Edición</button>
+    </form>
+    <p id="mensaje-anuncio" style="color: #34d399
