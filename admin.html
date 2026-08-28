@@ -133,6 +133,7 @@
 </head>
 <body>
 
+  <!-- LOGIN -->
   <div id="seccion-login" class="admin-container">
     <h2>🔐 Ingresar</h2>
     <form id="form-login">
@@ -142,15 +143,17 @@
       </div>
       <div class="form-group">
         <label>Contraseña:</label>
-        <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
+        <input type="password" id="login-password" required autocomplete="new-password" placeholder="••••••••">
       </div>
       <button type="submit">Iniciar Sesión</button>
     </form>
-    <p id="mensaje-login"></p>
+    <p id="mensaje-login" style="color: #f43f5e;"></p>
   </div>
 
+  <!-- PANEL DE GESTIÓN -->
   <div id="seccion-panel" class="admin-container oculto">
     
+    <!-- GESTIÓN DE NOTICIAS -->
     <h2>✍️ <span id="titulo-modo">Nueva Noticia</span></h2>
     <form id="form-noticia">
       <input type="hidden" id="edit-id">
@@ -194,6 +197,7 @@
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
+    <!-- GESTIÓN DE ANUNCIOS ESCRITORIO -->
     <h2>📢 Anuncios Escritorio</h2>
     <form id="form-anuncio">
       <input type="hidden" id="anuncio-edit-id" value="">
@@ -229,6 +233,7 @@
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
+    <!-- GESTIÓN DE ANUNCIOS MÓVIL -->
     <h2>📱 Anuncios para Móvil (Banners Horizontales)</h2>
     <form id="form-anuncio-movil">
       <input type="hidden" id="anuncio-movil-edit-id" value="">
@@ -290,15 +295,10 @@
     document.getElementById('form-login').onsubmit = async (e) => {
       e.preventDefault();
       const pass = document.getElementById('login-password').value;
-      const mensajeLogin = document.getElementById('mensaje-login');
-      mensajeLogin.textContent = 'Iniciando sesión...';
-      mensajeLogin.style.color = '#38bdf8';
-
       const { error } = await supabaseClient.auth.signInWithPassword({ email: 'pasoenjuarez@gmail.com', password: pass });
       
       if (error) {
-        mensajeLogin.style.color = '#f43f5e';
-        mensajeLogin.textContent = 'Contraseña incorrecta';
+        document.getElementById('mensaje-login').textContent = 'Contraseña incorrecta';
       } else {
         document.getElementById('seccion-login').classList.add('oculto');
         document.getElementById('seccion-panel').classList.remove('oculto');
@@ -321,4 +321,350 @@
       noticiasAdminCache = data;
 
       if (data.length === 0) {
-        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay noticias publicadas.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = '';
+      data.forEach(n => {
+        const fotoNoticia = n.imagen_url || n.imagen || IMG_DEFAULT;
+        contenedor.innerHTML += `
+          <div class="item-noticia">
+            <img src="${fotoNoticia}" alt="Miniatura" onerror="this.src='${IMG_DEFAULT}'">
+            <div class="item-info">
+              <h4>${n.titulo}</h4>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8;">Cat: ${n.categoria}</p>
+            </div>
+            <div class="botones-accion">
+              <button class="btn-warning" onclick="prepararEdicion(${n.id})">Editar</button>
+              <button class="btn-danger" onclick="eliminarNoticia(${n.id})">Borrar</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('form-noticia').onsubmit = async (e) => {
+      e.preventDefault();
+      const btnPublicar = document.getElementById('btn-publicar');
+      const mensajePub = document.getElementById('mensaje-publicacion');
+      const editId = document.getElementById('edit-id').value;
+
+      btnPublicar.disabled = true;
+      mensajePub.textContent = 'Guardando...';
+
+      try {
+        const archivo = document.getElementById('imagen').files[0];
+        let urlImagen = null;
+
+        if (archivo) {
+          const nombreArchivo = `${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
+          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          if (uploadError) throw new Error('Error al subir la imagen');
+          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+        }
+
+        const datosNoticia = {
+          titulo: document.getElementById('titulo').value,
+          categoria: document.getElementById('categoria').value,
+          contenido: document.getElementById('contenido').value,
+          video_url: document.getElementById('video-url').value
+        };
+
+        if (urlImagen) datosNoticia.imagen_url = urlImagen;
+
+        if (editId) {
+          const { error: updateError } = await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
+          if (updateError) throw new Error(updateError.message);
+          mensajePub.textContent = '¡Noticia actualizada con éxito!';
+        } else {
+          const { error: insertError } = await supabaseClient.from('Noticias').insert(datosNoticia);
+          if (insertError) throw new Error(insertError.message);
+          mensajePub.textContent = '¡Noticia publicada con éxito!';
+        }
+
+        cancelarEdicion();
+        cargarNoticiasAdmin();
+        setTimeout(() => mensajePub.textContent = '', 3000);
+      } catch (err) {
+        mensajePub.style.color = '#f43f5e';
+        mensajePub.textContent = err.message;
+      } finally {
+        btnPublicar.disabled = false;
+      }
+    };
+
+    function prepararEdicion(id) {
+      const nota = noticiasAdminCache.find(n => String(n.id) === String(id));
+      if (!nota) return;
+
+      document.getElementById('edit-id').value = nota.id;
+      document.getElementById('titulo').value = nota.titulo || '';
+      document.getElementById('categoria').value = nota.categoria || 'seguridad';
+      document.getElementById('contenido').value = nota.contenido || '';
+      document.getElementById('video-url').value = nota.video_url || '';
+      
+      const imgPreview = document.getElementById('preview-imagen-actual');
+      const contenedorPreview = document.getElementById('contenedor-preview');
+      const imagenUrl = nota.imagen_url || nota.imagen;
+
+      if (imagenUrl) {
+        imgPreview.src = imagenUrl;
+        contenedorPreview.classList.remove('oculto');
+        imgPreview.style.display = 'block';
+      } else {
+        contenedorPreview.classList.add('oculto');
+      }
+
+      document.getElementById('titulo-modo').textContent = 'Editar Noticia';
+      document.getElementById('btn-publicar').textContent = 'Guardar Cambios';
+      document.getElementById('btn-cancelar-edit').classList.remove('oculto');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicion() {
+      document.getElementById('form-noticia').reset();
+      document.getElementById('edit-id').value = '';
+      document.getElementById('titulo-modo').textContent = 'Nueva Noticia';
+      document.getElementById('btn-publicar').textContent = 'Publicar Noticia';
+      document.getElementById('btn-cancelar-edit').classList.add('oculto');
+      document.getElementById('contenedor-preview').classList.add('oculto');
+      document.getElementById('preview-imagen-actual').style.display = 'none';
+    }
+
+    async function eliminarNoticia(id) {
+      if (confirm('¿Estás seguro de eliminar esta noticia?')) {
+        await supabaseClient.from('Noticias').delete().eq('id', id);
+        cargarNoticiasAdmin();
+      }
+    }
+
+    // --- ANUNCIOS ESCRITORIO ---
+    async function cargarAnunciosAdmin() {
+      const contenedor = document.getElementById('lista-admin-anuncios');
+      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
+
+      if (error || !data) {
+        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios</p>';
+        return;
+      }
+      
+      anunciosAdminCache = data;
+
+      if (data.length === 0) {
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay anuncios de escritorio configurados.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Escritorio Activos:</h4>';
+      data.forEach(a => {
+        const nombresEspacios = ["Espacio 1 (Sup. Izq)", "Espacio 2 (Inf. Izq)", "Espacio 3 (Sup. Der)", "Espacio 4 (Inf. Der)"];
+        const fotoAnuncio = a.imagen_desktop || a.imagen || IMG_DEFAULT;
+        contenedor.innerHTML += `
+          <div class="item-noticia">
+            <img src="${fotoAnuncio}" alt="Anuncio" onerror="this.src='${IMG_DEFAULT}'">
+            <div class="item-info">
+              <h4>[${nombresEspacios[a.posicion] || 'Espacio'}] ${a.nombre || 'Sin nombre'}</h4>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
+            </div>
+            <div class="botones-accion">
+              <button class="btn-warning" onclick="prepararEdicionAnuncio(${a.id})">Editar</button>
+              <button class="btn-danger" onclick="eliminarAnuncio(${a.id})">Borrar</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function prepararEdicionAnuncio(id) {
+      const anuncio = anunciosAdminCache.find(a => String(a.id) === String(id));
+      if (!anuncio) return;
+
+      document.getElementById('anuncio-edit-id').value = anuncio.id;
+      document.getElementById('anuncio-posicion').value = anuncio.posicion ?? 0;
+      document.getElementById('anuncio-nombre').value = anuncio.nombre || '';
+      document.getElementById('anuncio-link').value = anuncio.link || '';
+
+      document.getElementById('btn-guardar-anuncio').textContent = 'Actualizar Anuncio';
+      document.getElementById('btn-cancelar-anuncio').classList.remove('oculto');
+      window.scrollTo({ top: document.getElementById('form-anuncio').offsetTop, behavior: 'smooth' });
+    }
+
+    function cancelarEdicionAnuncio() {
+      document.getElementById('form-anuncio').reset();
+      document.getElementById('anuncio-edit-id').value = '';
+      document.getElementById('btn-guardar-anuncio').textContent = 'Guardar / Actualizar Anuncio';
+      document.getElementById('btn-cancelar-anuncio').classList.add('oculto');
+    }
+
+    async function eliminarAnuncio(id) {
+      if (confirm('¿Estás seguro de eliminar este anuncio de escritorio?')) {
+        const { error } = await supabaseClient.from('Anuncios').delete().eq('id', id);
+        if (!error) {
+          cargarAnunciosAdmin();
+        } else {
+          alert('Error al eliminar el anuncio');
+        }
+      }
+    }
+
+    document.getElementById('form-anuncio').onsubmit = async (e) => {
+      e.preventDefault();
+      const btnGuardar = document.getElementById('btn-guardar-anuncio');
+      const mensajeAnuncio = document.getElementById('mensaje-anuncio');
+      const editId = document.getElementById('anuncio-edit-id').value;
+      const posicion = parseInt(document.getElementById('anuncio-posicion').value);
+      const nombre = document.getElementById('anuncio-nombre').value;
+      const link = document.getElementById('anuncio-link').value;
+      const archivo = document.getElementById('anuncio-imagen').files[0];
+
+      btnGuardar.disabled = true;
+      mensajeAnuncio.textContent = 'Guardando anuncio...';
+
+      try {
+        let urlImagen = null;
+
+        if (archivo) {
+          const nombreArchivo = `desktop_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
+          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          if (uploadError) throw new Error('Error al subir la imagen');
+          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+        }
+
+        const datosAnuncio = { posicion, nombre, link };
+        if (urlImagen) {
+          datosAnuncio.imagen_desktop = urlImagen;
+          datosAnuncio.imagen = urlImagen; // Compatibilidad por si usas la columna genérica
+        }
+
+        if (editId) {
+          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
+          if (updateError) throw new Error(updateError.message);
+          mensajeAnuncio.textContent = '¡Anuncio actualizado con éxito!';
+        } else {
+          if (!urlImagen) throw new Error('Debes seleccionar una imagen para este nuevo anuncio');
+          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
+          if (insertError) throw new Error(insertError.message);
+          mensajeAnuncio.textContent = '¡Anuncio guardado con éxito!';
+        }
+
+        cancelarEdicionAnuncio();
+        cargarAnunciosAdmin();
+        setTimeout(() => mensajeAnuncio.textContent = '', 3000);
+      } catch (err) {
+        mensajeAnuncio.style.color = '#f43f5e';
+        mensajeAnuncio.textContent = err.message;
+      } finally {
+        btnGuardar.disabled = false;
+        mensajeAnuncio.style.color = '#34d399';
+      }
+    };
+
+    // --- ANUNCIOS MÓVIL (Usa la misma tabla "Anuncios") ---
+    async function cargarAnunciosMovilAdmin() {
+      const contenedor = document.getElementById('lista-admin-anuncios-movil');
+      const { data, error } = await supabaseClient.from('Anuncios').select('*').order('posicion', { ascending: true });
+
+      if (error || !data) {
+        contenedor.innerHTML = '<p style="text-align:center; color:#f43f5e;">Error al cargar anuncios móviles</p>';
+        return;
+      }
+      
+      anunciosMovilAdminCache = data;
+
+      if (data.length === 0) {
+        contenedor.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:0.9rem;">No hay anuncios móviles configurados.</p>';
+        return;
+      }
+
+      contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Móvil Activos:</h4>';
+      data.forEach(a => {
+        const nombresEspacios = ["Banner Móvil 1 (Sup.)", "Banner Móvil 2 (Medio)", "Banner Móvil 3 (Inf.)"];
+        const fotoMovil = a.imagen_movil || IMG_DEFAULT;
+        contenedor.innerHTML += `
+          <div class="item-noticia">
+            <img src="${fotoMovil}" alt="Anuncio Móvil" onerror="this.src='${IMG_DEFAULT}'">
+            <div class="item-info">
+              <h4>[${nombresEspacios[a.posicion] || 'Banner'}] ${a.nombre || 'Sin nombre'}</h4>
+              <p style="margin: 2px 0 0 0; font-size: 11px; color: #94a3b8; word-break: break-all;">Link: ${a.link || ''}</p>
+            </div>
+            <div class="botones-accion">
+              <button class="btn-warning" onclick="prepararEdicionAnuncioMovil(${a.id})">Editar</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function prepararEdicionAnuncioMovil(id) {
+      const anuncio = anunciosMovilAdminCache.find(a => String(a.id) === String(id));
+      if (!anuncio) return;
+
+      document.getElementById('anuncio-movil-edit-id').value = anuncio.id;
+      document.getElementById('anuncio-movil-posicion').value = anuncio.posicion ?? 0;
+      document.getElementById('anuncio-movil-nombre').value = anuncio.nombre || '';
+      document.getElementById('anuncio-movil-link').value = anuncio.link || '';
+
+      document.getElementById('btn-guardar-anuncio-movil').textContent = 'Actualizar Anuncio Móvil';
+      document.getElementById('btn-cancelar-anuncio-movil').classList.remove('oculto');
+      window.scrollTo({ top: document.getElementById('form-anuncio-movil').offsetTop, behavior: 'smooth' });
+    }
+
+    function cancelarEdicionAnuncioMovil() {
+      document.getElementById('form-anuncio-movil').reset();
+      document.getElementById('anuncio-movil-edit-id').value = '';
+      document.getElementById('btn-guardar-anuncio-movil').textContent = 'Guardar / Actualizar Anuncio Móvil';
+      document.getElementById('btn-cancelar-anuncio-movil').classList.add('oculto');
+    }
+
+    document.getElementById('form-anuncio-movil').onsubmit = async (e) => {
+      e.preventDefault();
+      const btnGuardar = document.getElementById('btn-guardar-anuncio-movil');
+      const mensajeAnuncioMovil = document.getElementById('mensaje-anuncio-movil');
+      const editId = document.getElementById('anuncio-movil-edit-id').value;
+      const posicion = parseInt(document.getElementById('anuncio-movil-posicion').value);
+      const nombre = document.getElementById('anuncio-movil-nombre').value;
+      const link = document.getElementById('anuncio-movil-link').value;
+      const archivo = document.getElementById('anuncio-movil-imagen').files[0];
+
+      btnGuardar.disabled = true;
+      mensajeAnuncioMovil.textContent = 'Guardando anuncio móvil...';
+
+      try {
+        let urlImagen = null;
+
+        if (archivo) {
+          const nombreArchivo = `movil_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
+          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          if (uploadError) throw new Error('Error al subir la imagen móvil');
+          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+        }
+
+        const datosAnuncio = { posicion, nombre, link };
+        if (urlImagen) datosAnuncio.imagen_movil = urlImagen;
+
+        if (editId) {
+          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
+          if (updateError) throw new Error(updateError.message);
+          mensajeAnuncioMovil.textContent = '¡Anuncio móvil actualizado con éxito!';
+        } else {
+          if (!urlImagen) throw new Error('Debes seleccionar una imagen móvil');
+          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
+          if (insertError) throw new Error(insertError.message);
+          mensajeAnuncioMovil.textContent = '¡Anuncio móvil guardado con éxito!';
+        }
+
+        cancelarEdicionAnuncioMovil();
+        cargarAnunciosMovilAdmin();
+        setTimeout(() => mensajeAnuncioMovil.textContent = '', 3000);
+      } catch (err) {
+        mensajeAnuncioMovil.style.color = '#f43f5e';
+        mensajeAnuncioMovil.textContent = err.message;
+      } finally {
+        btnGuardar.disabled = false;
+        mensajeAnuncioMovil.style.color = '#38bdf8';
+      }
+    };
+  </script>
+</body>
+</html>
