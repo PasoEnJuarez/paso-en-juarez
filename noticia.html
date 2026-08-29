@@ -312,15 +312,11 @@
             </div>`;
         } else {
           if (listaFotos.length > 0) {
-            const columnas = listaFotos.length > 1 ? 'repeat(auto-fit, minmax(220px, 1fr))' : '1fr';
-            mediaHTML = `
-              <div class="contenedor-multimedia-nota" style="display: grid; grid-template-columns: ${columnas}; gap: 10px;">
-                ${listaFotos.map(foto => `
-                  <div style="overflow: hidden; border-radius: 6px; background: #0f172a; display: flex; align-items: center; justify-content: center;">
-                    <img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 6px;">
-                  </div>
-                `).join('')}
-              </div>`;
+            mediaHTML = listaFotos.map(foto => `
+              <div class="contenedor-multimedia-nota" style="margin-bottom: 15px;">
+                <img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;">
+              </div>
+            `).join('');
           }
         }
 
