@@ -3,20 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Noticia | PasóEnJuárez</title>
   
-  <!-- ETIQUETAS OPEN GRAPH PARA REDES SOCIALES Y WHATSAPP -->
+  <!-- Cargar SDK de Supabase en el HEAD para precargar los metadatos Open Graph -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    (async function() {
+      const params = new URLSearchParams(window.location.search);
+      const idNoticia = params.get('id');
+      
+      window._ogData = {
+        title: "PasóEnJuárez | Periódico digital",
+        desc: "Entérate de lo más relevante en Ciudad Juárez.",
+        image: "https://www.pasoenjuarez.com/images/header-bg.jpg",
+        url: window.location.href
+      };
+
+      if (!idNoticia) return;
+
+      const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
+      
+      if (!window.supabase) return;
+      const tempClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      try {
+        let { data: nota, error } = await tempClient
+          .from('Noticias')
+          .select('*')
+          .eq('id', idNoticia)
+          .single();
+
+        if (error || !nota) {
+          const resAlt = await tempClient.from('noticias').select('*').eq('id', idNoticia).single();
+          nota = resAlt.data;
+        }
+
+        if (nota) {
+          window._ogData.title = nota.titulo ? `${nota.titulo} | PasóEnJuárez` : window._ogData.title;
+          
+          if (nota.contenido) {
+            window._ogData.desc = nota.contenido.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+          }
+
+          const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
+          if (textoImagenes) {
+            let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
+            listaFotos = listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
+            if (listaFotos.length > 0) {
+              window._ogData.image = listaFotos[0];
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error precargando Open Graph:", err);
+      }
+    })();
+  </script>
+
+  <!-- ETIQUETAS OPEN GRAPH DINÁMICAS -->
+  <title id="main-title">Noticia | PasóEnJuárez</title>
+  <meta name="description" id="meta-desc" content="Entérate de lo más relevante en Ciudad Juárez.">
   <meta property="og:type" content="article" />
-  <meta property="og:title" id="meta-og-title" content="PasóEnJuárez | Periódico digital" />
-  <meta property="og:description" id="meta-og-desc" content="Entérate de lo más relevante en Ciudad Juárez." />
-  <meta property="og:image" id="meta-og-image" content="https://www.pasoenjuarez.com/images/header-bg.jpg" />
+  <meta property="og:title" id="meta-og-title" content="" />
+  <meta property="og:description" id="meta-og-desc" content="" />
+  <meta property="og:image" id="meta-og-image" content="" />
   <meta property="og:url" id="meta-og-url" content="" />
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window._ogData) {
+        document.getElementById('main-title').innerText = window._ogData.title;
+        document.getElementById('meta-og-title').setAttribute('content', window._ogData.title);
+        document.getElementById('meta-og-desc').setAttribute('content', window._ogData.desc);
+        document.getElementById('meta-desc').setAttribute('content', window._ogData.desc);
+        document.getElementById('meta-og-image').setAttribute('content', window._ogData.image);
+        document.getElementById('meta-og-url').setAttribute('content', window._ogData.url);
+      }
+    });
+  </script>
   
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
   
   <style>
-    /* Estilos específicos para la vista detallada de la noticia */
     .layout-noticia {
       display: grid;
       grid-template-columns: 250px 1fr 250px;
@@ -69,7 +139,7 @@
 </head>
 <body>
 
-  <!-- ENCABEZADO IDÉNTICO AL INDEX -->
+  <!-- ENCABEZADO -->
   <header class="header-oficial">
     <div class="banner-imagen-full">
       <div class="banner-img-container">
@@ -79,7 +149,7 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS AVANZADA -->
+    <!-- BARRA DE WIDGETS -->
     <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
       
       <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
@@ -107,7 +177,7 @@
       </div>
     </div>
 
-    <!-- MENÚ DE NAVEGACIÓN COMPLETO -->
+    <!-- MENÚ DE NAVEGACIÓN -->
     <nav id="menu-navegacion" aria-label="Menú principal de categorías">
       <a href="index.html" class="nav-btn" data-categoria="todas">Inicio</a>
       <a href="index.html" class="nav-btn" data-categoria="seguridad">Seguridad</a>
@@ -123,7 +193,7 @@
     </nav>
   </header>
 
-  <!-- LAYOUT CON PUBLICIDAD Y CONTENIDO -->
+  <!-- LAYOUT PRINCIPAL -->
   <div class="layout-noticia">
 
     <!-- PUBLICIDAD IZQUIERDA -->
@@ -132,7 +202,7 @@
       <div class="caja-banner-vertical" data-posicion-anuncio="1" style="width: 100%; height: 350px; background: #1e293b; border-radius: 6px; overflow: hidden;"></div>
     </aside>
 
-    <!-- CONTENIDO CENTRAL DE LA NOTICIA -->
+    <!-- CONTENIDO CENTRAL -->
     <main>
       <article class="articulo-completo">
         <div id="noticia-detalle-container">
@@ -160,14 +230,12 @@
     <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
   </footer>
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SCRIPT PRINCIPAL DE LA VISTA DETALLADA -->
   <script>
     const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    // --- WIDGETS GLOBALES (Fecha, Clima detallado, Dólar, Menú Puentes) ---
     async function inicializarWidgetsGlobales() {
       const elFecha = document.getElementById('widget-fecha');
       if (elFecha) {
@@ -234,7 +302,6 @@
       return videoId;
     }
 
-    // Función auxiliar para extraer lista de fotos
     function obtenerListaFotosNota(nota) {
       const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
       if (!textoImagenes) return [];
@@ -269,7 +336,6 @@
       }
     }
 
-    // Cargar la Noticia Individual y actualizar etiquetas Open Graph
     async function cargarDetalleNoticia() {
       const params = new URLSearchParams(window.location.search);
       const idNoticia = params.get('id');
@@ -297,25 +363,9 @@
           return;
         }
 
-        // --- ACTUALIZAR METADATOS PARA WHATSAPP / REDES SOCIALES ---
-        document.title = `${nota.titulo} | PasóEnJuárez`;
-        document.getElementById('meta-og-title').setAttribute('content', nota.titulo);
-        
-        if (nota.contenido) {
-          const descripcionCorta = nota.contenido.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
-          document.getElementById('meta-og-desc').setAttribute('content', descripcionCorta);
-        }
-        
-        document.getElementById('meta-og-url').setAttribute('content', window.location.href);
-
-        const listaFotos = obtenerListaFotosNota(nota);
-        if (listaFotos.length > 0) {
-          document.getElementById('meta-og-image').setAttribute('content', listaFotos[0]);
-        }
-        // -----------------------------------------------------------
-
         let mediaHTML = '';
         const ytId = obtenerYouTubeId(nota.video_url);
+        const listaFotos = obtenerListaFotosNota(nota);
         
         if (ytId) {
           mediaHTML = `
