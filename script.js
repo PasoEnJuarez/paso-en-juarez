@@ -15,18 +15,13 @@ function obtenerListaFotos(nota) {
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
 }
 
+// Función actualizada para extraer el ID de YouTube (incluye Shorts, URLs cortas y normales)
 function obtenerYouTubeId(videoUrl) {
   if (!videoUrl) return '';
   const urlTrim = videoUrl.trim();
-  let videoId = '';
-  if (urlTrim.includes('youtu.be/')) {
-    videoId = urlTrim.split('youtu.be/')[1]?.split('?')[0];
-  } else if (urlTrim.includes('watch?v=')) {
-    videoId = urlTrim.split('watch?v=')[1]?.split('&')[0];
-  } else if (urlTrim.includes('embed/')) {
-    videoId = urlTrim.split('embed/')[1]?.split('?')[0];
-  }
-  return videoId;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+  const match = urlTrim.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : '';
 }
 
 async function inicializarPublicidad() {
