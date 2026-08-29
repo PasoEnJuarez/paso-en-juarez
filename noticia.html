@@ -60,28 +60,61 @@
     }
   </style>
 </head>
-<body style="background: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0;">
+<body>
 
   <!-- ENCABEZADO IDÉNTICO AL INDEX -->
-  <header style="background: #0f172a; border-bottom: 2px solid #0284c7; padding: 15px; text-align: center;">
-    <a href="index.html" style="color: #38bdf8; text-decoration: none; font-size: 2rem; font-weight: bold;">Pasó En Juárez</a>
+  <header class="header-oficial">
+    <div class="banner-imagen-full">
+      <div class="banner-img-container">
+        <a href="index.html">
+          <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+        </a>
+      </div>
+    </div>
+
+    <!-- BARRA DE WIDGETS AVANZADA -->
+    <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
+      
+      <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
+      
+      <div id="widget-clima-container" style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 1.2rem;">🌤️</span>
+        <div style="display: flex; flex-direction: column; line-height: 1.2;">
+          <span id="clima-principal" style="font-size: 0.85rem; font-weight: 600;">Juárez: Cargando...</span>
+          <span id="clima-detalles" style="font-size: 0.75rem; color: #94a3b8;">Sensación y humedad...</span>
+        </div>
+      </div>
+
+      <div id="widget-dolar" style="font-weight: 500;">💵 Dólar: Cargando...</div>
+      
+      <div id="widget-puentes" style="font-weight: 500; position: relative; display: inline-block;">
+        <button id="btn-menu-puentes" style="background: transparent; border: none; color: #f8fafc; font-size: 0.85rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+          🚗 Puentes en Vivo ▾
+        </button>
+        <div id="dropdown-puentes" style="display: none; position: absolute; top: 100%; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 260px; padding: 6px 0; margin-top: 5px;">
+          <a href="https://www.youtube.com/@fpfch/streams" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Canal General FPFCH</a>
+          <a href="https://www.youtube.com/watch?v=mp3RS0y77tY" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Libre (Córdova)</a>
+          <a href="https://www.cloudflare.com" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Paso del Norte (Santa Fe)</a>
+          <a href="https://www.youtube.com/watch?v=GC5RY3zipa4" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem;">• Puente Zaragoza</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENÚ DE NAVEGACIÓN COMPLETO -->
+    <nav id="menu-navegacion" aria-label="Menú principal de categorías">
+      <a href="index.html" class="nav-btn" data-categoria="todas">Inicio</a>
+      <a href="index.html" class="nav-btn" data-categoria="seguridad">Seguridad</a>
+      <a href="index.html" class="nav-btn" data-categoria="economia">Economía</a>
+      <a href="index.html" class="nav-btn" data-categoria="puentes">Puentes</a>
+      <a href="index.html" class="nav-btn" data-categoria="politica">Política</a>
+      <a href="index.html" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
+      <a href="index.html" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
+      <a href="index.html" class="nav-btn" data-categoria="historia">Historia</a>
+      <a href="index.html" class="nav-btn" data-categoria="migracion">Migración</a>
+      <a href="index.html" class="nav-btn" data-categoria="clima">Clima</a>
+      <a href="index.html" class="nav-btn" data-categoria="cultura">Cultura</a>
+    </nav>
   </header>
-
-  <!-- BARRA DE WIDGETS GLOBALES (Fecha, Clima y Dólar) -->
-  <div style="background: #1e293b; border-bottom: 1px solid #334155; padding: 10px 20px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px; font-size: 0.9rem; color: #cbd5e1;">
-    <span id="widget-fecha">📅 Cargando fecha...</span>
-    <span id="clima-principal">Juárez: --°C</span>
-    <span id="widget-dolar">💵 Dólar: --</span>
-  </div>
-
-  <!-- MENÚ DE NAVEGACIÓN -->
-  <nav id="menu-navegacion" style="background: #0f172a; border-bottom: 1px solid #1e293b; padding: 10px; text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Inicio</a>
-    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Seguridad</a>
-    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Local</a>
-    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Economía</a>
-    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Opinión</a>
-  </nav>
 
   <!-- LAYOUT CON PUBLICIDAD Y CONTENIDO -->
   <div class="layout-noticia">
@@ -127,7 +160,7 @@
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-    // --- WIDGETS GLOBALES (Fecha, Clima, Dólar) ---
+    // --- WIDGETS GLOBALES (Fecha, Clima detallado, Dólar, Menú Puentes) ---
     async function inicializarWidgetsGlobales() {
       // 1. Fecha
       const elFecha = document.getElementById('widget-fecha');
@@ -136,18 +169,23 @@
         elFecha.innerHTML = `📅 ${new Date().toLocaleDateString('es-MX', opciones)}`;
       }
 
-      // 2. Clima
+      // 2. Clima detallado (Open-Meteo)
       const elClimaPrincipal = document.getElementById('clima-principal');
-      if (elClimaPrincipal) {
+      const elClimaDetalles = document.getElementById('clima-detalles');
+      if (elClimaPrincipal && elClimaDetalles) {
         try {
-          const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
+          const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code');
           const dataClima = await resClima.json();
           if (dataClima && dataClima.current) {
             const temp = Math.round(dataClima.current.temperature_2m);
-            elClimaPrincipal.innerText = `Juárez: ${temp}°C`;
+            const sensacion = Math.round(dataClima.current.apparent_temperature);
+            const humedad = dataClima.current.relative_humidity_2m;
+            elClimaPrincipal.innerText = `Juárez: ${temp}°C - Despejado`;
+            elClimaDetalles.innerText = `Sensación: ${sensacion}°C | Humedad: ${humedad}%`;
           }
         } catch (e) {
           elClimaPrincipal.innerText = `Juárez: N/D`;
+          elClimaDetalles.innerText = `Sin datos`;
         }
       }
 
@@ -158,11 +196,24 @@
           const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
           const dataDolar = await resDolar.json();
           if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
-            elDolar.innerHTML = `💵 Dólar: <strong>$${dataDolar.rates.MXN.toFixed(2)} MXN</strong>`;
+            elDolar.innerHTML = `💵 Dólar: $${dataDolar.rates.MXN.toFixed(2)} MXN`;
           }
         } catch (e) {
           elDolar.innerHTML = `💵 Dólar: N/D`;
         }
+      }
+
+      // 4. Dropdown de Puentes
+      const btnPuentes = document.getElementById('btn-menu-puentes');
+      const dropdownPuentes = document.getElementById('dropdown-puentes');
+      if (btnPuentes && dropdownPuentes) {
+        btnPuentes.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownPuentes.style.display = dropdownPuentes.style.display === 'block' ? 'none' : 'block';
+        });
+        document.addEventListener('click', () => {
+          dropdownPuentes.style.display = 'none';
+        });
       }
     }
 
