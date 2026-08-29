@@ -7,7 +7,7 @@
   <!-- Cargar SDK de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ETIQUETAS OPEN GRAPH Y SEO (El servidor api/noticia.js reemplazará estos valores) -->
+  <!-- ETIQUETAS OPEN GRAPH Y SEO -->
   <title>Noticia | PasóEnJuárez</title>
   <meta name="description" content="Entérate de lo más relevante en Ciudad Juárez.">
   <meta property="og:type" content="article" />
@@ -59,6 +59,24 @@
       width: 100%;
       border-radius: 6px;
       overflow: hidden;
+    }
+    /* Estilos para la cuadrícula de fotos */
+    .galeria-cuadricula {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .galeria-cuadricula img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .galeria-cuadricula img:hover {
+      transform: scale(1.02);
+      opacity: 0.9;
     }
     @media (max-width: 1024px) {
       .layout-noticia {
@@ -312,11 +330,17 @@
             </div>`;
         } else {
           if (listaFotos.length > 0) {
-            mediaHTML = listaFotos.map(foto => `
-              <div class="contenedor-multimedia-nota" style="margin-bottom: 15px;">
-                <img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;">
-              </div>
-            `).join('');
+            if (listaFotos.length === 1) {
+              mediaHTML = `
+                <div class="contenedor-multimedia-nota">
+                  <img src="${listaFotos[0]}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px; display: block;">
+                </div>`;
+            } else {
+              mediaHTML = `
+                <div class="galeria-cuadricula">
+                  ${listaFotos.map(foto => `<img src="${foto}" alt="${nota.titulo}">`).join('')}
+                </div>`;
+            }
           }
         }
 
