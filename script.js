@@ -15,7 +15,6 @@ function obtenerListaFotos(nota) {
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
 }
 
-// Función auxiliar para extraer el ID de un video de YouTube
 function obtenerYouTubeId(videoUrl) {
   if (!videoUrl) return '';
   const urlTrim = videoUrl.trim();
@@ -30,7 +29,6 @@ function obtenerYouTubeId(videoUrl) {
   return videoId;
 }
 
-// Función para inyectar anuncios dinámicamente desde la tabla Anuncios de Supabase
 async function inicializarPublicidad() {
   if (!supabaseClient) return;
 
@@ -38,7 +36,6 @@ async function inicializarPublicidad() {
     const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
     if (error || !anuncios) return;
 
-    // 1. Inyectar en banners de escritorio
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
@@ -52,7 +49,6 @@ async function inicializarPublicidad() {
       }
     });
 
-    // 2. Inyectar en banners móviles
     const espaciosMovil = document.querySelectorAll('.caja-banner-movil');
     espaciosMovil.forEach((contenedor) => {
       const indexStr = contenedor.getAttribute('data-posicion-anuncio');
@@ -75,9 +71,7 @@ async function inicializarPublicidad() {
   }
 }
 
-// --- WIDGETS GLOBALES (Fecha, Clima Detallado, Dólar) ---
 async function inicializarWidgetsGlobales() {
-  // 1. Fecha Actual en Español
   const elFecha = document.getElementById('widget-fecha');
   if (elFecha) {
     const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
@@ -85,7 +79,6 @@ async function inicializarWidgetsGlobales() {
     elFecha.innerHTML = `📅 ${fechaTexto}`;
   }
 
-  // 2. Clima Detallado de Ciudad Juárez (Open-Meteo API)
   const elClimaPrincipal = document.getElementById('clima-principal');
   const elClimaDetalles = document.getElementById('clima-detalles');
   
@@ -116,7 +109,6 @@ async function inicializarWidgetsGlobales() {
     }
   }
 
-  // 3. Tipo de Cambio Dólar / Peso
   const elDolar = document.getElementById('widget-dolar');
   if (elDolar) {
     try {
@@ -132,12 +124,10 @@ async function inicializarWidgetsGlobales() {
   }
 }
 
-// Redirige directamente a la API en Vercel para que precargue los metadatos Open Graph
 function abrirModalNoticia(idNota) {
   window.location.href = `/api/noticia?id=${idNota}`;
 }
 
-// --- FUNCIÓN UNIFICADA PARA PINTAR NOTICIAS (SOPORTE MULTI-IMAGEN) ---
 function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusqueda = false) {
   let htmlNoticias = noticiasAMostrar.map(nota => {
     const listaFotos = obtenerListaFotos(nota);
@@ -304,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarPublicidad();
   inicializarWidgetsGlobales();
 
-  // Menú desplegable de puentes en la barra superior
   const btnMenuPuentes = document.getElementById('btn-menu-puentes');
   const dropdownPuentes = document.getElementById('dropdown-puentes');
 
@@ -326,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       paginaActual = 0;
-      // Limpiar el buscador al cambiar de categoría
       const inputBuscador = document.getElementById('input-buscador-publico');
       if (inputBuscador) inputBuscador.value = '';
       
@@ -334,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- CONFIGURACIÓN DEL BUSCADOR FIJO ---
   const inputBuscadorPublico = document.getElementById('input-buscador-publico');
 
   if (inputBuscadorPublico) {
