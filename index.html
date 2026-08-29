@@ -14,6 +14,33 @@
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
+  
+  <!-- Estilos rápidos para el buscador fijo en la vista pública -->
+  <style>
+    .buscador-publico-wrapper {
+      position: sticky;
+      top: 10px;
+      z-index: 99;
+      margin-bottom: 25px;
+    }
+    .buscador-publico-wrapper input {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 2px solid #0284c7;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .buscador-publico-wrapper input:focus {
+      border-color: #38bdf8;
+    }
+  </style>
 </head>
 <body>
 
@@ -47,7 +74,7 @@
         <div id="dropdown-puentes" style="display: none; position: absolute; top: 100%; right: 0; background: #0f172a; border: 1px solid #334155; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 260px; padding: 6px 0; margin-top: 5px;">
           <a href="https://www.youtube.com/@fpfch/streams" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Canal General FPFCH</a>
           <a href="https://www.youtube.com/watch?v=mp3RS0y77tY" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Libre (Córdova)</a>
-          <a href="https://www.youtube.com/watch?v=0Pg3S6s76IE" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Paso del Norte (Santa Fe)</a>
+          <a href="https://www.cloudflare.com" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #1e293b;">• Puente Paso del Norte (Santa Fe)</a>
           <a href="https://www.youtube.com/watch?v=GC5RY3zipa4" target="_blank" style="display: block; padding: 8px 15px; color: #38bdf8; text-decoration: none; font-size: 0.85rem;">• Puente Zaragoza</a>
         </div>
       </div>
@@ -81,6 +108,11 @@
     <!-- BLOQUE CENTRAL -->
     <div class="bloque-central">
       
+      <!-- BUSCADOR FIJO AL HACER SCROLL -->
+      <div class="buscador-publico-wrapper">
+        <input type="text" id="input-buscador-publico" placeholder="🔍 Buscar noticias en PasóEnJuárez...">
+      </div>
+
       <!-- BANNER MÓVIL 1 (Arriba de noticias) -->
       <div class="caja-banner-movil caja-banner-vertical" data-posicion-anuncio="0" style="margin-bottom: 20px;"></div>
 
