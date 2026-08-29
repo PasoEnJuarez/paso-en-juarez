@@ -289,6 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarPublicidad();
   inicializarWidgetsGlobales();
 
+  // NOTA: Se mantiene la lógica del menú desplegable de widgets si lo conservaste en el HTML, 
+  // pero el botón de navegación principal ya funcionará automáticamente con data-categoria="local"
   const btnMenuPuentes = document.getElementById('btn-menu-puentes');
   const dropdownPuentes = document.getElementById('dropdown-puentes');
 
