@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Noticia | PasóEnJuárez</title>
   
+  <!-- ETIQUETAS OPEN GRAPH PARA REDES SOCIALES Y WHATSAPP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" id="meta-og-title" content="PasóEnJuárez | Periódico digital" />
+  <meta property="og:description" id="meta-og-desc" content="Entérate de lo más relevante en Ciudad Juárez." />
+  <meta property="og:image" id="meta-og-image" content="https://www.pasoenjuarez.com/images/header-bg.jpg" />
+  <meta property="og:url" id="meta-og-url" content="" />
+  
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
   
@@ -162,14 +169,12 @@
 
     // --- WIDGETS GLOBALES (Fecha, Clima detallado, Dólar, Menú Puentes) ---
     async function inicializarWidgetsGlobales() {
-      // 1. Fecha
       const elFecha = document.getElementById('widget-fecha');
       if (elFecha) {
         const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
         elFecha.innerHTML = `📅 ${new Date().toLocaleDateString('es-MX', opciones)}`;
       }
 
-      // 2. Clima detallado (Open-Meteo)
       const elClimaPrincipal = document.getElementById('clima-principal');
       const elClimaDetalles = document.getElementById('clima-detalles');
       if (elClimaPrincipal && elClimaDetalles) {
@@ -189,7 +194,6 @@
         }
       }
 
-      // 3. Dólar
       const elDolar = document.getElementById('widget-dolar');
       if (elDolar) {
         try {
@@ -203,7 +207,6 @@
         }
       }
 
-      // 4. Dropdown de Puentes
       const btnPuentes = document.getElementById('btn-menu-puentes');
       const dropdownPuentes = document.getElementById('dropdown-puentes');
       if (btnPuentes && dropdownPuentes) {
@@ -217,7 +220,6 @@
       }
     }
 
-    // Extraer ID de YouTube
     function obtenerYouTubeId(videoUrl) {
       if (!videoUrl) return '';
       const urlTrim = videoUrl.trim();
@@ -232,7 +234,14 @@
       return videoId;
     }
 
-    // Cargar Publicidad
+    // Función auxiliar para extraer lista de fotos
+    function obtenerListaFotosNota(nota) {
+      const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
+      if (!textoImagenes) return [];
+      let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
+      return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
+    }
+
     async function inicializarPublicidad() {
       if (!supabaseClient) return;
       try {
@@ -260,7 +269,7 @@
       }
     }
 
-    // Cargar la Noticia Individual
+    // Cargar la Noticia Individual y actualizar etiquetas Open Graph
     async function cargarDetalleNoticia() {
       const params = new URLSearchParams(window.location.search);
       const idNoticia = params.get('id');
@@ -288,6 +297,23 @@
           return;
         }
 
+        // --- ACTUALIZAR METADATOS PARA WHATSAPP / REDES SOCIALES ---
+        document.title = `${nota.titulo} | PasóEnJuárez`;
+        document.getElementById('meta-og-title').setAttribute('content', nota.titulo);
+        
+        if (nota.contenido) {
+          const descripcionCorta = nota.contenido.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+          document.getElementById('meta-og-desc').setAttribute('content', descripcionCorta);
+        }
+        
+        document.getElementById('meta-og-url').setAttribute('content', window.location.href);
+
+        const listaFotos = obtenerListaFotosNota(nota);
+        if (listaFotos.length > 0) {
+          document.getElementById('meta-og-image').setAttribute('content', listaFotos[0]);
+        }
+        // -----------------------------------------------------------
+
         let mediaHTML = '';
         const ytId = obtenerYouTubeId(nota.video_url);
         
@@ -302,10 +328,8 @@
               <a href="${nota.video_url}" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: none;">Ver video completo en Facebook ↗</a>
             </div>`;
         } else {
-          const fotoPrincipal = nota.imagen_url || nota.galeria || nota.imagen;
-          if (fotoPrincipal) {
-            const urlFoto = Array.isArray(fotoPrincipal) ? fotoPrincipal[0] : String(fotoPrincipal).split(',')[0].trim();
-            mediaHTML = `<div class="contenedor-multimedia-nota"><img src="${urlFoto}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;"></div>`;
+          if (listaFotos.length > 0) {
+            mediaHTML = `<div class="contenedor-multimedia-nota"><img src="${listaFotos[0]}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;"></div>`;
           }
         }
 
