@@ -137,6 +137,76 @@ function abrirModalNoticia(idNota) {
   window.location.href = `noticia.html?id=${idNota}`;
 }
 
+// --- FUNCIÓN UNIFICADA PARA PINTAR NOTICIAS ---
+function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusqueda = false) {
+  let htmlNoticias = noticiasAMostrar.map(nota => {
+    const listaFotos = obtenerListaFotos(nota);
+    let mediaHTML = '';
+
+    if (listaFotos.length > 0) {
+      mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
+    } else {
+      const ytId = obtenerYouTubeId(nota.video_url);
+      if (ytId) {
+        const miniaturaYt = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        mediaHTML = `
+          <div style="position: relative; width: 100%; height: 180px; background: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <img src="${miniaturaYt}" alt="${nota.titulo || 'Video'}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" loading="lazy">
+            <div style="position: absolute; background: rgba(0,0,0,0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.3);">
+              ▶ Ver Video
+            </div>
+          </div>`;
+      } else if (nota.video_url && nota.video_url.includes('facebook')) {
+        mediaHTML = `
+          <div style="width: 100%; height: 100px; background: #1e293b; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-weight: bold; font-size: 0.9rem; border: 1px dashed #334155;">
+            📹 Video de Facebook disponible
+          </div>`;
+      }
+    }
+
+    const resumen = nota.contenido && nota.contenido.length > 140 ? nota.contenido.substring(0, 140) + '...' : nota.contenido || '';
+    const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
+
+    return `
+      <article class="noticia" data-id="${nota.id}" style="cursor: pointer;">
+        <span class="categoria ${catClase}">${nota.categoria || 'General'}</span>
+        <h2>${nota.titulo || 'Sin título'}</h2>
+        ${mediaHTML}
+        <p>${resumen}</p>
+        <span style="color: #0284c7; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-top: 8px;">Leer noticia completa →</span>
+      </article>`;
+  }).join('');
+
+  let botonesPaginacion = '';
+  if (!esResultadoBusqueda) {
+    botonesPaginacion = `
+      <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 10px 0;">
+        <button id="btn-Anterior" ${paginaActual === 0 ? 'style="opacity: 0.5; pointer-events: none; background: #cbd5e1; color: #64748b; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;"' : 'style="background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;"'}>← Página Anterior</button>
+        <span style="font-size: 0.9rem; color: #64748b; font-weight: bold;">Página ${paginaActual + 1}</span>
+        <button id="btn-Siguiente" style="background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Página Siguiente →</button>
+      </div>
+    `;
+  }
+
+  contenedor.innerHTML = htmlNoticias + botonesPaginacion;
+
+  contenedor.querySelectorAll('.noticia').forEach(tarjeta => {
+    tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
+  });
+
+  if (!esResultadoBusqueda) {
+    document.getElementById('btn-Siguiente')?.addEventListener('click', () => {
+      cargarNoticiasEnVivo(categoriaActual, 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-Anterior')?.addEventListener('click', () => {
+      cargarNoticiasEnVivo(categoriaActual, -1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+}
+
 async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   const contenedorNoticias = document.querySelector('.contenedor-noticias');
   const carruselCronologico = document.getElementById('carrusel-cronologico');
@@ -198,67 +268,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
     }
 
     if (contenedorNoticias) {
-      let htmlNoticias = noticias.map(nota => {
-        const listaFotos = obtenerListaFotos(nota);
-        let mediaHTML = '';
-
-        if (listaFotos.length > 0) {
-          mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
-        } else {
-          const ytId = obtenerYouTubeId(nota.video_url);
-          if (ytId) {
-            const miniaturaYt = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-            mediaHTML = `
-              <div style="position: relative; width: 100%; height: 180px; background: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                <img src="${miniaturaYt}" alt="${nota.titulo || 'Video'}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" loading="lazy">
-                <div style="position: absolute; background: rgba(0,0,0,0.6); color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.3);">
-                  ▶ Ver Video
-                </div>
-              </div>`;
-          } else if (nota.video_url && nota.video_url.includes('facebook')) {
-            mediaHTML = `
-              <div style="width: 100%; height: 100px; background: #1e293b; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #38bdf8; font-weight: bold; font-size: 0.9rem; border: 1px dashed #334155;">
-                📹 Video de Facebook disponible
-              </div>`;
-          }
-        }
-
-        const resumen = nota.contenido && nota.contenido.length > 140 ? nota.contenido.substring(0, 140) + '...' : nota.contenido || '';
-        const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
-
-        return `
-          <article class="noticia" data-id="${nota.id}" style="cursor: pointer;">
-            <span class="categoria ${catClase}">${nota.categoria || 'General'}</span>
-            <h2>${nota.titulo || 'Sin título'}</h2>
-            ${mediaHTML}
-            <p>${resumen}</p>
-            <span style="color: #0284c7; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-top: 8px;">Leer noticia completa →</span>
-          </article>`;
-      }).join('');
-
-      const botonesPaginacion = `
-        <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 10px 0;">
-          <button id="btn-Anterior" ${paginaActual === 0 ? 'style="opacity: 0.5; pointer-events: none; background: #cbd5e1; color: #64748b; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;"' : 'style="background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;"'}>← Página Anterior</button>
-          <span style="font-size: 0.9rem; color: #64748b; font-weight: bold;">Página ${paginaActual + 1}</span>
-          <button id="btn-Siguiente" style="background: #0284c7; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Página Siguiente →</button>
-        </div>
-      `;
-
-      contenedorNoticias.innerHTML = htmlNoticias + botonesPaginacion;
-
-      contenedorNoticias.querySelectorAll('.noticia').forEach(tarjeta => {
-        tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
-      });
-
-      document.getElementById('btn-Siguiente')?.addEventListener('click', () => {
-        cargarNoticiasEnVivo(categoriaActual, 1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-
-      document.getElementById('btn-Anterior')?.addEventListener('click', () => {
-        cargarNoticiasEnVivo(categoriaActual, -1);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
+      renderizarListaNoticias(listaNoticiasCargadas, contenedorNoticias, false);
     }
 
     if (carruselCronologico) {
@@ -306,7 +316,48 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       paginaActual = 0;
+      // Limpiar el buscador al cambiar de categoría
+      const inputBuscador = document.getElementById('input-buscador-publico');
+      if (inputBuscador) inputBuscador.value = '';
+      
       cargarNoticiasEnVivo(btn.getAttribute('data-categoria'), 0);
     });
   });
+
+  // --- CONFIGURACIÓN DEL BUSCADOR FIJO ---
+  const inputBuscadorPublico = document.getElementById('input-buscador-publico');
+
+  if (inputBuscadorPublico) {
+    inputBuscadorPublico.addEventListener('input', (e) => {
+      const textoBusqueda = e.target.value.toLowerCase().trim();
+      const contenedorNoticias = document.querySelector('.contenedor-noticias');
+
+      if (!contenedorNoticias) return;
+
+      if (textoBusqueda === '') {
+        renderizarListaNoticias(listaNoticiasCargadas, contenedorNoticias, false);
+        return;
+      }
+
+      const noticiasFiltradas = listaNoticiasCargadas.filter(nota => {
+        const titulo = nota.titulo ? nota.titulo.toLowerCase() : '';
+        const contenido = nota.contenido ? nota.contenido.toLowerCase() : '';
+        const categoria = nota.categoria ? nota.categoria.toLowerCase() : '';
+        
+        return titulo.includes(textoBusqueda) || 
+               contenido.includes(textoBusqueda) || 
+               categoria.includes(textoBusqueda);
+      });
+
+      if (noticiasFiltradas.length === 0) {
+        contenedorNoticias.innerHTML = `
+          <div style="grid-column: span 2; text-align: center; padding: 30px; background: #0f172a; border-radius: 8px; color: #94a3b8; border: 1px solid #1e293b;">
+            <p>No se encontraron noticias con "${e.target.value}"</p>
+          </div>`;
+        return;
+      }
+
+      renderizarListaNoticias(noticiasFiltradas, contenedorNoticias, true);
+    });
+  }
 });
