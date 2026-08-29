@@ -312,7 +312,11 @@
             </div>`;
         } else {
           if (listaFotos.length > 0) {
-            mediaHTML = `<div class="contenedor-multimedia-nota"><img src="${listaFotos[0]}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;"></div>`;
+            mediaHTML = listaFotos.map(foto => `
+              <div class="contenedor-multimedia-nota" style="margin-bottom: 15px;">
+                <img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px;">
+              </div>
+            `).join('');
           }
         }
 
