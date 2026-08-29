@@ -137,14 +137,31 @@ function abrirModalNoticia(idNota) {
   window.location.href = `noticia.html?id=${idNota}`;
 }
 
-// --- FUNCIÓN UNIFICADA PARA PINTAR NOTICIAS ---
+// --- FUNCIÓN UNIFICADA PARA PINTAR NOTICIAS (SOPORTE MULTI-IMAGEN) ---
 function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusqueda = false) {
   let htmlNoticias = noticiasAMostrar.map(nota => {
     const listaFotos = obtenerListaFotos(nota);
     let mediaHTML = '';
 
     if (listaFotos.length > 0) {
-      mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
+      if (listaFotos.length === 1) {
+        mediaHTML = `<img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy">`;
+      } else {
+        let miniaturasHTML = listaFotos.slice(0, 3).map((foto, index) => `
+          <div style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+            <img src="${foto}" alt="Foto ${index + 1}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+            ${index === 2 && listaFotos.length > 3 ? `
+              <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem;">
+                +${listaFotos.length - 3}
+              </div>` : ''}
+          </div>
+        `).join('');
+
+        mediaHTML = `
+          <div style="display: grid; grid-template-columns: repeat(${Math.min(listaFotos.length, 3)}, 1fr); gap: 4px; height: 180px; border-radius: 4px; overflow: hidden; background: #000;">
+            ${miniaturasHTML}
+          </div>`;
+      }
     } else {
       const ytId = obtenerYouTubeId(nota.video_url);
       if (ytId) {
