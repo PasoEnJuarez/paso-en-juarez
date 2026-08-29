@@ -466,3 +466,6 @@ footer {
   white-space: pre-line;
   margin-bottom: 20px;
 }
+.categoria.local { 
+  background-color: #0284c7; 
+}
