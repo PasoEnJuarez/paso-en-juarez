@@ -132,9 +132,9 @@ async function inicializarWidgetsGlobales() {
   }
 }
 
-// Redirige directamente a la página individual de la noticia con su URL única
+// Redirige directamente a la API en Vercel para que precargue los metadatos Open Graph
 function abrirModalNoticia(idNota) {
-  window.location.href = `noticia.html?id=${idNota}`;
+  window.location.href = `/api/noticia?id=${idNota}`;
 }
 
 // --- FUNCIÓN UNIFICADA PARA PINTAR NOTICIAS (SOPORTE MULTI-IMAGEN) ---
