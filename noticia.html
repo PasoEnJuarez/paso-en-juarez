@@ -62,10 +62,26 @@
 </head>
 <body style="background: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0;">
 
-  <!-- ENCABEZADO SIMPLIFICADO -->
-  <header class="header-oficial" style="background: #0f172a; border-bottom: 2px solid #0284c7; padding: 15px; text-align: center;">
-    <a href="index.html" style="color: #38bdf8; text-decoration: none; font-size: 1.5rem; font-weight: bold;">PasóEnJuárez</a>
+  <!-- ENCABEZADO IDÉNTICO AL INDEX -->
+  <header style="background: #0f172a; border-bottom: 2px solid #0284c7; padding: 15px; text-align: center;">
+    <a href="index.html" style="color: #38bdf8; text-decoration: none; font-size: 2rem; font-weight: bold;">Pasó En Juárez</a>
   </header>
+
+  <!-- BARRA DE WIDGETS GLOBALES (Fecha, Clima y Dólar) -->
+  <div style="background: #1e293b; border-bottom: 1px solid #334155; padding: 10px 20px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px; font-size: 0.9rem; color: #cbd5e1;">
+    <span id="widget-fecha">📅 Cargando fecha...</span>
+    <span id="clima-principal">Juárez: --°C</span>
+    <span id="widget-dolar">💵 Dólar: --</span>
+  </div>
+
+  <!-- MENÚ DE NAVEGACIÓN -->
+  <nav id="menu-navegacion" style="background: #0f172a; border-bottom: 1px solid #1e293b; padding: 10px; text-align: center; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Inicio</a>
+    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Seguridad</a>
+    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Local</a>
+    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Economía</a>
+    <a href="index.html" class="nav-btn" style="background: #1e293b; color: #f8fafc; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold;">Opinión</a>
+  </nav>
 
   <!-- LAYOUT CON PUBLICIDAD Y CONTENIDO -->
   <div class="layout-noticia">
@@ -111,6 +127,45 @@
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+    // --- WIDGETS GLOBALES (Fecha, Clima, Dólar) ---
+    async function inicializarWidgetsGlobales() {
+      // 1. Fecha
+      const elFecha = document.getElementById('widget-fecha');
+      if (elFecha) {
+        const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        elFecha.innerHTML = `📅 ${new Date().toLocaleDateString('es-MX', opciones)}`;
+      }
+
+      // 2. Clima
+      const elClimaPrincipal = document.getElementById('clima-principal');
+      if (elClimaPrincipal) {
+        try {
+          const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,weather_code');
+          const dataClima = await resClima.json();
+          if (dataClima && dataClima.current) {
+            const temp = Math.round(dataClima.current.temperature_2m);
+            elClimaPrincipal.innerText = `Juárez: ${temp}°C`;
+          }
+        } catch (e) {
+          elClimaPrincipal.innerText = `Juárez: N/D`;
+        }
+      }
+
+      // 3. Dólar
+      const elDolar = document.getElementById('widget-dolar');
+      if (elDolar) {
+        try {
+          const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
+          const dataDolar = await resDolar.json();
+          if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
+            elDolar.innerHTML = `💵 Dólar: <strong>$${dataDolar.rates.MXN.toFixed(2)} MXN</strong>`;
+          }
+        } catch (e) {
+          elDolar.innerHTML = `💵 Dólar: N/D`;
+        }
+      }
+    }
+
     // Extraer ID de YouTube
     function obtenerYouTubeId(videoUrl) {
       if (!videoUrl) return '';
@@ -126,7 +181,7 @@
       return videoId;
     }
 
-    // Cargar Publicidad en la página de la noticia
+    // Cargar Publicidad
     async function inicializarPublicidad() {
       if (!supabaseClient) return;
       try {
@@ -173,7 +228,6 @@
           .single();
 
         if (error || !nota) {
-          // Intento alternativo con minúsculas por si la tabla cambia
           const resAlt = await supabaseClient.from('noticias').select('*').eq('id', idNoticia).single();
           nota = resAlt.data;
         }
@@ -183,7 +237,6 @@
           return;
         }
 
-        // Procesar multimedia (Videos / Fotos)
         let mediaHTML = '';
         const ytId = obtenerYouTubeId(nota.video_url);
         
@@ -198,7 +251,6 @@
               <a href="${nota.video_url}" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: none;">Ver video completo en Facebook ↗</a>
             </div>`;
         } else {
-          // Si no hay video, revisamos si tiene imagen principal
           const fotoPrincipal = nota.imagen_url || nota.galeria || nota.imagen;
           if (fotoPrincipal) {
             const urlFoto = Array.isArray(fotoPrincipal) ? fotoPrincipal[0] : String(fotoPrincipal).split(',')[0].trim();
@@ -228,6 +280,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       cargarDetalleNoticia();
       inicializarPublicidad();
+      inicializarWidgetsGlobales();
     });
   </script>
 
