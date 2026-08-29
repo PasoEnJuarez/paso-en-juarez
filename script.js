@@ -247,7 +247,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
   try {
     let query = supabaseClient
-      .from('Noticias')
+      .from('noticias') // <--- CORREGIDO A MINÚSCULAS ('noticias')
       .select('*')
       .order('created_at', { ascending: false })
       .range(inicio, fin);
@@ -258,18 +258,8 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
     let { data: noticias, error } = await query;
 
-    if (error && error.code === '42P01') {
-      let queryAlt = supabaseClient
-        .from('noticias')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .range(inicio, fin);
-
-      if (categoria && categoria.toLowerCase() !== 'todas') {
-        queryAlt = queryAlt.ilike('categoria', `%${categoria.trim()}%`);
-      }
-      const res = await queryAlt;
-      noticias = res.data;
+    if (error) {
+      console.error("Error al cargar noticias:", error);
     }
 
     listaNoticiasCargadas = noticias || [];
@@ -279,7 +269,10 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
         paginaActual--; 
       }
       if (contenedorNoticias && paginaActual === 0) {
-        contenedorNoticias.innerHTML = `<div style="grid-column: span 2; text-align: center; padding: 25px; background: #ffffff; border-radius: 8px; color: #475569;"><p>No hay noticias en esta categoría.</p></div>`;
+        contenedorNoticias.innerHTML = `<div style="grid-column: span 2; text-align: center; padding: 25px; background: #0f172a; border-radius: 8px; color: #94a3b8; border: 1px solid #1e293b;"><p>No hay noticias en esta categoría.</p></div>`;
+      }
+      if (carruselCronologico) {
+        carruselCronologico.innerHTML = `<p style="color: #94a3b8; padding: 10px;">No hay cronología disponible.</p>`;
       }
       return;
     }
@@ -302,7 +295,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
     inicializarPublicidad();
 
   } catch (err) {
-    console.error("Error:", err);
+    console.error("Error general:", err);
   }
 }
 
