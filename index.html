@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PasóEnJuárez | Noticias de la Frontera</title>
   
-  <!-- SEO y Open Graph -->
+  <!-- SEO y Open Graph para Redes Sociales -->
   <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera.">
   <meta property="og:title" content="PasóEnJuárez | Noticias de la Frontera">
   <meta property="og:description" content="Entérate de lo que pasa en Ciudad Juárez: seguridad, economía, clima, puentes y más.">
   <meta property="og:image" content="images/header-bg.jpg">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="">
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
@@ -147,6 +148,14 @@
   <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
+
+  <!-- Script opcional para asignar dinámicamente la URL actual al Open Graph -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', window.location.href);
+    });
+  </script>
 
 </body>
 </html>
