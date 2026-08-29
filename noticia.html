@@ -4,87 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Cargar SDK de Supabase en el HEAD para precargar los metadatos Open Graph -->
+  <!-- Cargar SDK de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script>
-    (async function() {
-      const params = new URLSearchParams(window.location.search);
-      const idNoticia = params.get('id');
-      
-      window._ogData = {
-        title: "PasóEnJuárez | Periódico digital",
-        desc: "Entérate de lo más relevante en Ciudad Juárez.",
-        image: "https://www.pasoenjuarez.com/images/header-bg.jpg",
-        url: window.location.href
-      };
 
-      if (!idNoticia) return;
-
-      const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-      const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-      
-      if (!window.supabase) return;
-      const tempClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      try {
-        let { data: nota, error } = await tempClient
-          .from('Noticias')
-          .select('*')
-          .eq('id', idNoticia)
-          .single();
-
-        if (error || !nota) {
-          const resAlt = await tempClient.from('noticias').select('*').eq('id', idNoticia).single();
-          nota = resAlt.data;
-        }
-
-        if (nota) {
-          window._ogData.title = nota.titulo ? `${nota.titulo} | PasóEnJuárez` : window._ogData.title;
-          
-          if (nota.contenido) {
-            window._ogData.desc = nota.contenido.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
-          }
-
-          const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
-          if (textoImagenes) {
-            let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-            listaFotos = listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
-            if (listaFotos.length > 0) {
-              window._ogData.image = listaFotos[0];
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Error precargando Open Graph:", err);
-      }
-    })();
-  </script>
-
-  <!-- ETIQUETAS OPEN GRAPH DINÁMICAS -->
-  <title id="main-title">Noticia | PasóEnJuárez</title>
-  <meta name="description" id="meta-desc" content="Entérate de lo más relevante en Ciudad Juárez.">
+  <!-- ETIQUETAS OPEN GRAPH Y SEO (El servidor api/noticia.js reemplazará estos valores) -->
+  <title>Noticia | PasóEnJuárez</title>
+  <meta name="description" content="Entérate de lo más relevante en Ciudad Juárez.">
   <meta property="og:type" content="article" />
-  <meta property="og:title" id="meta-og-title" content="" />
-  <meta property="og:description" id="meta-og-desc" content="" />
-  <meta property="og:image" id="meta-og-image" content="" />
-  <meta property="og:url" id="meta-og-url" content="" />
-  
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window._ogData) {
-        document.getElementById('main-title').innerText = window._ogData.title;
-        document.getElementById('meta-og-title').setAttribute('content', window._ogData.title);
-        document.getElementById('meta-og-desc').setAttribute('content', window._ogData.desc);
-        document.getElementById('meta-desc').setAttribute('content', window._ogData.desc);
-        document.getElementById('meta-og-image').setAttribute('content', window._ogData.image);
-        document.getElementById('meta-og-url').setAttribute('content', window._ogData.url);
-      }
-    });
-  </script>
+  <meta property="og:title" content="PasóEnJuárez | Periódico digital" />
+  <meta property="og:description" content="Entérate de lo más relevante en Ciudad Juárez." />
+  <meta property="og:image" content="https://www.pasoenjuarez.com/images/header-bg.jpg" />
+  <meta property="og:url" content="" />
   
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
   
   <style>
     .layout-noticia {
@@ -143,8 +76,8 @@
   <header class="header-oficial">
     <div class="banner-imagen-full">
       <div class="banner-img-container">
-        <a href="index.html">
-          <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+        <a href="/index.html">
+          <img src="/images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
         </a>
       </div>
     </div>
@@ -179,17 +112,17 @@
 
     <!-- MENÚ DE NAVEGACIÓN -->
     <nav id="menu-navegacion" aria-label="Menú principal de categorías">
-      <a href="index.html" class="nav-btn" data-categoria="todas">Inicio</a>
-      <a href="index.html" class="nav-btn" data-categoria="seguridad">Seguridad</a>
-      <a href="index.html" class="nav-btn" data-categoria="economia">Economía</a>
-      <a href="index.html" class="nav-btn" data-categoria="puentes">Puentes</a>
-      <a href="index.html" class="nav-btn" data-categoria="politica">Política</a>
-      <a href="index.html" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
-      <a href="index.html" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
-      <a href="index.html" class="nav-btn" data-categoria="historia">Historia</a>
-      <a href="index.html" class="nav-btn" data-categoria="migracion">Migración</a>
-      <a href="index.html" class="nav-btn" data-categoria="clima">Clima</a>
-      <a href="index.html" class="nav-btn" data-categoria="cultura">Cultura</a>
+      <a href="/index.html" class="nav-btn" data-categoria="todas">Inicio</a>
+      <a href="/index.html" class="nav-btn" data-categoria="seguridad">Seguridad</a>
+      <a href="/index.html" class="nav-btn" data-categoria="economia">Economía</a>
+      <a href="/index.html" class="nav-btn" data-categoria="puentes">Puentes</a>
+      <a href="/index.html" class="nav-btn" data-categoria="politica">Política</a>
+      <a href="/index.html" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
+      <a href="/index.html" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
+      <a href="/index.html" class="nav-btn" data-categoria="historia">Historia</a>
+      <a href="/index.html" class="nav-btn" data-categoria="migracion">Migración</a>
+      <a href="/index.html" class="nav-btn" data-categoria="clima">Clima</a>
+      <a href="/index.html" class="nav-btn" data-categoria="cultura">Cultura</a>
     </nav>
   </header>
 
@@ -213,7 +146,7 @@
         </div>
         
         <div style="margin-top: 30px;">
-          <a href="index.html" style="background: #0284c7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">← Volver al Inicio</a>
+          <a href="/index.html" style="background: #0284c7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">← Volver al Inicio</a>
         </div>
       </article>
     </main>
