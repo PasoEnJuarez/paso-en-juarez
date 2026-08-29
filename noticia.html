@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Cargar SDK de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ETIQUETAS OPEN GRAPH Y SEO -->
   <title>Noticia | PasóEnJuárez</title>
   <meta name="description" content="Entérate de lo más relevante en Ciudad Juárez.">
   <meta property="og:type" content="article" />
@@ -90,7 +88,6 @@
 </head>
 <body>
 
-  <!-- ENCABEZADO -->
   <header class="header-oficial">
     <div class="banner-imagen-full">
       <div class="banner-img-container">
@@ -100,7 +97,6 @@
       </div>
     </div>
 
-    <!-- BARRA DE WIDGETS -->
     <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
       
       <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
@@ -128,7 +124,6 @@
       </div>
     </div>
 
-    <!-- MENÚ DE NAVEGACIÓN -->
     <nav id="menu-navegacion" aria-label="Menú principal de categorías">
       <a href="/index.html" class="nav-btn" data-categoria="todas">Inicio</a>
       <a href="/index.html" class="nav-btn" data-categoria="seguridad">Seguridad</a>
@@ -144,231 +139,4 @@
     </nav>
   </header>
 
-  <!-- LAYOUT PRINCIPAL -->
   <div class="layout-noticia">
-
-    <!-- PUBLICIDAD IZQUIERDA -->
-    <aside class="columna-publicidad" aria-label="Publicidad lateral izquierda">
-      <div class="caja-banner-vertical" data-posicion-anuncio="0" style="width: 100%; height: 350px; background: #1e293b; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
-      <div class="caja-banner-vertical" data-posicion-anuncio="1" style="width: 100%; height: 350px; background: #1e293b; border-radius: 6px; overflow: hidden;"></div>
-    </aside>
-
-    <!-- CONTENIDO CENTRAL -->
-    <main>
-      <article class="articulo-completo">
-        <div id="noticia-detalle-container">
-          <div style="text-align: center; padding: 40px; color: #94a3b8;">
-            <div class="spinner-carga"></div>
-            <p>Cargando noticia...</p>
-          </div>
-        </div>
-        
-        <div style="margin-top: 30px;">
-          <a href="/index.html" style="background: #0284c7; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">← Volver al Inicio</a>
-        </div>
-      </article>
-    </main>
-
-    <!-- PUBLICIDAD DERECHA -->
-    <aside class="columna-publicidad" aria-label="Publicidad lateral derecha">
-      <div class="caja-banner-vertical" data-posicion-anuncio="2" style="width: 100%; height: 350px; background: #1e293b; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
-      <div class="caja-banner-vertical" data-posicion-anuncio="3" style="width: 100%; height: 350px; background: #1e293b; border-radius: 6px; overflow: hidden;"></div>
-    </aside>
-
-  </div>
-
-  <footer style="text-align: center; padding: 20px; color: #64748b; font-size: 0.85rem; margin-top: 40px;">
-    <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
-  </footer>
-
-  <!-- SCRIPT PRINCIPAL DE LA VISTA DETALLADA -->
-  <script>
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-    async function inicializarWidgetsGlobales() {
-      const elFecha = document.getElementById('widget-fecha');
-      if (elFecha) {
-        const opciones = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-        elFecha.innerHTML = `📅 ${new Date().toLocaleDateString('es-MX', opciones)}`;
-      }
-
-      const elClimaPrincipal = document.getElementById('clima-principal');
-      const elClimaDetalles = document.getElementById('clima-detalles');
-      if (elClimaPrincipal && elClimaDetalles) {
-        try {
-          const resClima = await fetch('https://api.open-meteo.com/v1/forecast?latitude=31.6904&longitude=-106.4245&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code');
-          const dataClima = await resClima.json();
-          if (dataClima && dataClima.current) {
-            const temp = Math.round(dataClima.current.temperature_2m);
-            const sensacion = Math.round(dataClima.current.apparent_temperature);
-            const humedad = dataClima.current.relative_humidity_2m;
-            elClimaPrincipal.innerText = `Juárez: ${temp}°C - Despejado`;
-            elClimaDetalles.innerText = `Sensación: ${sensacion}°C | Humedad: ${humedad}%`;
-          }
-        } catch (e) {
-          elClimaPrincipal.innerText = `Juárez: N/D`;
-          elClimaDetalles.innerText = `Sin datos`;
-        }
-      }
-
-      const elDolar = document.getElementById('widget-dolar');
-      if (elDolar) {
-        try {
-          const resDolar = await fetch('https://open.er-api.com/v6/latest/USD');
-          const dataDolar = await resDolar.json();
-          if (dataDolar && dataDolar.rates && dataDolar.rates.MXN) {
-            elDolar.innerHTML = `💵 Dólar: $${dataDolar.rates.MXN.toFixed(2)} MXN`;
-          }
-        } catch (e) {
-          elDolar.innerHTML = `💵 Dólar: N/D`;
-        }
-      }
-
-      const btnPuentes = document.getElementById('btn-menu-puentes');
-      const dropdownPuentes = document.getElementById('dropdown-puentes');
-      if (btnPuentes && dropdownPuentes) {
-        btnPuentes.addEventListener('click', (e) => {
-          e.stopPropagation();
-          dropdownPuentes.style.display = dropdownPuentes.style.display === 'block' ? 'none' : 'block';
-        });
-        document.addEventListener('click', () => {
-          dropdownPuentes.style.display = 'none';
-        });
-      }
-    }
-
-    function obtenerYouTubeId(videoUrl) {
-      if (!videoUrl) return '';
-      const urlTrim = videoUrl.trim();
-      let videoId = '';
-      if (urlTrim.includes('youtu.be/')) {
-        videoId = urlTrim.split('youtu.be/')[1]?.split('?')[0];
-      } else if (urlTrim.includes('watch?v=')) {
-        videoId = urlTrim.split('watch?v=')[1]?.split('&')[0];
-      } else if (urlTrim.includes('embed/')) {
-        videoId = urlTrim.split('embed/')[1]?.split('?')[0];
-      }
-      return videoId;
-    }
-
-    function obtenerListaFotosNota(nota) {
-      const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
-      if (!textoImagenes) return [];
-      let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-      return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
-    }
-
-    async function inicializarPublicidad() {
-      if (!supabaseClient) return;
-      try {
-        const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
-        if (error || !anuncios) return;
-
-        const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
-        espaciosEscritorio.forEach((contenedor) => {
-          const indexStr = contenedor.getAttribute('data-posicion-anuncio');
-          if (indexStr !== null) {
-            const index = Number(indexStr);
-            const anuncio = anuncios.find(a => Number(a.posicion) === index);
-            const foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
-            
-            if (anuncio && foto) {
-              contenedor.innerHTML = `
-                <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
-                  <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
-                </a>`;
-            }
-          }
-        });
-      } catch (err) {
-        console.error("Error al cargar publicidad:", err);
-      }
-    }
-
-    async function cargarDetalleNoticia() {
-      const params = new URLSearchParams(window.location.search);
-      const idNoticia = params.get('id');
-      const contenedor = document.getElementById('noticia-detalle-container');
-
-      if (!idNoticia || !supabaseClient) {
-        contenedor.innerHTML = `<p style="color: #ef4444;">No se encontró la noticia solicitada.</p>`;
-        return;
-      }
-
-      try {
-        let { data: nota, error } = await supabaseClient
-          .from('Noticias')
-          .select('*')
-          .eq('id', idNoticia)
-          .single();
-
-        if (error || !nota) {
-          const resAlt = await supabaseClient.from('noticias').select('*').eq('id', idNoticia).single();
-          nota = resAlt.data;
-        }
-
-        if (!nota) {
-          contenedor.innerHTML = `<p style="color: #ef4444;">La noticia ya no está disponible.</p>`;
-          return;
-        }
-
-        let mediaHTML = '';
-        const ytId = obtenerYouTubeId(nota.video_url);
-        const listaFotos = obtenerListaFotosNota(nota);
-        
-        if (ytId) {
-          mediaHTML = `
-            <div class="contenedor-multimedia-nota" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000;">
-              <iframe src="https://www.youtube.com/embed/${ytId}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
-            </div>`;
-        } else if (nota.video_url && nota.video_url.includes('facebook')) {
-          mediaHTML = `
-            <div class="contenedor-multimedia-nota" style="padding: 20px; background: #0f172a; text-align: center; border: 1px solid #334155;">
-              <a href="${nota.video_url}" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: none;">Ver video completo en Facebook ↗</a>
-            </div>`;
-        } else {
-          if (listaFotos.length > 0) {
-            if (listaFotos.length === 1) {
-              mediaHTML = `
-                <div class="contenedor-multimedia-nota">
-                  <img src="${listaFotos[0]}" alt="${nota.titulo}" style="width: 100%; height: auto; border-radius: 6px; display: block;">
-                </div>`;
-            } else {
-              mediaHTML = `
-                <div class="galeria-cuadricula">
-                  ${listaFotos.map(foto => `<img src="${foto}" alt="${nota.titulo}">`).join('')}
-                </div>`;
-            }
-          }
-        }
-
-        const fechaFormateada = nota.created_at ? new Date(nota.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-        const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
-
-        contenedor.innerHTML = `
-          <span class="categoria ${catClase}" style="display:inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #0284c7; color: white; margin-bottom: 10px;">${nota.categoria || 'General'}</span>
-          <h1>${nota.titulo}</h1>
-          <div class="meta-nota">
-            <span>Publicado el ${fechaFormateada} en PasóEnJuárez</span>
-          </div>
-          ${mediaHTML}
-          <div class="cuerpo-texto">${nota.contenido}</div>
-        `;
-
-      } catch (err) {
-        console.error("Error cargando detalle:", err);
-        contenedor.innerHTML = `<p style="color: #ef4444;">Hubo un error al cargar la noticia.</p>`;
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarDetalleNoticia();
-      inicializarPublicidad();
-      inicializarWidgetsGlobales();
-    });
-  </script>
-
-</body>
-</html>
