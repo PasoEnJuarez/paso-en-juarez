@@ -14,6 +14,17 @@ const CACHE_TTL_MS = 15 * 60 * 1000;
 
 let intervaloCarrusel = null;
 
+// FUNCIÓN PARA REGISTRAR CLICS DE ANUNCIANTES EN GOOGLE ANALYTICS 4
+function registrarClicAnuncio(nombrePatrocinador, posicion, tipoDispositivo) {
+  if (typeof gtag === 'function') {
+    gtag('event', 'clic_publicidad', {
+      'nombre_anuncio': nombrePatrocinador || 'Anuncio sin nombre',
+      'posicion': posicion,
+      'dispositivo': tipoDispositivo
+    });
+  }
+}
+
 function obtenerListaFotos(nota) {
   const textoImagenes = nota.imagen_url || nota.galeria;
   if (!textoImagenes) return [];
@@ -54,6 +65,7 @@ async function inicializarPublicidad() {
 
     if (!anuncios) return;
 
+    // RENDERIZADO Y TRACKING DE BANNERS ESCRITORIO
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
@@ -61,12 +73,20 @@ async function inicializarPublicidad() {
       
       if (anuncio && foto) {
         contenedor.innerHTML = `
-          <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
+          <a href="${anuncio.link || '#'}" target="_blank" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
             <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
           </a>`;
+
+        const enlace = contenedor.querySelector('.enlace-banner-publicitario');
+        if (enlace) {
+          enlace.addEventListener('click', () => {
+            registrarClicAnuncio(anuncio.nombre, index, 'escritorio');
+          });
+        }
       }
     });
 
+    // RENDERIZADO Y TRACKING DE BANNERS MÓVIL
     const espaciosMovil = document.querySelectorAll('.caja-banner-movil');
     espaciosMovil.forEach((contenedor) => {
       const indexStr = contenedor.getAttribute('data-posicion-anuncio');
@@ -77,9 +97,16 @@ async function inicializarPublicidad() {
 
         if (anuncio && fotoMovil) {
           contenedor.innerHTML = `
-            <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
+            <a href="${anuncio.link || '#'}" target="_blank" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
               <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;" loading="lazy">
             </a>`;
+
+          const enlace = contenedor.querySelector('.enlace-banner-publicitario');
+          if (enlace) {
+            enlace.addEventListener('click', () => {
+              registrarClicAnuncio(anuncio.nombre, index, 'movil');
+            });
+          }
         }
       }
     });
