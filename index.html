@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
   
-  <!-- Estilos rápidos para el buscador fijo en la vista pública -->
+  <!-- Estilos rápidos para el buscador fijo y ocultar barra de desplazamiento del carrusel -->
   <style>
     .buscador-publico-wrapper {
       position: sticky;
@@ -42,6 +42,18 @@
     }
     .buscador-publico-wrapper input:focus {
       border-color: #38bdf8;
+    }
+    
+    /* Estilos limpios para el carrusel horizontal */
+    #contenedor-destacadas-grid::-webkit-scrollbar {
+      height: 6px;
+    }
+    #contenedor-destacadas-grid::-webkit-scrollbar-thumb {
+      background: #0284c7;
+      border-radius: 10px;
+    }
+    #contenedor-destacadas-grid::-webkit-scrollbar-track {
+      background: #0f172a;
     }
   </style>
 </head>
@@ -116,12 +128,21 @@
         <input type="text" id="input-buscador-publico" placeholder="🔍 Buscar noticias en PasóEnJuárez...">
       </div>
 
-      <!-- SECCIÓN DE DESTACADAS POR CATEGORÍA -->
-      <section id="seccion-destacadas-categorias" style="margin-bottom: 30px;">
-        <h3 style="color: #38bdf8; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 2px solid #0284c7; padding-bottom: 5px;">
-          🌟 Lo Más Reciente por Categoría
-        </h3>
-        <div id="contenedor-destacadas-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+      <!-- SECCIÓN DE DESTACADAS EN CARRUSEL AUTOMÁTICO HORIZONTAL -->
+      <section id="seccion-destacadas-categorias" style="margin-bottom: 30px; position: relative;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #0284c7; padding-bottom: 6px;">
+          <h3 style="color: #38bdf8; font-size: 1.1rem; margin: 0;">
+            🌟 Lo Más Reciente por Categoría
+          </h3>
+          <!-- Botones de control manual -->
+          <div style="display: flex; gap: 6px;">
+            <button id="btn-carrusel-prev" style="background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;" title="Anterior">‹</button>
+            <button id="btn-carrusel-next" style="background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;" title="Siguiente">›</button>
+          </div>
+        </div>
+
+        <!-- Contenedor del carrusel deslizable -->
+        <div id="contenedor-destacadas-grid" style="display: flex; gap: 14px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 10px;">
           <p style="color: #94a3b8; font-size: 0.85rem;">Cargando destacadas...</p>
         </div>
       </section>
