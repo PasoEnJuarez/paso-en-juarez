@@ -8,9 +8,9 @@ let paginaActual = 0;
 const NOTICIAS_POR_PAGINA = 10;
 let categoriaActual = 'todas';
 
-// CACHÉ EN MEMORIA Y TIEMPO DE EXPIRACIÓN (5 MINUTOS)
+// CACHÉ EN MEMORIA Y TIEMPO DE EXPIRACIÓN EN LOCALSTORAGE (15 MINUTOS)
 const cacheNoticias = new Map();
-const CACHE_TTL_MS = 5 * 60 * 1000; 
+const CACHE_TTL_MS = 15 * 60 * 1000; 
 
 let intervaloCarrusel = null;
 
@@ -34,9 +34,11 @@ async function inicializarPublicidad() {
 
   try {
     let anuncios = null;
-    const cacheAnuncios = sessionStorage.getItem('cache_anuncios');
+    const cacheAnuncios = localStorage.getItem('cache_anuncios_v2');
+    const cacheTime = localStorage.getItem('cache_anuncios_time');
+    const ahora = Date.now();
 
-    if (cacheAnuncios) {
+    if (cacheAnuncios && cacheTime && (ahora - cacheTime < CACHE_TTL_MS)) {
       anuncios = JSON.parse(cacheAnuncios);
     } else {
       const { data, error } = await supabaseClient
@@ -45,7 +47,8 @@ async function inicializarPublicidad() {
         
       if (!error && data) {
         anuncios = data;
-        sessionStorage.setItem('cache_anuncios', JSON.stringify(anuncios));
+        localStorage.setItem('cache_anuncios_v2', JSON.stringify(anuncios));
+        localStorage.setItem('cache_anuncios_time', ahora);
       }
     }
 
@@ -143,40 +146,46 @@ function abrirModalNoticia(idNota) {
   window.location.href = `/api/noticia?id=${idNota}`;
 }
 
+// OPTIMIZACIÓN MÁXIMA: 1 SOLA PETICIÓN SQL Y CACHÉ PERSISTENTE DE 15 MIN
 async function cargarNoticiasDestacadasPorCategoria() {
   const contenedor = document.getElementById('contenedor-destacadas-grid');
   if (!contenedor || !supabaseClient) return;
 
-  const cacheDestacadas = sessionStorage.getItem('cache_destacadas_categorias');
-  if (cacheDestacadas) {
+  const ahora = Date.now();
+  const cacheDestacadas = localStorage.getItem('cache_destacadas_v2');
+  const cacheTime = localStorage.getItem('cache_destacadas_time');
+
+  if (cacheDestacadas && cacheTime && (ahora - cacheTime < CACHE_TTL_MS)) {
     renderizarDestacadas(JSON.parse(cacheDestacadas), contenedor);
     return;
   }
 
-  const categorias = [
-    'seguridad', 'economia', 'local', 'politica', 
-    'tecnologia', 'medio ambiente', 'historia', 'migracion', 'clima', 'cultura'
-  ];
-
   try {
-    const promesas = categorias.map(cat => 
-      supabaseClient
-        .from('Noticias')
-        .select('id, titulo, categoria, created_at, imagen_url, galeria, video_url')
-        .ilike('categoria', `%${cat}%`)
-        .order('created_at', { ascending: false })
-        .limit(1)
-    );
+    const { data: destacadas, error } = await supabaseClient
+      .from('Noticias')
+      .select('id, titulo, categoria, created_at, imagen_url, galeria, video_url')
+      .order('created_at', { ascending: false })
+      .limit(30); // Traer las 30 más recientes para filtrar localmente
 
-    const resultados = await Promise.all(promesas);
+    if (error) throw error;
 
-    const destacadas = resultados
-      .map(res => res.data && res.data[0])
-      .filter(nota => nota !== undefined && nota !== null);
+    const ultimasPorCategoria = [];
+    const categoriasVistas = new Set();
 
-    if (destacadas.length > 0) {
-      sessionStorage.setItem('cache_destacadas_categorias', JSON.stringify(destacadas));
-      renderizarDestacadas(destacadas, contenedor);
+    if (destacadas) {
+      for (const nota of destacadas) {
+        const catNorm = nota.categoria ? nota.categoria.toLowerCase().trim() : 'general';
+        if (!categoriasVistas.has(catNorm)) {
+          categoriasVistas.add(catNorm);
+          ultimasPorCategoria.push(nota);
+        }
+      }
+    }
+
+    if (ultimasPorCategoria.length > 0) {
+      localStorage.setItem('cache_destacadas_v2', JSON.stringify(ultimasPorCategoria));
+      localStorage.setItem('cache_destacadas_time', ahora);
+      renderizarDestacadas(ultimasPorCategoria, contenedor);
     } else {
       contenedor.innerHTML = '<p style="color: #94a3b8; font-size: 0.85rem;">No hay noticias destacadas por el momento.</p>';
     }
@@ -197,7 +206,7 @@ function renderizarDestacadas(listaDestacadas, contenedor) {
     if (listaFotos.length > 0) {
       fotoUrl = listaFotos[0];
     } else if (ytId) {
-      fotoUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+      fotoUrl = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`; // mqdefault = Ultra liviana (15-25 KB)
       esVideo = true;
     }
 
@@ -224,7 +233,6 @@ function renderizarDestacadas(listaDestacadas, contenedor) {
     card.addEventListener('click', () => abrirModalNoticia(card.getAttribute('data-id')));
   });
 
-  // INICIALIZAR MOVIMIENTO AUTOMÁTICO
   iniciarAutoDesplazamientoCarrusel(contenedor);
 }
 
@@ -234,7 +242,7 @@ function iniciarAutoDesplazamientoCarrusel(contenedor) {
   const btnPrev = document.getElementById('btn-carrusel-prev');
   const btnNext = document.getElementById('btn-carrusel-next');
 
-  const pasoDesplazamiento = 234; // Distancia de desplazamiento por ciclo
+  const pasoDesplazamiento = 234;
 
   const desplazarSiguiente = () => {
     if (contenedor.scrollLeft + contenedor.clientWidth >= contenedor.scrollWidth - 10) {
@@ -255,11 +263,9 @@ function iniciarAutoDesplazamientoCarrusel(contenedor) {
   if (btnNext) btnNext.onclick = () => desplazarSiguiente();
   if (btnPrev) btnPrev.onclick = () => desplazarAnterior();
 
-  // Rotación automática cada 3.5 segundos
   clearInterval(intervaloCarrusel);
   intervaloCarrusel = setInterval(desplazarSiguiente, 3500);
 
-  // Pausar rotación si el cursor está sobre la tarjeta
   contenedor.onmouseenter = () => clearInterval(intervaloCarrusel);
   contenedor.onmouseleave = () => {
     clearInterval(intervaloCarrusel);
@@ -294,7 +300,7 @@ function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusque
     } else {
       const ytId = obtenerYouTubeId(nota.video_url);
       if (ytId) {
-        const miniaturaYt = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        const miniaturaYt = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
         mediaHTML = `
           <div style="position: relative; width: 100%; height: 180px; background: #000; border-radius: 4px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
             <img src="${miniaturaYt}" alt="${nota.titulo || 'Video'}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" loading="lazy">
