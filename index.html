@@ -13,6 +13,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="">
 
+  <!-- Preconexión acelerada a Supabase y CDN -->
+  <link rel="preconnect" href="https://akwnmorymjhthdkcebri.supabase.co">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="styles.css">
   
@@ -49,7 +51,7 @@
   <header class="header-oficial">
     <div class="banner-imagen-full">
       <div class="banner-img-container">
-        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img">
+        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img" loading="eager">
       </div>
     </div>
 
@@ -86,7 +88,7 @@
       <a href="#" class="nav-btn active" data-categoria="todas">Inicio</a>
       <a href="#" class="nav-btn" data-categoria="seguridad">Seguridad</a>
       <a href="#" class="nav-btn" data-categoria="economia">Economía</a>
-      <a href="#" class="nav-btn" data-categoria="local">Local</a> <!-- CAMBIADO AQUÍ -->
+      <a href="#" class="nav-btn" data-categoria="local">Local</a>
       <a href="#" class="nav-btn" data-categoria="politica">Política</a>
       <a href="#" class="nav-btn" data-categoria="tecnologia">Tecnología</a>
       <a href="#" class="nav-btn" data-categoria="medio ambiente">Medio Ambiente</a>
