@@ -12,6 +12,8 @@ let categoriaActual = 'todas';
 const cacheNoticias = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000; 
 
+let intervaloCarrusel = null;
+
 function obtenerListaFotos(nota) {
   const textoImagenes = nota.imagen_url || nota.galeria;
   if (!textoImagenes) return [];
@@ -187,14 +189,33 @@ async function cargarNoticiasDestacadasPorCategoria() {
 function renderizarDestacadas(listaDestacadas, contenedor) {
   contenedor.innerHTML = listaDestacadas.map(nota => {
     const listaFotos = obtenerListaFotos(nota);
-    const foto = listaFotos.length > 0 ? listaFotos[0] : '';
+    const ytId = obtenerYouTubeId(nota.video_url);
+    
+    let fotoUrl = '';
+    let esVideo = false;
+
+    if (listaFotos.length > 0) {
+      fotoUrl = listaFotos[0];
+    } else if (ytId) {
+      fotoUrl = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+      esVideo = true;
+    }
+
     const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
 
     return `
-      <div class="noticia-destacada-card" data-id="${nota.id}" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #1e293b; border-radius: 10px; padding: 10px; cursor: pointer; transition: transform 0.2s;">
-        <span class="categoria ${catClase}" style="font-size: 0.75rem; padding: 2px 8px;">${nota.categoria}</span>
-        ${foto ? `<img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin: 8px 0;" loading="lazy">` : ''}
-        <h4 style="font-size: 0.85rem; color: #f8fafc; margin: 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;">${nota.titulo}</h4>
+      <div class="noticia-destacada-card" data-id="${nota.id}" style="flex: 0 0 220px; width: 220px; background: rgba(15, 23, 42, 0.85); border: 1px solid #1e293b; border-radius: 12px; padding: 10px; cursor: pointer; transition: transform 0.2s, border-color 0.2s; box-sizing: border-box;">
+        <span class="categoria ${catClase}" style="font-size: 0.72rem; padding: 2px 8px;">${nota.categoria}</span>
+        
+        <div style="position: relative; width: 100%; height: 110px; margin: 8px 0; border-radius: 8px; overflow: hidden; background: #000;">
+          ${fotoUrl ? `<img src="${fotoUrl}" alt="${nota.titulo}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">` : '<div style="width:100%; height:100%; background:#1e293b;"></div>'}
+          ${esVideo ? `
+            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center;">
+              <span style="background: rgba(220, 38, 38, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 4px;">▶ Video</span>
+            </div>` : ''}
+        </div>
+        
+        <h4 style="font-size: 0.85rem; color: #f8fafc; margin: 5px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35;">${nota.titulo}</h4>
       </div>
     `;
   }).join('');
@@ -202,6 +223,48 @@ function renderizarDestacadas(listaDestacadas, contenedor) {
   contenedor.querySelectorAll('.noticia-destacada-card').forEach(card => {
     card.addEventListener('click', () => abrirModalNoticia(card.getAttribute('data-id')));
   });
+
+  // INICIALIZAR MOVIMIENTO AUTOMÁTICO
+  iniciarAutoDesplazamientoCarrusel(contenedor);
+}
+
+function iniciarAutoDesplazamientoCarrusel(contenedor) {
+  if (!contenedor) return;
+
+  const btnPrev = document.getElementById('btn-carrusel-prev');
+  const btnNext = document.getElementById('btn-carrusel-next');
+
+  const pasoDesplazamiento = 234; // Distancia de desplazamiento por ciclo
+
+  const desplazarSiguiente = () => {
+    if (contenedor.scrollLeft + contenedor.clientWidth >= contenedor.scrollWidth - 10) {
+      contenedor.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      contenedor.scrollBy({ left: pasoDesplazamiento, behavior: 'smooth' });
+    }
+  };
+
+  const desplazarAnterior = () => {
+    if (contenedor.scrollLeft <= 0) {
+      contenedor.scrollTo({ left: contenedor.scrollWidth, behavior: 'smooth' });
+    } else {
+      contenedor.scrollBy({ left: -pasoDesplazamiento, behavior: 'smooth' });
+    }
+  };
+
+  if (btnNext) btnNext.onclick = () => desplazarSiguiente();
+  if (btnPrev) btnPrev.onclick = () => desplazarAnterior();
+
+  // Rotación automática cada 3.5 segundos
+  clearInterval(intervaloCarrusel);
+  intervaloCarrusel = setInterval(desplazarSiguiente, 3500);
+
+  // Pausar rotación si el cursor está sobre la tarjeta
+  contenedor.onmouseenter = () => clearInterval(intervaloCarrusel);
+  contenedor.onmouseleave = () => {
+    clearInterval(intervaloCarrusel);
+    intervaloCarrusel = setInterval(desplazarSiguiente, 3500);
+  };
 }
 
 function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusqueda = false) {
