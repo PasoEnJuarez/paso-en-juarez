@@ -141,6 +141,69 @@ function abrirModalNoticia(idNota) {
   window.location.href = `/api/noticia?id=${idNota}`;
 }
 
+async function cargarNoticiasDestacadasPorCategoria() {
+  const contenedor = document.getElementById('contenedor-destacadas-grid');
+  if (!contenedor || !supabaseClient) return;
+
+  const cacheDestacadas = sessionStorage.getItem('cache_destacadas_categorias');
+  if (cacheDestacadas) {
+    renderizarDestacadas(JSON.parse(cacheDestacadas), contenedor);
+    return;
+  }
+
+  const categorias = [
+    'seguridad', 'economia', 'local', 'politica', 
+    'tecnologia', 'medio ambiente', 'historia', 'migracion', 'clima', 'cultura'
+  ];
+
+  try {
+    const promesas = categorias.map(cat => 
+      supabaseClient
+        .from('Noticias')
+        .select('id, titulo, categoria, created_at, imagen_url, galeria, video_url')
+        .ilike('categoria', `%${cat}%`)
+        .order('created_at', { ascending: false })
+        .limit(1)
+    );
+
+    const resultados = await Promise.all(promesas);
+
+    const destacadas = resultados
+      .map(res => res.data && res.data[0])
+      .filter(nota => nota !== undefined && nota !== null);
+
+    if (destacadas.length > 0) {
+      sessionStorage.setItem('cache_destacadas_categorias', JSON.stringify(destacadas));
+      renderizarDestacadas(destacadas, contenedor);
+    } else {
+      contenedor.innerHTML = '<p style="color: #94a3b8; font-size: 0.85rem;">No hay noticias destacadas por el momento.</p>';
+    }
+
+  } catch (err) {
+    console.error("Error al cargar destacadas:", err);
+  }
+}
+
+function renderizarDestacadas(listaDestacadas, contenedor) {
+  contenedor.innerHTML = listaDestacadas.map(nota => {
+    const listaFotos = obtenerListaFotos(nota);
+    const foto = listaFotos.length > 0 ? listaFotos[0] : '';
+    const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
+
+    return `
+      <div class="noticia-destacada-card" data-id="${nota.id}" style="background: rgba(15, 23, 42, 0.8); border: 1px solid #1e293b; border-radius: 10px; padding: 10px; cursor: pointer; transition: transform 0.2s;">
+        <span class="categoria ${catClase}" style="font-size: 0.75rem; padding: 2px 8px;">${nota.categoria}</span>
+        ${foto ? `<img src="${foto}" alt="${nota.titulo}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin: 8px 0;" loading="lazy">` : ''}
+        <h4 style="font-size: 0.85rem; color: #f8fafc; margin: 5px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;">${nota.titulo}</h4>
+      </div>
+    `;
+  }).join('');
+
+  contenedor.querySelectorAll('.noticia-destacada-card').forEach(card => {
+    card.addEventListener('click', () => abrirModalNoticia(card.getAttribute('data-id')));
+  });
+}
+
 function renderizarListaNoticias(noticiasAMostrar, contenedor, esResultadoBusqueda = false) {
   let htmlNoticias = noticiasAMostrar.map(nota => {
     const listaFotos = obtenerListaFotos(nota);
@@ -242,7 +305,6 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   const claveCache = `${categoria}_${paginaActual}`;
   const horaActual = Date.now();
 
-  // VERIFICAR SI LA CONSULTA YA ESTÁ EN CACHÉ Y TIENE MENOS DE 5 MINUTOS DE ANTIGÜEDAD
   if (cacheNoticias.has(claveCache)) {
     const { timestamp, data } = cacheNoticias.get(claveCache);
     if (horaActual - timestamp < CACHE_TTL_MS) {
@@ -261,7 +323,6 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   }
 
   try {
-    // CONSULTA OPTIMIZADA CON COLUMNAS EXISTENTES EXCLUSIVAMENTE
     let query = supabaseClient
       .from('Noticias')
       .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, video_url')
@@ -280,7 +341,6 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
     listaNoticiasCargadas = noticias || [];
 
-    // Guardar respuesta en caché
     cacheNoticias.set(claveCache, {
       timestamp: horaActual,
       data: listaNoticiasCargadas
@@ -327,6 +387,7 @@ function procesarYRenderizar(noticias, contenedorNoticias, carruselCronologico) 
 
 document.addEventListener('DOMContentLoaded', () => {
   cargarNoticiasEnVivo('todas', 0);
+  cargarNoticiasDestacadasPorCategoria();
   inicializarPublicidad();
   inicializarWidgetsGlobales();
 
