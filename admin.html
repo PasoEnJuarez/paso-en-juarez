@@ -365,9 +365,13 @@
             const archivo = archivos[i];
             const nombreArchivo = `${Date.now()}_${i}_${archivo.name.replace(/\s+/g, '_')}`;
             
+            // CONFIGURACIÓN DE CACHÉ DE 1 AÑO (31536000 SEGUNDOS)
             const { error: uploadError } = await supabaseClient.storage
               .from('imagenes-noticias')
-              .upload(nombreArchivo, archivo);
+              .upload(nombreArchivo, archivo, {
+                cacheControl: '31536000',
+                upsert: true
+              });
 
             if (uploadError) throw new Error(`Error al subir la imagen: ${archivo.name}`);
             
@@ -545,7 +549,15 @@
 
         if (archivo) {
           const nombreArchivo = `desktop_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          
+          // CONFIGURACIÓN DE CACHÉ DE 1 AÑO
+          const { error: uploadError } = await supabaseClient.storage
+            .from('imagenes-noticias')
+            .upload(nombreArchivo, archivo, {
+              cacheControl: '31536000',
+              upsert: true
+            });
+
           if (uploadError) throw new Error('Error al subir la imagen');
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
@@ -654,7 +666,15 @@
 
         if (archivo) {
           const nombreArchivo = `movil_${posicion}_${Date.now()}_${archivo.name.replace(/\s+/g, '_')}`;
-          const { error: uploadError } = await supabaseClient.storage.from('imagenes-noticias').upload(nombreArchivo, archivo);
+          
+          // CONFIGURACIÓN DE CACHÉ DE 1 AÑO
+          const { error: uploadError } = await supabaseClient.storage
+            .from('imagenes-noticias')
+            .upload(nombreArchivo, archivo, {
+              cacheControl: '31536000',
+              upsert: true
+            });
+
           if (uploadError) throw new Error('Error al subir la imagen móvil');
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
         }
