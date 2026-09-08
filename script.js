@@ -13,7 +13,7 @@ const cacheNoticias = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000; 
 
 function obtenerListaFotos(nota) {
-  const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
+  const textoImagenes = nota.imagen_url || nota.galeria || nota.imagenes;
   if (!textoImagenes) return [];
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
@@ -40,7 +40,7 @@ async function inicializarPublicidad() {
     } else {
       const { data, error } = await supabaseClient
         .from('Anuncios')
-        .select('posicion, imagen_desktop, imagen_movil, imagen, link, nombre');
+        .select('posicion, imagen_desktop, imagen_movil, link, nombre');
         
       if (!error && data) {
         anuncios = data;
@@ -53,7 +53,7 @@ async function inicializarPublicidad() {
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
-      const foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
+      const foto = anuncio ? anuncio.imagen_desktop : null;
       
       if (anuncio && foto) {
         contenedor.innerHTML = `
@@ -69,7 +69,7 @@ async function inicializarPublicidad() {
       if (indexStr !== null) {
         const index = Number(indexStr);
         const anuncio = anuncios.find(a => Number(a.posicion) === index);
-        const fotoMovil = anuncio ? (anuncio.imagen_movil || anuncio.imagen) : null;
+        const fotoMovil = anuncio ? anuncio.imagen_movil : null;
 
         if (anuncio && fotoMovil) {
           contenedor.innerHTML = `
@@ -243,7 +243,7 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   const claveCache = `${categoria}_${paginaActual}`;
   const horaActual = Date.now();
 
-  // 2. VERIFICAR SI LA CONSULTA YA ESTÁ EN CACHÉ Y TIENE MENOS DE 5 MINUTOS DE ANTIGÜEDAD
+  // VERIFICAR SI LA CONSULTA YA ESTÁ EN CACHÉ Y TIENE MENOS DE 5 MINUTOS DE ANTIGÜEDAD
   if (cacheNoticias.has(claveCache)) {
     const { timestamp, data } = cacheNoticias.get(claveCache);
     if (horaActual - timestamp < CACHE_TTL_MS) {
@@ -262,10 +262,10 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   }
 
   try {
-    // 3. CONSULTA OPTIMIZADA: SOLO SE SOLICITAN LOS CAMPOS NECESARIOS (SIN SELECT *)
+    // CONSULTA OPTIMIZADA: SOLO SE SOLICITAN COLUMNAS EXISTENTES
     let query = supabaseClient
       .from('Noticias')
-      .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, imagen, imagenes, video_url')
+      .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, imagenes, video_url')
       .order('created_at', { ascending: false })
       .range(inicio, fin);
 
