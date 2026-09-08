@@ -13,7 +13,7 @@ const cacheNoticias = new Map();
 const CACHE_TTL_MS = 5 * 60 * 1000; 
 
 function obtenerListaFotos(nota) {
-  const textoImagenes = nota.imagen_url || nota.galeria || nota.imagenes;
+  const textoImagenes = nota.imagen_url || nota.galeria;
   if (!textoImagenes) return [];
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
@@ -31,7 +31,6 @@ async function inicializarPublicidad() {
   if (!supabaseClient) return;
 
   try {
-    // 1. INTENTAR OBTENER ANUNCIOS DESDE SESIÓN LOCAL PARA EVITAR LLAMADAS A SUPABASE
     let anuncios = null;
     const cacheAnuncios = sessionStorage.getItem('cache_anuncios');
 
@@ -262,10 +261,10 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
   }
 
   try {
-    // CONSULTA OPTIMIZADA: SOLO SE SOLICITAN COLUMNAS EXISTENTES
+    // CONSULTA OPTIMIZADA CON COLUMNAS EXISTENTES EXCLUSIVAMENTE
     let query = supabaseClient
       .from('Noticias')
-      .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, imagenes, video_url')
+      .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, video_url')
       .order('created_at', { ascending: false })
       .range(inicio, fin);
 
