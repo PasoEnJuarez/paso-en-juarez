@@ -8,6 +8,10 @@ let paginaActual = 0;
 const NOTICIAS_POR_PAGINA = 10;
 let categoriaActual = 'todas';
 
+// CACHÉ EN MEMORIA Y TIEMPO DE EXPIRACIÓN (5 MINUTOS)
+const cacheNoticias = new Map();
+const CACHE_TTL_MS = 5 * 60 * 1000; 
+
 function obtenerListaFotos(nota) {
   const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
   if (!textoImagenes) return [];
@@ -15,7 +19,6 @@ function obtenerListaFotos(nota) {
   return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
 }
 
-// Función actualizada para extraer el ID de YouTube (incluye Shorts, URLs cortas y normales)
 function obtenerYouTubeId(videoUrl) {
   if (!videoUrl) return '';
   const urlTrim = videoUrl.trim();
@@ -28,8 +31,24 @@ async function inicializarPublicidad() {
   if (!supabaseClient) return;
 
   try {
-    const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
-    if (error || !anuncios) return;
+    // 1. INTENTAR OBTENER ANUNCIOS DESDE SESIÓN LOCAL PARA EVITAR LLAMADAS A SUPABASE
+    let anuncios = null;
+    const cacheAnuncios = sessionStorage.getItem('cache_anuncios');
+
+    if (cacheAnuncios) {
+      anuncios = JSON.parse(cacheAnuncios);
+    } else {
+      const { data, error } = await supabaseClient
+        .from('Anuncios')
+        .select('posicion, imagen_desktop, imagen_movil, imagen, link, nombre');
+        
+      if (!error && data) {
+        anuncios = data;
+        sessionStorage.setItem('cache_anuncios', JSON.stringify(anuncios));
+      }
+    }
+
+    if (!anuncios) return;
 
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
@@ -39,7 +58,7 @@ async function inicializarPublicidad() {
       if (anuncio && foto) {
         contenedor.innerHTML = `
           <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
-            <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
+            <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
           </a>`;
       }
     });
@@ -55,7 +74,7 @@ async function inicializarPublicidad() {
         if (anuncio && fotoMovil) {
           contenedor.innerHTML = `
             <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
-              <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;">
+              <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;" loading="lazy">
             </a>`;
         }
       }
@@ -215,6 +234,25 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
   if (!supabaseClient) return;
 
+  categoriaActual = categoria;
+  paginaActual += direccion;
+  if (paginaActual < 0) paginaActual = 0;
+
+  const inicio = paginaActual * NOTICIAS_POR_PAGINA;
+  const fin = inicio + NOTICIAS_POR_PAGINA - 1;
+  const claveCache = `${categoria}_${paginaActual}`;
+  const horaActual = Date.now();
+
+  // 2. VERIFICAR SI LA CONSULTA YA ESTÁ EN CACHÉ Y TIENE MENOS DE 5 MINUTOS DE ANTIGÜEDAD
+  if (cacheNoticias.has(claveCache)) {
+    const { timestamp, data } = cacheNoticias.get(claveCache);
+    if (horaActual - timestamp < CACHE_TTL_MS) {
+      listaNoticiasCargadas = data;
+      procesarYRenderizar(data, contenedorNoticias, carruselCronologico);
+      return;
+    }
+  }
+
   if (contenedorNoticias) {
     contenedorNoticias.innerHTML = `
       <div style="grid-column: span 2; text-align: center; padding: 50px; color: #64748b;">
@@ -223,17 +261,11 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
       </div>`;
   }
 
-  categoriaActual = categoria;
-  paginaActual += direccion;
-  if (paginaActual < 0) paginaActual = 0;
-
-  const inicio = paginaActual * NOTICIAS_POR_PAGINA;
-  const fin = inicio + NOTICIAS_POR_PAGINA - 1;
-
   try {
+    // 3. CONSULTA OPTIMIZADA: SOLO SE SOLICITAN LOS CAMPOS NECESARIOS (SIN SELECT *)
     let query = supabaseClient
       .from('Noticias')
-      .select('*')
+      .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, imagen, imagenes, video_url')
       .order('created_at', { ascending: false })
       .range(inicio, fin);
 
@@ -249,39 +281,49 @@ async function cargarNoticiasEnVivo(categoria = 'todas', direccion = 0) {
 
     listaNoticiasCargadas = noticias || [];
 
-    if (!noticias || noticias.length === 0) {
-      if (paginaActual > 0) {
-        paginaActual--; 
-      }
-      if (contenedorNoticias && paginaActual === 0) {
-        contenedorNoticias.innerHTML = `<div style="grid-column: span 2; text-align: center; padding: 25px; background: #0f172a; border-radius: 8px; color: #94a3b8; border: 1px solid #1e293b;"><p>No hay noticias en esta categoría.</p></div>`;
-      }
-      if (carruselCronologico) {
-        carruselCronologico.innerHTML = `<p style="color: #94a3b8; padding: 10px;">No hay cronología disponible.</p>`;
-      }
-      return;
-    }
+    // Guardar respuesta en caché
+    cacheNoticias.set(claveCache, {
+      timestamp: horaActual,
+      data: listaNoticiasCargadas
+    });
 
-    if (contenedorNoticias) {
-      renderizarListaNoticias(listaNoticiasCargadas, contenedorNoticias, false);
-    }
-
-    if (carruselCronologico) {
-      carruselCronologico.innerHTML = noticias.map(nota => {
-        const hora = nota.created_at ? new Date(nota.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-        return `<div class="tarjeta-cronologica" data-id="${nota.id}" style="cursor: pointer;"><span class="hora">${hora}</span><h4>${nota.titulo || ''}</h4></div>`;
-      }).join('');
-
-      carruselCronologico.querySelectorAll('.tarjeta-cronologica').forEach(tarjeta => {
-        tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
-      });
-    }
-
-    inicializarPublicidad();
+    procesarYRenderizar(listaNoticiasCargadas, contenedorNoticias, carruselCronologico);
 
   } catch (err) {
     console.error("Error general:", err);
   }
+}
+
+function procesarYRenderizar(noticias, contenedorNoticias, carruselCronologico) {
+  if (!noticias || noticias.length === 0) {
+    if (paginaActual > 0) {
+      paginaActual--; 
+    }
+    if (contenedorNoticias && paginaActual === 0) {
+      contenedorNoticias.innerHTML = `<div style="grid-column: span 2; text-align: center; padding: 25px; background: #0f172a; border-radius: 8px; color: #94a3b8; border: 1px solid #1e293b;"><p>No hay noticias en esta categoría.</p></div>`;
+    }
+    if (carruselCronologico) {
+      carruselCronologico.innerHTML = `<p style="color: #94a3b8; padding: 10px;">No hay cronología disponible.</p>`;
+    }
+    return;
+  }
+
+  if (contenedorNoticias) {
+    renderizarListaNoticias(noticias, contenedorNoticias, false);
+  }
+
+  if (carruselCronologico) {
+    carruselCronologico.innerHTML = noticias.map(nota => {
+      const hora = nota.created_at ? new Date(nota.created_at).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+      return `<div class="tarjeta-cronologica" data-id="${nota.id}" style="cursor: pointer;"><span class="hora">${hora}</span><h4>${nota.titulo || ''}</h4></div>`;
+    }).join('');
+
+    carruselCronologico.querySelectorAll('.tarjeta-cronologica').forEach(tarjeta => {
+      tarjeta.addEventListener('click', () => abrirModalNoticia(tarjeta.getAttribute('data-id')));
+    });
+  }
+
+  inicializarPublicidad();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -289,8 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializarPublicidad();
   inicializarWidgetsGlobales();
 
-  // NOTA: Se mantiene la lógica del menú desplegable de widgets si lo conservaste en el HTML, 
-  // pero el botón de navegación principal ya funcionará automáticamente con data-categoria="local"
   const btnMenuPuentes = document.getElementById('btn-menu-puentes');
   const dropdownPuentes = document.getElementById('dropdown-puentes');
 
