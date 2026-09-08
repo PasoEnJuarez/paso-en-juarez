@@ -165,7 +165,7 @@ async function cargarNoticiasDestacadasPorCategoria() {
       .from('Noticias')
       .select('id, titulo, categoria, created_at, imagen_url, galeria, video_url')
       .order('created_at', { ascending: false })
-      .limit(30); // Traer las 30 más recientes para filtrar localmente
+      .limit(30);
 
     if (error) throw error;
 
@@ -206,7 +206,7 @@ function renderizarDestacadas(listaDestacadas, contenedor) {
     if (listaFotos.length > 0) {
       fotoUrl = listaFotos[0];
     } else if (ytId) {
-      fotoUrl = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`; // mqdefault = Ultra liviana (15-25 KB)
+      fotoUrl = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
       esVideo = true;
     }
 
