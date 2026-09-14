@@ -274,7 +274,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+    const SUPABASE_URL = 'https://api.pasoenjuarez.com';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -327,7 +327,10 @@
       const textoImagenes = nota.imagen_url || nota.galeria;
       if (!textoImagenes) return [];
       let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-      return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
+      return listaFotos.map(img => {
+        let urlLimpia = String(img).replace(/\\/g, '/').trim();
+        return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+      }).filter(img => img.length > 0);
     }
 
     window.onload = () => {
@@ -417,10 +420,11 @@
 
             if (uploadError) throw new Error(`Error al subir la imagen: ${archivoOriginal.name}`);
             
-            const publicUrl = supabaseClient.storage
+            let publicUrl = supabaseClient.storage
               .from('imagenes-noticias')
               .getPublicUrl(nombreArchivo).data.publicUrl;
 
+            publicUrl = publicUrl.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
             urlsImagenes.push(publicUrl);
           }
         }
@@ -524,7 +528,9 @@
       contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Escritorio Activos:</h4>';
       data.forEach(a => {
         const nombresEspacios = ["Espacio 1 (Sup. Izq)", "Espacio 2 (Inf. Izq)", "Espacio 3 (Sup. Der)", "Espacio 4 (Inf. Der)"];
-        const fotoAnuncio = a.imagen_desktop || IMG_DEFAULT;
+        let fotoAnuncio = a.imagen_desktop || IMG_DEFAULT;
+        if (fotoAnuncio) fotoAnuncio = fotoAnuncio.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+
         contenedor.innerHTML += `
           <div class="item-noticia">
             <img src="${fotoAnuncio}" alt="Anuncio" onerror="this.src='${IMG_DEFAULT}'">
@@ -602,6 +608,7 @@
 
           if (uploadError) throw new Error('Error al subir la imagen');
           urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
+          urlImagen = urlImagen.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
         }
 
         const datosAnuncio = { posicion, nombre, link };
@@ -652,7 +659,9 @@
       contenedor.innerHTML = '<h4 style="color:#38bdf8; margin-bottom:10px; font-size:1rem;">Banners Móvil Activos:</h4>';
       data.forEach(a => {
         const nombresEspacios = ["Banner Móvil 1 (Sup.)", "Banner Móvil 2 (Medio)", "Banner Móvil 3 (Inf.)"];
-        const fotoMovil = a.imagen_movil || IMG_DEFAULT;
+        let fotoMovil = a.imagen_movil || IMG_DEFAULT;
+        if (fotoMovil) fotoMovil = fotoMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+
         contenedor.innerHTML += `
           <div class="item-noticia">
             <img src="${fotoMovil}" alt="Anuncio Móvil" onerror="this.src='${IMG_DEFAULT}'">
@@ -711,40 +720,4 @@
           
           const { error: uploadError } = await supabaseClient.storage
             .from('imagenes-noticias')
-            .upload(nombreArchivo, archivoComprimido, {
-              cacheControl: '31536000',
-              upsert: true
-            });
-
-          if (uploadError) throw new Error('Error al subir la imagen móvil');
-          urlImagen = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nombreArchivo).data.publicUrl;
-        }
-
-        const datosAnuncio = { posicion, nombre, link };
-        if (urlImagen) datosAnuncio.imagen_movil = urlImagen;
-
-        if (editId) {
-          const { error: updateError } = await supabaseClient.from('Anuncios').update(datosAnuncio).eq('id', editId);
-          if (updateError) throw new Error(updateError.message);
-          mensajeAnuncioMovil.textContent = '¡Anuncio móvil actualizado con éxito!';
-        } else {
-          if (!urlImagen) throw new Error('Debes seleccionar una imagen móvil');
-          const { error: insertError } = await supabaseClient.from('Anuncios').insert(datosAnuncio);
-          if (insertError) throw new Error(insertError.message);
-          mensajeAnuncioMovil.textContent = '¡Anuncio móvil guardado con éxito!';
-        }
-
-        cancelarEdicionAnuncioMovil();
-        cargarAnunciosMovilAdmin();
-        setTimeout(() => mensajeAnuncioMovil.textContent = '', 3000);
-      } catch (err) {
-        mensajeAnuncioMovil.style.color = '#f43f5e';
-        mensajeAnuncioMovil.textContent = err.message;
-      } finally {
-        btnGuardar.disabled = false;
-        mensajeAnuncioMovil.style.color = '#38bdf8';
-      }
-    };
-  </script>
-</body>
-</html>
+            .upload(nombreArchivo, archivo
