@@ -18,6 +18,20 @@
   <!-- GOOGLE ADSENSE -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7441955238773256" crossorigin="anonymous"></script>
 
+  <!-- NOTIFICACIONES PUSH DE ONESIGNAL -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "fe25e3c8-f6ea-48fc-85f7-a9f1fa1a0263",
+        notifyButton: {
+          enable: true,
+        },
+      });
+    });
+  </script>
+
   <!-- SEO y Open Graph para Redes Sociales -->
   <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera.">
   <meta property="og:title" content="PasóEnJuárez | Noticias de la Frontera">
