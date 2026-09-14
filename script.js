@@ -1,4 +1,4 @@
-const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+const SUPABASE_URL = 'https://api.pasoenjuarez.com';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -29,7 +29,11 @@ function obtenerListaFotos(nota) {
   const textoImagenes = nota.imagen_url || nota.galeria;
   if (!textoImagenes) return [];
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-  return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
+  return listaFotos.map(img => {
+    let urlLimpia = String(img).replace(/\\/g, '/').trim();
+    // Redirige las solicitudes de imágenes directamente a través de Cloudflare
+    return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+  }).filter(img => img.length > 0);
 }
 
 function obtenerYouTubeId(videoUrl) {
@@ -69,7 +73,8 @@ async function inicializarPublicidad() {
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
-      const foto = anuncio ? anuncio.imagen_desktop : null;
+      let foto = anuncio ? anuncio.imagen_desktop : null;
+      if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
       
       if (anuncio && foto) {
         contenedor.innerHTML = `
@@ -93,7 +98,8 @@ async function inicializarPublicidad() {
       if (indexStr !== null) {
         const index = Number(indexStr);
         const anuncio = anuncios.find(a => Number(a.posicion) === index);
-        const fotoMovil = anuncio ? anuncio.imagen_movil : null;
+        let fotoMovil = anuncio ? anuncio.imagen_movil : null;
+        if (fotoMovil) fotoMovil = fotoMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
 
         if (anuncio && fotoMovil) {
           contenedor.innerHTML = `
