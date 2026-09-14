@@ -1,3 +1,22 @@
+/* OPTIMIZACIÓN CORE WEB VITALS: CARGA DE FUENTES */
+@font-face {
+  font-family: 'Segoe UI';
+  font-display: swap;
+}
+
+/* RESERVA DE ESPACIO PARA CONTENEDORES DE BANNERS (EVITA SHIFTS / CLS) */
+.caja-banner-vertical {
+  width: 100%;
+  min-height: 600px;
+  aspect-ratio: 170 / 600;
+}
+
+.caja-banner-movil {
+  width: 100%;
+  min-height: 100px;
+  aspect-ratio: 600 / 150;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -143,7 +162,6 @@ header nav a.active {
   background-color: #ffffff;
   border: 2px dashed #cbd5e1;
   border-radius: 6px;
-  height: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -228,6 +246,7 @@ header nav a.active {
 
 .categoria.seguridad { background-color: #b91c1c; }
 .categoria.economia { background-color: #15803d; }
+.categoria.local { background-color: #0284c7; }
 .categoria.politica { background-color: #6b21a8; }
 .categoria.tecnologia { background-color: #2563eb; }
 .categoria.ambiente,
@@ -465,7 +484,4 @@ footer {
   line-height: 1.6;
   white-space: pre-line;
   margin-bottom: 20px;
-}
-.categoria.local { 
-  background-color: #0284c7; 
 }
