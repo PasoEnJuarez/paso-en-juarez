@@ -16,6 +16,8 @@
   <meta property="og:image" content="https://www.pasoenjuarez.com/images/header-bg.jpg" />
   <meta property="og:url" content="" />
   
+  <!-- Preconexión acelerada al proxy en Cloudflare y CDN -->
+  <link rel="preconnect" href="https://api.pasoenjuarez.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="/styles.css">
   
@@ -183,7 +185,7 @@
 
   <!-- SCRIPT PRINCIPAL DE LA VISTA DETALLADA -->
   <script>
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+    const SUPABASE_URL = 'https://api.pasoenjuarez.com';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
     
     // Creación segura del cliente de Supabase
@@ -258,13 +260,16 @@
       const textoImagenes = nota.imagen_url || nota.galeria || nota.imagen || nota.imagenes;
       if (!textoImagenes) return [];
       let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
-      return listaFotos.map(img => String(img).replace(/\\/g, '/').trim()).filter(img => img.length > 0);
+      return listaFotos.map(img => {
+        let urlLimpia = String(img).replace(/\\/g, '/').trim();
+        return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+      }).filter(img => img.length > 0);
     }
 
     async function inicializarPublicidad() {
       if (!supabaseClient) return;
       try {
-        const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('*');
+        const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('posicion, imagen_desktop, imagen, link, nombre');
         if (error || !anuncios) return;
 
         const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
@@ -273,7 +278,8 @@
           if (indexStr !== null) {
             const index = Number(indexStr);
             const anuncio = anuncios.find(a => Number(a.posicion) === index);
-            const foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
+            let foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
+            if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
             
             if (anuncio && foto) {
               contenedor.innerHTML = `
