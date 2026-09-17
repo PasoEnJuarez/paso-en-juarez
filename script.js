@@ -14,6 +14,20 @@ const CACHE_TTL_MS = 15 * 60 * 1000;
 
 let intervaloCarrusel = null;
 
+// FUNCIÓN AUXILIAR PARA GENERAR SLUGS LIMPIOS DE URL (EJE: "noticia-de-ejemplo")
+function generarSlug(texto) {
+  if (!texto) return 'noticia';
+  return texto
+    .toString()
+    .toLowerCase()
+    .normalize('NFD') // Separa caracteres especiales y acentos
+    .replace(/[\u0300-\u036f]/g, '') // Elimina acentos
+    .trim()
+    .replace(/[^a-z0-9 -]/g, '') // Elimina símbolos raros
+    .replace(/\s+/g, '-') // Reemplaza espacios por guiones
+    .replace(/-+/g, '-'); // Evita guiones dobles
+}
+
 // FUNCIÓN PARA REGISTRAR CLICS DE ANUNCIANTES EN GOOGLE ANALYTICS 4
 function registrarClicAnuncio(nombrePatrocinador, posicion, tipoDispositivo) {
   if (typeof gtag === 'function') {
@@ -31,7 +45,6 @@ function obtenerListaFotos(nota) {
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos.map(img => {
     let urlLimpia = String(img).replace(/\\/g, '/').trim();
-    // Redirige las solicitudes de imágenes directamente a través de Cloudflare
     return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
   }).filter(img => img.length > 0);
 }
@@ -175,8 +188,15 @@ async function inicializarWidgetsGlobales() {
   }
 }
 
+// ABRIR NOTICIA UTILIZANDO LA URL CON HASH Y SLUG DEL TÍTULO
 function abrirModalNoticia(idNota) {
-  window.location.href = `/api/noticia?id=${idNota}`;
+  const noticia = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
+  if (noticia && noticia.titulo) {
+    const slug = generarSlug(noticia.titulo);
+    window.location.href = `/#/noticia/${idNota}/${slug}`;
+  } else {
+    window.location.href = `/#/noticia/${idNota}`;
+  }
 }
 
 // OPTIMIZACIÓN MÁXIMA: 1 SOLA PETICIÓN SQL Y CACHÉ PERSISTENTE DE 15 MIN
