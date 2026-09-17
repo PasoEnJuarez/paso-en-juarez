@@ -196,6 +196,22 @@
       console.error("SDK de Supabase no cargado correctamente.");
     }
 
+    // Extrae el ID de la noticia ya sea de /noticia.html#/noticia/68/slug o de ?id=68
+    function obtenerIdDesdeUrl() {
+      const hash = window.location.hash;
+      if (hash && hash.includes('/noticia/')) {
+        const partes = hash.split('/');
+        // En /#/noticia/68/slug, partes[0]='', partes[1]='#', partes[2]='noticia', partes[3]='68'
+        for (let i = 0; i < partes.length; i++) {
+          if (partes[i] === 'noticia' && partes[i + 1]) {
+            return partes[i + 1];
+          }
+        }
+      }
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
     async function inicializarWidgetsGlobales() {
       const elFecha = document.getElementById('widget-fecha');
       if (elFecha) {
@@ -295,8 +311,7 @@
     }
 
     async function cargarDetalleNoticia() {
-      const params = new URLSearchParams(window.location.search);
-      const idNoticia = params.get('id');
+      const idNoticia = obtenerIdDesdeUrl();
       const contenedor = document.getElementById('noticia-detalle-container');
 
       if (!idNoticia) {
@@ -325,6 +340,8 @@
           contenedor.innerHTML = `<p style="color: #ef4444; padding: 20px;">La noticia solicitada no existe o ya no está disponible.</p>`;
           return;
         }
+
+        document.title = `${nota.titulo || 'Noticia'} | PasóEnJuárez`;
 
         let mediaHTML = '';
         const ytId = obtenerYouTubeId(nota.video_url);
@@ -380,6 +397,8 @@
       inicializarPublicidad();
       inicializarWidgetsGlobales();
     });
+
+    window.addEventListener('hashchange', cargarDetalleNoticia);
   </script>
 
 </body>
