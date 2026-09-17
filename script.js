@@ -14,7 +14,7 @@ const CACHE_TTL_MS = 15 * 60 * 1000;
 
 let intervaloCarrusel = null;
 
-// FUNCIÓN AUXILIAR PARA GENERAR SLUGS LIMPIOS DE URL (EJE: "noticia-de-ejemplo")
+// FUNCIÓN AUXILIAR PARA GENERAR SLUGS LIMPIOS DE URL (EJ: "noticia-de-ejemplo")
 function generarSlug(texto) {
   if (!texto) return 'noticia';
   return texto
@@ -199,7 +199,7 @@ function abrirModalNoticia(idNota) {
   }
 }
 
-// OPTIMIZACIÓN MÁXIMA: 1 SOLA PETICIÓN SQL Y CACHÉ PERSISTENTE DE 15 MIN
+// OBTIENE LAS NOTICIAS DESTACADAS RECORRIENDO HASTA 100 REGISTROS PARA TODAS LAS CATEGORÍAS
 async function cargarNoticiasDestacadasPorCategoria() {
   const contenedor = document.getElementById('contenedor-destacadas-grid');
   if (!contenedor || !supabaseClient) return;
@@ -218,7 +218,7 @@ async function cargarNoticiasDestacadasPorCategoria() {
       .from('Noticias')
       .select('id, titulo, categoria, created_at, imagen_url, galeria, video_url')
       .order('created_at', { ascending: false })
-      .limit(30);
+      .limit(100);
 
     if (error) throw error;
 
@@ -227,7 +227,8 @@ async function cargarNoticiasDestacadasPorCategoria() {
 
     if (destacadas) {
       for (const nota of destacadas) {
-        const catNorm = nota.categoria ? nota.categoria.toLowerCase().trim() : 'general';
+        if (!nota.categoria) continue;
+        const catNorm = nota.categoria.toLowerCase().trim();
         if (!categoriasVistas.has(catNorm)) {
           categoriasVistas.add(catNorm);
           ultimasPorCategoria.push(nota);
