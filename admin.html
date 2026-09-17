@@ -134,7 +134,8 @@
 
   <div id="seccion-login" class="admin-container">
     <h2>🔐 Ingresar</h2>
-    <form id="form-login">
+    <!-- Se agrega method="post" y action="#" para prevenir el envío de credenciales en la URL -->
+    <form id="form-login" method="post" action="#">
       <div class="form-group">
         <label for="login-email">Correo:</label>
         <input type="email" id="login-email" name="email" value="pasoenjuarez@gmail.com" readonly>
