@@ -555,13 +555,20 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#menu-navegacion .nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
+      const cat = btn.getAttribute('data-categoria');
+
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       paginaActual = 0;
+      
+      // Actualizar la URL de forma limpia sin recargar la página para SEO y compartir enlaces
+      const nuevaUrl = cat === 'todas' ? window.location.pathname : `?cat=${encodeURIComponent(cat)}`;
+      window.history.pushState({ path: nuevaUrl }, '', nuevaUrl);
+
       const inputBuscador = document.getElementById('input-buscador-publico');
       if (inputBuscador) inputBuscador.value = '';
       
-      cargarNoticiasEnVivo(btn.getAttribute('data-categoria'), 0);
+      cargarNoticiasEnVivo(cat, 0);
     });
   });
 
