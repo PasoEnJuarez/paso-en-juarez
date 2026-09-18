@@ -194,7 +194,7 @@
       </div>
       <div class="form-group">
         <label for="contenido">Contenido:</label>
-        <textarea id="contenido" name="contenido" required rows="4"></textarea>
+        <textarea id="contenido" name="contenido" required rows="6"></textarea>
       </div>
       <button type="submit" id="btn-publicar">Publicar Noticia</button>
       <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
@@ -413,7 +413,9 @@
         }
 
         if (editId) {
-          const { error: updateError } = await supabaseClient.from('Noticias').update(datosNoticia).eq('id', editId);
+          // Uso de UPSERT en lugar de UPDATE para enviar petición POST y omitir el bloqueo CORS en PATCH
+          datosNoticia.id = Number(editId);
+          const { error: updateError } = await supabaseClient.from('Noticias').upsert(datosNoticia);
           if (updateError) throw new Error(updateError.message);
           mensajePub.textContent = '¡Noticia actualizada con éxito!';
         } else {
