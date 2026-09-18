@@ -15,6 +15,7 @@
   <meta property="og:description" content="Entérate de lo más relevante en Ciudad Juárez." />
   <meta property="og:image" content="https://www.pasoenjuarez.com/images/header-bg.jpg" />
   <meta property="og:url" content="" />
+  <link rel="canonical" id="canonical-url" href="https://pasoenjuarez.com/noticia.html" />
   
   <!-- Preconexión acelerada al proxy en Cloudflare y CDN -->
   <link rel="preconnect" href="https://api.pasoenjuarez.com">
@@ -51,7 +52,7 @@
     }
     .articulo-completo .cuerpo-texto {
       font-size: 1.05rem;
-      line-height: 1.7;
+      line-height: 1.8;
       color: #e2e8f0;
       white-space: pre-line;
       margin-top: 20px;
@@ -79,6 +80,9 @@
     .galeria-cuadricula img:hover {
       transform: scale(1.02);
       opacity: 0.9;
+    }
+    .caja-banner-vertical:empty {
+      display: none !important;
     }
     @media (max-width: 1024px) {
       .layout-noticia {
@@ -151,8 +155,8 @@
 
     <!-- PUBLICIDAD IZQUIERDA -->
     <aside class="columna-publicidad" aria-label="Publicidad lateral izquierda">
-      <div class="caja-banner-vertical" data-posicion-anuncio="0" style="width: 100%; height: 350px; background: #1e293b; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
-      <div class="caja-banner-vertical" data-posicion-anuncio="1" style="width: 100%; height: 350px; background: #1e293b; border-radius: 6px; overflow: hidden;"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="0" style="width: 100%; min-height: 250px; background: transparent; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="1" style="width: 100%; min-height: 250px; background: transparent; border-radius: 6px; overflow: hidden;"></div>
     </aside>
 
     <!-- CONTENIDO CENTRAL -->
@@ -173,8 +177,8 @@
 
     <!-- PUBLICIDAD DERECHA -->
     <aside class="columna-publicidad" aria-label="Publicidad lateral derecha">
-      <div class="caja-banner-vertical" data-posicion-anuncio="2" style="width: 100%; height: 350px; background: #1e293b; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
-      <div class="caja-banner-vertical" data-posicion-anuncio="3" style="width: 100%; height: 350px; background: #1e293b; border-radius: 6px; overflow: hidden;"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="2" style="width: 100%; min-height: 250px; background: transparent; margin-bottom: 20px; border-radius: 6px; overflow: hidden;"></div>
+      <div class="caja-banner-vertical" data-posicion-anuncio="3" style="width: 100%; min-height: 250px; background: transparent; border-radius: 6px; overflow: hidden;"></div>
     </aside>
 
   </div>
@@ -188,7 +192,6 @@
     const SUPABASE_URL = 'https://api.pasoenjuarez.com';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
     
-    // Creación segura del cliente de Supabase
     let supabaseClient = null;
     if (window.supabase && typeof window.supabase.createClient === 'function') {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -196,12 +199,10 @@
       console.error("SDK de Supabase no cargado correctamente.");
     }
 
-    // Extrae el ID de la noticia ya sea de /noticia.html#/noticia/68/slug o de ?id=68
     function obtenerIdDesdeUrl() {
       const hash = window.location.hash;
       if (hash && hash.includes('/noticia/')) {
         const partes = hash.split('/');
-        // En /#/noticia/68/slug, partes[0]='', partes[1]='#', partes[2]='noticia', partes[3]='68'
         for (let i = 0; i < partes.length; i++) {
           if (partes[i] === 'noticia' && partes[i + 1]) {
             return partes[i + 1];
@@ -286,23 +287,27 @@
       if (!supabaseClient) return;
       try {
         const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('posicion, imagen_desktop, imagen, link, nombre');
-        if (error || !anuncios) return;
-
+        
         const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
         espaciosEscritorio.forEach((contenedor) => {
           const indexStr = contenedor.getAttribute('data-posicion-anuncio');
-          if (indexStr !== null) {
+          if (indexStr !== null && anuncios) {
             const index = Number(indexStr);
             const anuncio = anuncios.find(a => Number(a.posicion) === index);
             let foto = anuncio ? (anuncio.imagen_desktop || anuncio.imagen) : null;
             if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
             
             if (anuncio && foto) {
+              contenedor.style.display = 'block';
               contenedor.innerHTML = `
                 <a href="${anuncio.link || '#'}" target="_blank" style="width:100%; height:100%; display:block;">
-                  <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;">
+                  <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover; border-radius:6px;">
                 </a>`;
+            } else {
+              contenedor.style.display = 'none';
             }
+          } else {
+            contenedor.style.display = 'none';
           }
         });
       } catch (err) {
@@ -342,6 +347,10 @@
         }
 
         document.title = `${nota.titulo || 'Noticia'} | PasóEnJuárez`;
+        const canonicalTag = document.getElementById('canonical-url');
+        if (canonicalTag) {
+          canonicalTag.href = window.location.href;
+        }
 
         let mediaHTML = '';
         const ytId = obtenerYouTubeId(nota.video_url);
