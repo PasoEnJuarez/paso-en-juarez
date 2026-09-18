@@ -36,9 +36,10 @@
   <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera.">
   <meta property="og:title" content="PasóEnJuárez | Noticias de la Frontera">
   <meta property="og:description" content="Entérate de lo que pasa en Ciudad Juárez: seguridad, economía, clima, local y más.">
-  <meta property="og:image" content="images/header-bg.jpg">
+  <meta property="og:image" content="https://pasoenjuarez.com/images/header-bg.jpg">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="">
+  <meta property="og:url" content="https://pasoenjuarez.com">
+  <link rel="canonical" href="https://pasoenjuarez.com">
 
   <!-- Preconexión acelerada a tu subdominio proxied en Cloudflare -->
   <link rel="preconnect" href="https://api.pasoenjuarez.com">
@@ -71,6 +72,11 @@
       border-color: #38bdf8;
     }
     
+    /* Ocultar cajas de banners sin anuncios activos para evitar objeciones de AdSense */
+    .caja-banner-vertical:empty, .caja-banner-movil:empty {
+      display: none !important;
+    }
+
     /* Estilos limpios para el carrusel horizontal */
     #contenedor-destacadas-grid::-webkit-scrollbar {
       height: 6px;
@@ -90,7 +96,9 @@
   <header class="header-oficial">
     <div class="banner-imagen-full">
       <div class="banner-img-container">
-        <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img" loading="eager">
+        <a href="/">
+          <img src="images/header-bg.jpg" alt="Pasó En Juárez Header" class="header-banner-img" loading="eager">
+        </a>
       </div>
     </div>
 
@@ -214,7 +222,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 
-  <!-- Script opcional para asignar dinámicamente la URL actual al Open Graph -->
+  <!-- Asignación dinámica de la URL en las etiquetas Open Graph -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const ogUrl = document.querySelector('meta[property="og:url"]');
