@@ -1,4 +1,4 @@
-const SUPABASE_URL = 'https://api.pasoenjuarez.com';
+const SUPABASE_URL = 'https://yyefcbsfftzcegftwflx.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -45,7 +45,8 @@ function obtenerListaFotos(nota) {
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos.map(img => {
     let urlLimpia = String(img).replace(/\\/g, '/').trim();
-    return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+    // Reemplaza cualquier referencia antigua por tu dominio y proyecto actual correcto
+    return urlLimpia.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://yyefcbsfftzcegftwflx.supabase.co');
   }).filter(img => img.length > 0);
 }
 
@@ -87,7 +88,7 @@ async function inicializarPublicidad() {
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
       let foto = anuncio ? anuncio.imagen_desktop : null;
-      if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+      if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://yyefcbsfftzcegftwflx.supabase.co');
       
       if (anuncio && foto) {
         contenedor.style.display = 'block';
@@ -116,7 +117,7 @@ async function inicializarPublicidad() {
         const index = Number(indexStr);
         const anuncio = anuncios.find(a => Number(a.posicion) === index);
         let fotoMovil = anuncio ? anuncio.imagen_movil : null;
-        if (fotoMovil) fotoMovil = fotoMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+        if (fotoMovil) fotoMovil = fotoMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://yyefcbsfftzcegftwflx.supabase.co');
 
         if (anuncio && fotoMovil) {
           contenedor.style.display = 'block';
