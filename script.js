@@ -90,8 +90,9 @@ async function inicializarPublicidad() {
       if (foto) foto = foto.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
       
       if (anuncio && foto) {
+        contenedor.style.display = 'block';
         contenedor.innerHTML = `
-          <a href="${anuncio.link || '#'}" target="_blank" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
+          <a href="${anuncio.link || '#'}" target="_blank" rel="noopener" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
             <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
           </a>`;
 
@@ -101,6 +102,9 @@ async function inicializarPublicidad() {
             registrarClicAnuncio(anuncio.nombre, index, 'escritorio');
           });
         }
+      } else {
+        contenedor.style.display = 'none';
+        contenedor.innerHTML = '';
       }
     });
 
@@ -115,8 +119,9 @@ async function inicializarPublicidad() {
         if (fotoMovil) fotoMovil = fotoMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
 
         if (anuncio && fotoMovil) {
+          contenedor.style.display = 'block';
           contenedor.innerHTML = `
-            <a href="${anuncio.link || '#'}" target="_blank" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
+            <a href="${anuncio.link || '#'}" target="_blank" rel="noopener" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
               <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;" loading="lazy">
             </a>`;
 
@@ -126,6 +131,9 @@ async function inicializarPublicidad() {
               registrarClicAnuncio(anuncio.nombre, index, 'movil');
             });
           }
+        } else {
+          contenedor.style.display = 'none';
+          contenedor.innerHTML = '';
         }
       }
     });
@@ -509,7 +517,22 @@ function procesarYRenderizar(noticias, contenedorNoticias, carruselCronologico) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  cargarNoticiasEnVivo('todas', 0);
+  // LECTURA DE CATEGORÍA DESDE LA URL (EJ: index.html?cat=seguridad)
+  const params = new URLSearchParams(window.location.search);
+  const catUrl = params.get('cat');
+  const categoriaInicial = catUrl ? catUrl.toLowerCase().trim() : 'todas';
+
+  if (catUrl) {
+    document.querySelectorAll('#menu-navegacion .nav-btn').forEach(btn => {
+      if (btn.getAttribute('data-categoria') === categoriaInicial) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  cargarNoticiasEnVivo(categoriaInicial, 0);
   cargarNoticiasDestacadasPorCategoria();
   inicializarPublicidad();
   inicializarWidgetsGlobales();
