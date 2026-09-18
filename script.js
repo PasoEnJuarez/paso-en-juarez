@@ -1,4 +1,4 @@
-const SUPABASE_URL = 'https://api.pasoenjuarez.com';
+const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -45,7 +45,7 @@ function obtenerListaFotos(nota) {
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
   return listaFotos.map(img => {
     let urlLimpia = String(img).replace(/\\/g, '/').trim();
-    return urlLimpia.replace('https://yyefcbsfftzcegftwflx.supabase.co', 'https://api.pasoenjuarez.com');
+    return urlLimpia;
   }).filter(img => img.length > 0);
 }
 
@@ -87,7 +87,6 @@ async function inicializarPublicidad() {
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
       let foto = anuncio ? anuncio.imagen_desktop : null;
-      if (foto) foto = foto.replace('https://yyefcbsfftzcegftwflx.supabase.co', 'https://api.pasoenjuarez.com');
       
       if (anuncio && foto) {
         contenedor.style.display = 'block';
@@ -116,7 +115,6 @@ async function inicializarPublicidad() {
         const index = Number(indexStr);
         const anuncio = anuncios.find(a => Number(a.posicion) === index);
         let fotoMovil = anuncio ? anuncio.imagen_movil : null;
-        if (fotoMovil) fotoMovil = fotoMovil.replace('https://yyefcbsfftzcegftwflx.supabase.co', 'https://api.pasoenjuarez.com');
 
         if (anuncio && fotoMovil) {
           contenedor.style.display = 'block';
