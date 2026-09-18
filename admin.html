@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>Panel Admin | PasóEnJuárez</title>
   <style>
     body { 
@@ -120,7 +121,7 @@
       width: auto;
     }
     .oculto { display: none; }
-    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio, #mensaje-anuncio-movil { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
+    #mensaje-login, #mensaje-publicacion, #mensaje-anuncio { text-align: center; font-weight: bold; margin-top: 15px; font-size: 0.9rem; }
 
     @media (min-width: 600px) {
       body { padding: 20px; }
@@ -134,7 +135,6 @@
 
   <div id="seccion-login" class="admin-container">
     <h2>🔐 Ingresar</h2>
-    <!-- Se agrega method="post" y action="#" para prevenir el envío de credenciales en la URL -->
     <form id="form-login" method="post" action="#">
       <div class="form-group">
         <label for="login-email">Correo:</label>
@@ -193,6 +193,40 @@
       <button type="button" id="btn-cancelar-edit" class="btn-danger oculto" onclick="cancelarEdicion()">Cancelar Edición</button>
     </form>
     <p id="mensaje-publicacion" style="color: #38bdf8;"></p>
+
+    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
+    <!-- SECCIÓN DE ADMINISTRACIÓN DE BANNERS / ANUNCIOS -->
+    <h2>📢 Configuración de Banners Publicitarios</h2>
+    <form id="form-anuncio">
+      <div class="form-group">
+        <label for="posicion-anuncio">Posición del Anuncio:</label>
+        <select id="posicion-anuncio" name="posicion">
+          <option value="0">Posición 0 (Lateral Izquierda Superior / Móvil Arriba)</option>
+          <option value="1">Posición 1 (Lateral Izquierda Inferior / Móvil Abajo)</option>
+          <option value="2">Posición 2 (Lateral Derecha Superior)</option>
+          <option value="3">Posición 3 (Lateral Derecha Inferior)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="nombre-anuncio">Nombre del Patrocinador / Anuncio:</label>
+        <input type="text" id="nombre-anuncio" placeholder="Ej: Restaurante Local" required>
+      </div>
+      <div class="form-group">
+        <label for="imagen-anuncio-desktop">Imagen Banner Escritorio (Vertical):</label>
+        <input type="file" id="imagen-anuncio-desktop" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="imagen-anuncio-movil">Imagen Banner Móvil (Horizontal / Opcional):</label>
+        <input type="file" id="imagen-anuncio-movil" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="link-anuncio">Enlace de Destino (URL):</label>
+        <input type="url" id="link-anuncio" placeholder="https://ejemplo.com" required>
+      </div>
+      <button type="submit" id="btn-anuncio">Guardar Anuncio</button>
+    </form>
+    <p id="mensaje-anuncio" style="color: #38bdf8;"></p>
 
     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
@@ -388,6 +422,70 @@
       } finally {
         btnPublicar.disabled = false;
         mensajePub.style.color = '#38bdf8';
+      }
+    };
+
+    // FORMULARIO Y LÓGICA DE PUBLICIDAD DE BANNERS
+    document.getElementById('form-anuncio').onsubmit = async (e) => {
+      e.preventDefault();
+      const btnAnuncio = document.getElementById('btn-anuncio');
+      const mensajeAnuncio = document.getElementById('mensaje-anuncio');
+
+      btnAnuncio.disabled = true;
+      mensajeAnuncio.textContent = 'Guardando banner...';
+
+      try {
+        const posicion = document.getElementById('posicion-anuncio').value;
+        const nombre = document.getElementById('nombre-anuncio').value;
+        const link = document.getElementById('link-anuncio').value;
+        
+        const fileDesktop = document.getElementById('imagen-anuncio-desktop').files[0];
+        const fileMovil = document.getElementById('imagen-anuncio-movil').files[0];
+
+        let urlDesktop = null;
+        let urlMovil = null;
+
+        if (fileDesktop) {
+          const compDesktop = await comprimirImagenWebP(fileDesktop, 800, 0.8);
+          const nameDesktop = `banner_desk_${posicion}_${Date.now()}.webp`;
+          
+          await supabaseClient.storage.from('imagenes-noticias').upload(nameDesktop, compDesktop, { upsert: true });
+          urlDesktop = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nameDesktop).data.publicUrl;
+          urlDesktop = urlDesktop.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+        }
+
+        if (fileMovil) {
+          const compMovil = await comprimirImagenWebP(fileMovil, 800, 0.8);
+          const nameMovil = `banner_movil_${posicion}_${Date.now()}.webp`;
+          
+          await supabaseClient.storage.from('imagenes-noticias').upload(nameMovil, compMovil, { upsert: true });
+          urlMovil = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nameMovil).data.publicUrl;
+          urlMovil = urlMovil.replace('https://akwnmorymjhthdkcebri.supabase.co', 'https://api.pasoenjuarez.com');
+        }
+
+        const datosAnuncio = {
+          posicion: Number(posicion),
+          nombre: nombre,
+          link: link
+        };
+
+        if (urlDesktop) datosAnuncio.imagen_desktop = urlDesktop;
+        if (urlMovil) datosAnuncio.imagen_movil = urlMovil;
+
+        const { error } = await supabaseClient.from('Anuncios').upsert(datosAnuncio, { onConflict: 'posicion' });
+
+        if (error) throw error;
+
+        mensajeAnuncio.textContent = '¡Banner guardado correctamente!';
+        document.getElementById('form-anuncio').reset();
+        setTimeout(() => mensajeAnuncio.textContent = '', 3000);
+
+      } catch (err) {
+        mensajeAnuncio.style.color = '#f43f5e';
+        mensajeAnuncio.textContent = 'Error: ' + err.message;
+      } finally {
+        btnAnuncio.disabled = false;
+        mensajeAnuncio.style.color = '#38bdf8';
       }
     };
 
