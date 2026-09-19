@@ -187,7 +187,7 @@
       </div>
       <div class="form-group">
         <label for="video-url">🔗 URL de Video (Opcional):</label>
-        <input type="url" id="video-url" name="video_url" placeholder="[https://www.youtube.com/watch?v=](https://www.youtube.com/watch?v=)...">
+        <input type="url" id="video-url" name="video_url" placeholder="https://www.youtube.com/watch?v=...">
       </div>
       <div class="form-group">
         <label for="contenido">Contenido:</label>
@@ -227,7 +227,7 @@
       </div>
       <div class="form-group">
         <label for="link-anuncio">Enlace de Destino (URL):</label>
-        <input type="url" id="link-anuncio" placeholder="[https://ejemplo.com](https://ejemplo.com)" required>
+        <input type="url" id="link-anuncio" placeholder="https://ejemplo.com" required>
       </div>
       <button type="submit" id="btn-anuncio">Guardar Anuncio</button>
     </form>
@@ -243,15 +243,14 @@
     <button class="btn-danger" onclick="cerrarSesion()" style="margin-top: 25px;">Cerrar Sesión</button>
   </div>
 
-  <script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = '[https://api.pasoenjuarez.com](https://api.pasoenjuarez.com)';
-    // REMPLAZA CON TU CLAVE DE ENTORNO O MANTÉN RLS CONFIGURADO EN TABLAS
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
+    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let noticiasAdminCache = []; 
-    const IMG_DEFAULT = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' width='50' height='50'%3E%3Crect width='50' height='50' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' fill='%2394a3b8' font-size='10' text-anchor='middle' dominant-baseline='central'%3ES/I%3C/text%3E%3C/svg%3E";
+    const IMG_DEFAULT = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Crect width='50' height='50' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' fill='%2394a3b8' font-size='10' text-anchor='middle' dominant-baseline='central'%3ES/I%3C/text%3E%3C/svg%3E";
 
     function comprimirImagenWebP(archivo, anchoMaximo = 1200, calidad = 0.8) {
       return new Promise((resolve, reject) => {
@@ -297,7 +296,7 @@
       let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
       return listaFotos.map(img => {
         let urlLimpia = String(img).replace(/\\/g, '/').trim();
-        return urlLimpia.replace('[https://akwnmorymjhthdkcebri.supabase.co](https://akwnmorymjhthdkcebri.supabase.co)', '[https://api.pasoenjuarez.com](https://api.pasoenjuarez.com)');
+        return urlLimpia;
       }).filter(img => img.length > 0);
     }
 
@@ -404,7 +403,6 @@
               .from('imagenes-noticias')
               .getPublicUrl(nombreArchivo).data.publicUrl;
 
-            publicUrl = publicUrl.replace('[https://akwnmorymjhthdkcebri.supabase.co](https://akwnmorymjhthdkcebri.supabase.co)', '[https://api.pasoenjuarez.com](https://api.pasoenjuarez.com)');
             urlsImagenes.push(publicUrl);
           }
         }
@@ -468,7 +466,6 @@
           
           await supabaseClient.storage.from('imagenes-noticias').upload(nameDesktop, compDesktop, { upsert: true });
           urlDesktop = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nameDesktop).data.publicUrl;
-          urlDesktop = urlDesktop.replace('[https://akwnmorymjhthdkcebri.supabase.co](https://akwnmorymjhthdkcebri.supabase.co)', '[https://api.pasoenjuarez.com](https://api.pasoenjuarez.com)');
         }
 
         if (fileMovil) {
@@ -477,7 +474,6 @@
           
           await supabaseClient.storage.from('imagenes-noticias').upload(nameMovil, compMovil, { upsert: true });
           urlMovil = supabaseClient.storage.from('imagenes-noticias').getPublicUrl(nameMovil).data.publicUrl;
-          urlMovil = urlMovil.replace('[https://akwnmorymjhthdkcebri.supabase.co](https://akwnmorymjhthdkcebri.supabase.co)', '[https://api.pasoenjuarez.com](https://api.pasoenjuarez.com)');
         }
 
         const datosAnuncio = {
