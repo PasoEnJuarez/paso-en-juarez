@@ -65,12 +65,13 @@ export default async function handler(req, res) {
     const filePath = path.join(process.cwd(), 'noticia.html');
     let html = fs.readFileSync(filePath, 'utf8');
 
+    // Reemplazo robusto y blindado para asegurar que inyecte título, descripción e imagen sin fallar
     html = html
-      .replace(/<title>.*?<\/title>/i, `<title>${title}</title>`)
-      .replace(/<meta\s+property=["']og:title["']\s+content=["'].*?["']\s*\/?>/i, `<meta property="og:title" content="${title}">`)
-      .replace(/<meta\s+property=["']og:description["']\s+content=["'].*?["']\s*\/?>/i, `<meta property="og:description" content="${desc}">`)
-      .replace(/<meta\s+property=["']og:image["']\s+content=["'].*?["']\s*\/?>/i, `<meta property="og:image" content="${image}">`)
-      .replace(/<meta\s+property=["']og:url["']\s+content=["'].*?["']\s*\/?>/i, `<meta property="og:url" content="${url}">`);
+      .replace(/<title>[\s\S]*?<\/title>/i, `<title>${title}</title>`)
+      .replace(/<meta\s+property=["']og:title["'][\s\S]*?\/?>/i, `<meta property="og:title" content="${title}">`)
+      .replace(/<meta\s+property=["']og:description["'][\s\S]*?\/?>/i, `<meta property="og:description" content="${desc}">`)
+      .replace(/<meta\s+property=["']og:image["'][\s\S]*?\/?>/i, `<meta property="og:image" content="${image}">`)
+      .replace(/<meta\s+property=["']og:url["'][\s\S]*?\/?>/i, `<meta property="og:url" content="${url}">`);
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
