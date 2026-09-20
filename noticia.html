@@ -204,12 +204,19 @@
         const partes = hash.split('/');
         for (let i = 0; i < partes.length; i++) {
           if (partes[i] === 'noticia' && partes[i + 1]) {
-            return partes[i + 1];
+            const matchNum = String(partes[i + 1]).match(/^(\d+)/);
+            return matchNum ? matchNum[1] : partes[i + 1];
           }
         }
       }
       const params = new URLSearchParams(window.location.search);
-      return params.get('id');
+      const rawId = params.get('id');
+      if (rawId) {
+        // Extrae únicamente los dígitos iniciales del ID (ignora el slug o texto extra)
+        const matchNum = String(rawId).match(/^(\d+)/);
+        return matchNum ? matchNum[1] : rawId;
+      }
+      return null;
     }
 
     async function inicializarWidgetsGlobales() {
