@@ -194,14 +194,14 @@ async function inicializarWidgetsGlobales() {
   }
 }
 
-// REDIRIGE A LA PÁGINA NOTICIA.HTML CON ID Y SLUG EN LA URL
+// REDIRIGE A LA FUNCIÓN DE VERCEL PARA CARGAR METADATOS Y MOSTRAR LA NOTICIA
 function abrirModalNoticia(idNota) {
   const noticia = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
   if (noticia && noticia.titulo) {
     const slug = generarSlug(noticia.titulo);
-    window.location.href = `/noticia.html#/noticia/${idNota}/${slug}`;
+    window.location.href = `/api/noticia?id=${idNota}/${slug}`;
   } else {
-    window.location.href = `/noticia.html#/noticia/${idNota}`;
+    window.location.href = `/api/noticia?id=${idNota}`;
   }
 }
 
