@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
@@ -8,27 +8,24 @@ let paginaActual = 0;
 const NOTICIAS_POR_PAGINA = 10;
 let categoriaActual = 'todas';
 
-// CACHÉ EN MEMORIA Y TIEMPO DE EXPIRACIÓN EN LOCALSTORAGE (15 MINUTOS)
 const cacheNoticias = new Map();
 const CACHE_TTL_MS = 15 * 60 * 1000; 
 
 let intervaloCarrusel = null;
 
-// FUNCIÓN AUXILIAR PARA GENERAR SLUGS LIMPIOS DE URL (EJ: "noticia-de-ejemplo")
 function generarSlug(texto) {
   if (!texto) return 'noticia';
   return texto
     .toString()
     .toLowerCase()
-    .normalize('NFD') // Separa caracteres especiales y acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina acentos
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .trim()
-    .replace(/[^a-z0-9 -]/g, '') // Elimina símbolos raros
-    .replace(/\s+/g, '-') // Reemplaza espacios por guiones
-    .replace(/-+/g, '-'); // Evita guiones dobles
+    .replace(/[^a-z0-9 -]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
 }
 
-// FUNCIÓN PARA REGISTRAR CLICS DE ANUNCIANTES EN GOOGLE ANALYTICS 4
 function registrarClicAnuncio(nombrePatrocinador, posicion, tipoDispositivo) {
   if (typeof gtag === 'function') {
     gtag('event', 'clic_publicidad', {
@@ -82,7 +79,6 @@ async function inicializarPublicidad() {
 
     if (!anuncios) return;
 
-    // RENDERIZADO Y TRACKING DE BANNERS ESCRITORIO
     const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
     espaciosEscritorio.forEach((contenedor, index) => {
       const anuncio = anuncios.find(a => Number(a.posicion) === index);
@@ -107,7 +103,6 @@ async function inicializarPublicidad() {
       }
     });
 
-    // RENDERIZADO Y TRACKING DE BANNERS MÓVIL
     const espaciosMovil = document.querySelectorAll('.caja-banner-movil');
     espaciosMovil.forEach((contenedor) => {
       const indexStr = contenedor.getAttribute('data-posicion-anuncio');
@@ -194,7 +189,6 @@ async function inicializarWidgetsGlobales() {
   }
 }
 
-// REDIRIGE A LA FUNCIÓN DE VERCEL PARA CARGAR METADATOS Y MOSTRAR LA NOTICIA
 function abrirModalNoticia(idNota) {
   const noticia = listaNoticiasCargadas.find(n => String(n.id) === String(idNota));
   if (noticia && noticia.titulo) {
@@ -205,7 +199,6 @@ function abrirModalNoticia(idNota) {
   }
 }
 
-// OBTIENE LAS NOTICIAS DESTACADAS RECORRIENDO HASTA 100 REGISTROS PARA TODAS LAS CATEGORÍAS
 async function cargarNoticiasDestacadasPorCategoria() {
   const contenedor = document.getElementById('contenedor-destacadas-grid');
   if (!contenedor || !supabaseClient) return;
@@ -515,7 +508,6 @@ function procesarYRenderizar(noticias, contenedorNoticias, carruselCronologico) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // LECTURA DE CATEGORÍA DESDE LA URL (EJ: index.html?cat=seguridad)
   const params = new URLSearchParams(window.location.search);
   const catUrl = params.get('cat');
   const categoriaInicial = catUrl ? catUrl.toLowerCase().trim() : 'todas';
@@ -559,7 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       paginaActual = 0;
       
-      // Actualizar la URL de forma limpia sin recargar la página para SEO y compartir enlaces
       const nuevaUrl = cat === 'todas' ? window.location.pathname : `?cat=${encodeURIComponent(cat)}`;
       window.history.pushState({ path: nuevaUrl }, '', nuevaUrl);
 
