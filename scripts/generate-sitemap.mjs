@@ -3,18 +3,18 @@ import fs from 'fs';
 import path from 'path';
 
 const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function slugify(text) {
+function generarSlug(text) {
   return (text || 'noticia').toString().toLowerCase().normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '').trim()
     .replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
 }
 
 async function buildSitemap() {
-  console.log('Obteniendo noticias desde Supabase...');
+  console.log('Consultando noticias desde Supabase...');
   const { data: noticias, error } = await supabase
     .from('Noticias')
     .select('id, titulo, created_at')
@@ -33,7 +33,7 @@ async function buildSitemap() {
 
   if (noticias) {
     noticias.forEach(n => {
-      const slug = slugify(n.titulo);
+      const slug = generarSlug(n.titulo);
       const date = n.created_at ? new Date(n.created_at).toISOString().split('T')[0] : '';
       xml += `  <url>\n    <loc>https://www.pasoenjuarez.com/noticia.html?id=${n.id}/${slug}</loc>\n`;
       if (date) xml += `    <lastmod>${date}</lastmod>\n`;
@@ -45,7 +45,7 @@ async function buildSitemap() {
 
   const outputPath = path.resolve('sitemap.xml');
   fs.writeFileSync(outputPath, xml, 'utf8');
-  console.log(`¡Sitemap actualizado con éxito! Se incluyeron ${noticias ? noticias.length : 0} noticias.`);
+  console.log(`¡Sitemap actualizado! Total de noticias incluidas: ${noticias ? noticias.length : 0}`);
 }
 
 buildSitemap();
