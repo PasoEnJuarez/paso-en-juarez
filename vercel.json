@@ -3,11 +3,5 @@
     "api/noticia.js": {
       "includeFiles": "noticia.html"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
-    }
-  ]
+  }
 }
