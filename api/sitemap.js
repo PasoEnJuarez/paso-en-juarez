@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
 // Función auxiliar idéntica a tu frontend para generar slugs limpios
 function generarSlug(texto) {
   if (!texto) return 'noticia';
@@ -18,28 +16,35 @@ export default async function handler(req, res) {
   const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
 
-  // Inicializar el cliente de Supabase exactamente igual que en tus páginas
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
   try {
-    // Intentar consultar la tabla con 'Noticias' (mayúscula)
-    let { data: noticias, error } = await supabase
-      .from('Noticias')
-      .select('id, titulo, created_at')
-      .order('created_at', { ascending: false })
-      .limit(500);
+    // Petición idéntica a tu frontend para extraer hasta 500 registros de la tabla Noticias
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/Noticias?select=id,titulo,created_at&order=created_at.desc&limit=500`, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
-    // Respaldo por si acaso la tabla estuviera en minúsculas
-    if (error || !noticias || noticias.length === 0) {
-      const resAlt = await supabase
-        .from('noticias')
-        .select('id, titulo, created_at')
-        .order('created_at', { ascending: false })
-        .limit(500);
-      noticias = resAlt.data;
+    let noticias = [];
+    if (response.ok) {
+      noticias = await response.json();
+    } else {
+      // Respaldo por si la tabla estuviera en minúsculas en alguna réplica
+      const responseAlt = await fetch(`${SUPABASE_URL}/rest/v1/noticias?select=id,titulo,created_at&order=created_at.desc&limit=500`, {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (responseAlt.ok) {
+        noticias = await responseAlt.json();
+      }
     }
 
-    // Estructura base del Sitemap XML
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -58,7 +63,7 @@ export default async function handler(req, res) {
       xml += `  </url>\n`;
     });
 
-    // Agregar dinámicamente cada noticia con su ID y Slug amigable
+    // Agregar dinámicamente cada noticia con el formato exacto de tu portal
     if (Array.isArray(noticias)) {
       noticias.forEach(noticia => {
         const slug = generarSlug(noticia.titulo);
@@ -75,7 +80,6 @@ export default async function handler(req, res) {
 
     xml += `</urlset>`;
 
-    // Responder con los encabezados XML correctos
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
     res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     res.status(200).send(xml);
