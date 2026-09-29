@@ -2,9 +2,7 @@ name: Actualizar Sitemap Automatico
 
 on:
   schedule:
-    # Se ejecuta todos los dias a las 06:00 UTC (medianoche hora de Ciudad Juarez)
-    - cron: '0 6 * * *'
-  # Permite ejecutarlo manualmente con un clic en GitHub cuando quieras
+    - cron: '0 6 * * *' # Se ejecuta diariamente a las 12:00 AM (Hora de Ciudad Juárez)
   workflow_dispatch:
 
 jobs:
@@ -18,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
-        uses: actions/checkout@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -28,7 +26,7 @@ jobs:
       - name: Generar nuevo sitemap.xml
         run: node scripts/generate-sitemap.mjs
 
-      - name: Guardar y subir sitemap.xml actualizado al repositorio
+      - name: Guardar y subir sitemap.xml actualizado
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
