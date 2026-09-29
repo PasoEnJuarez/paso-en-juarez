@@ -1,14 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
+import WebSocket from 'ws';
 import fs from 'fs';
 import path from 'path';
 
 const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
-// Deshabilitamos realtime para evitar errores de WebSocket en Node.js
+// Inyectamos el módulo 'ws' como transporte para evitar errores de WebSocket nativo en Node.js
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: false },
-  realtime: { disabled: true }
+  realtime: { transport: WebSocket }
 });
 
 function generarSlug(text) {
