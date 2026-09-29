@@ -1,12 +1,7 @@
 {
   "name": "paso-en-juarez",
   "version": "1.0.0",
-  "description": "Periódico digital independiente PasóEnJuárez",
-  "main": "index.html",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.7"
-  },
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   }
 }
