@@ -21,7 +21,7 @@ jobs:
           node-version: 20
 
       - name: Instalar dependencias
-        run: npm install @supabase/supabase-js ws
+        run: npm install --no-save @supabase/supabase-js ws
 
       - name: Generar nuevo sitemap.xml
         run: node scripts/generate-sitemap.mjs
@@ -31,4 +31,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add sitemap.xml
-          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: sitemap.xml actualizado automaticamente" && git push)
+          git diff --staged --quiet || (git commit -m "bot: sitemap.xml actualizado automaticamente" && git push)
