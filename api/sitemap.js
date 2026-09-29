@@ -61,8 +61,8 @@ export default async function handler(req, res) {
         if (lastMod) {
           xml += `    <lastmod>${lastMod}</lastmod>\n`;
         }
-        xml += `    <changefreq>weekly</changefreq>\n`;
-        xml += `    <priority>0.8</priority>\n`;
+        xml += '    <changefreq>weekly</changefreq>\n';
+        xml += '    <priority>0.8</priority>\n';
         xml += '  </url>\n';
       });
     }
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    return res.status(200).send(xml);
+    return res.status(200).send(xml.trim());
 
   } catch (error) {
     let xmlError = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -81,6 +81,6 @@ export default async function handler(req, res) {
     xmlError += '</urlset>';
     
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
-    return res.status(200).send(xmlError);
+    return res.status(200).send(xmlError.trim());
   }
 }
