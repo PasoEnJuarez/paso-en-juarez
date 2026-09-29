@@ -1,71 +1,18 @@
-(async function generarSitemapLocal() {
-  const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
-  const client = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-
-  if (!client) {
-    console.error("Entra a https://www.pasoenjuarez.com primero y ejecuta este código en la consola.");
-    return;
-  }
-
-  const { data: noticias, error } = await client
-    .from('Noticias')
-    .select('id, titulo, created_at')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error("Error al consultar Supabase:", error);
-    return;
-  }
-
-  function generarSlug(texto) {
-    if (!texto) return 'noticia';
-    return texto.toString().toLowerCase().normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '').trim()
-      .replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-  }
-
-  let xmlLines = [];
-  xmlLines.push('<?xml version="1.0" encoding="UTF-8"?>');
-  xmlLines.push('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
-  xmlLines.push('  <url>');
-  xmlLines.push('    <loc>https://www.pasoenjuarez.com/</loc>');
-  xmlLines.push('    <changefreq>always</changefreq>');
-  xmlLines.push('    <priority>1.0</priority>');
-  xmlLines.push('  </url>');
-  xmlLines.push('  <url>');
-  xmlLines.push('    <loc>https://www.pasoenjuarez.com/contacto.html</loc>');
-  xmlLines.push('    <changefreq>monthly</changefreq>');
-  xmlLines.push('    <priority>0.3</priority>');
-  xmlLines.push('  </url>');
-  xmlLines.push('  <url>');
-  xmlLines.push('    <loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc>');
-  xmlLines.push('    <changefreq>yearly</changefreq>');
-  xmlLines.push('    <priority>0.1</priority>');
-  xmlLines.push('  </url>');
-
-  if (Array.isArray(noticias) && noticias.length > 0) {
-    noticias.forEach(n => {
-      const slug = generarSlug(n.titulo);
-      const fecha = n.created_at ? new Date(n.created_at).toISOString().split('T')[0] : '';
-      xmlLines.push('  <url>');
-      xmlLines.push(`    <loc>https://www.pasoenjuarez.com/noticia.html?id=${n.id}/${slug}</loc>`);
-      if (fecha) {
-        xmlLines.push(`    <lastmod>${fecha}</lastmod>`);
-      }
-      xmlLines.push('    <changefreq>weekly</changefreq>');
-      xmlLines.push('    <priority>0.8</priority>');
-      xmlLines.push('  </url>');
-    });
-  }
-
-  xmlLines.push('</urlset>');
-
-  const xmlContent = xmlLines.join('\n');
-  const blob = new Blob([xmlContent], { type: 'application/xml;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'sitemap.xml';
-  a.click();
-  console.log(`¡Sitemap descargado con éxito con ${noticias ? noticias.length : 0} noticias!`);
-})();
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.pasoenjuarez.com/</loc>
+    <changefreq>always</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/contacto.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+</urlset>
