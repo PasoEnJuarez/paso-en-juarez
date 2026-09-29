@@ -1,18 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.pasoenjuarez.com/</loc>
-    <changefreq>always</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.pasoenjuarez.com/contacto.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.1</priority>
-  </url>
-</urlset>
+(async function generarSitemapLocal() {
+  const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
+  const client = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+  if (!client) {
+    console.error("Entra a https://www.pasoenjuarez.com primero y ejecuta este código en la consola.");
+    return;
+  }
+
+  const { data: noticias } = await client
+    .from('Noticias')
+    .select('id, titulo, created_at')
+    .order('created_at', { ascending: false });
+
+  function generarSlug(texto) {
+    if (!texto) return 'noticia';
+    return texto.toString().toLowerCase().normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '').trim()
+      .replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+  }
+
+  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+  xml += '  <url><loc>https://www.pasoenjuarez.com/</loc><changefreq>always</changefreq><priority>1.0</priority></url>\n';
+  xml += '  <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>\n';
+  xml += '  <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>\n';
+
+  if (noticias) {
+    noticias.forEach(n => {
+      const slug = generarSlug(n.titulo);
+      const fecha = n.created_at ? new Date(n.created_at).toISOString().split('T')[0] : '';
+      xml += `  <url>\n    <loc>https://www.pasoenjuarez.com/noticia.html?id=${n.id}/${slug}</loc>\n`;
+      if (fecha) xml += `    <lastmod>${fecha}</lastmod>\n`;
+      xml += `    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+  }
+
+  xml += '</urlset>';
+
+  const blob = new Blob([xml], { type: 'text/xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sitemap.xml';
+  a.click();
+  console.log("¡Sitemap descargado con éxito!");
+})();
