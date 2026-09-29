@@ -5,7 +5,11 @@ import path from 'path';
 const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrd25tb3J5bWpodGhka2NlYnJpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMTYwMTQsImV4cCI6MjEwMjU5MjAxNH0.bIwjqCL1ckId5hnGFPfropYBMrv92V7ecAYkGfe1QL8';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+// Deshabilitamos realtime para evitar errores de WebSocket en Node.js
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: false },
+  realtime: { disabled: true }
+});
 
 function generarSlug(text) {
   return (text || 'noticia').toString().toLowerCase().normalize('NFD')
