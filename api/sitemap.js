@@ -1,3 +1,5 @@
+import { createClient } from '@supabase/supabase-js';
+
 // Función auxiliar idéntica a tu frontend para generar slugs limpios
 function generarSlug(texto) {
   if (!texto) return 'noticia';
@@ -16,18 +18,28 @@ export default async function handler(req, res) {
   const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
 
+  // Inicializar el cliente de Supabase exactamente igual que en tus páginas
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
   try {
-    // Consultar las noticias recientes en Supabase ordenadas por fecha
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/Noticias?select=id,titulo,created_at&order=created_at.desc&limit=500`, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`
-      }
-    });
+    // Intentar consultar la tabla con 'Noticias' (mayúscula)
+    let { data: noticias, error } = await supabase
+      .from('Noticias')
+      .select('id, titulo, created_at')
+      .order('created_at', { ascending: false })
+      .limit(500);
 
-    const noticias = await response.json();
+    // Respaldo por si acaso la tabla estuviera en minúsculas
+    if (error || !noticias || noticias.length === 0) {
+      const resAlt = await supabase
+        .from('noticias')
+        .select('id, titulo, created_at')
+        .order('created_at', { ascending: false })
+        .limit(500);
+      noticias = resAlt.data;
+    }
 
-    // Estructura base del Sitemap XML con el estándar correcto
+    // Estructura base del Sitemap XML
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -63,13 +75,13 @@ export default async function handler(req, res) {
 
     xml += `</urlset>`;
 
-    // Responder con los encabezados adecuados para que Google lo reconozca como XML
+    // Responder con los encabezados XML correctos
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600'); // Caché de 1 hora en Vercel
+    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
     res.status(200).send(xml);
 
   } catch (error) {
-    console.error("Error generando sitemap:", error);
+    console.error("Error generando sitemap dinámico:", error);
     res.status(500).send('Error generando el sitemap dinámico');
   }
 }
