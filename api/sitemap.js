@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
 function generarSlug(texto) {
   if (!texto) return 'noticia';
   return texto
@@ -17,29 +15,28 @@ export default async function handler(req, res) {
   const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
   try {
-    // Consulta oficial con el SDK de Supabase
-    let { data: noticias, error } = await supabase
-      .from('Noticias')
-      .select('id, titulo, created_at')
-      .order('created_at', { ascending: false })
-      .limit(500);
+    const headers = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Accept': 'application/json'
+    };
 
-    if (error || !noticias || noticias.length === 0) {
-      const resAlt = await supabase
-        .from('noticias')
-        .select('id, titulo, created_at')
-        .order('created_at', { ascending: false })
-        .limit(500);
-      noticias = resAlt.data || [];
+    let noticias = [];
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/Noticias?select=id,titulo,created_at&order=created_at.desc&limit=500`, { headers });
+
+    if (response.ok) {
+      noticias = await response.json();
+    } else {
+      const responseAlt = await fetch(`${SUPABASE_URL}/rest/v1/noticias?select=id,titulo,created_at&order=created_at.desc&limit=500`, { headers });
+      if (responseAlt.ok) {
+        noticias = await responseAlt.json();
+      }
     }
 
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    // Páginas estáticas principales
     const staticPages = [
       { url: 'https://www.pasoenjuarez.com/', changefreq: 'always', priority: '1.0' },
       { url: 'https://www.pasoenjuarez.com/contacto.html', changefreq: 'monthly', priority: '0.3' },
@@ -54,7 +51,6 @@ export default async function handler(req, res) {
       xml += '  </url>\n';
     });
 
-    // Inyección de todas las noticias de Supabase
     if (Array.isArray(noticias) && noticias.length > 0) {
       noticias.forEach(noticia => {
         const slug = generarSlug(noticia.titulo);
@@ -81,7 +77,7 @@ export default async function handler(req, res) {
     let xmlError = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xmlError += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     xmlError += '  <url><loc>https://www.pasoenjuarez.com/</loc></url>\n';
-    xmlError += `  <!-- Error de compilación: ${error.message} -->\n`;
+    xmlError += `  <!-- Error: ${error.message} -->\n`;
     xmlError += '</urlset>';
     
     res.setHeader('Content-Type', 'text/xml; charset=utf-8');
