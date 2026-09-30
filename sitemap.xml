@@ -4,6 +4,54 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=107/pagano-desata-la-pasion-de-la-lucha-libre-en-el-corazon-de-ciudad-juarez</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=106/bajo-la-lluvia-y-a-contrarreloj-frenan-avance-de-agua-que-amenazaba-viviendas-y-escuelas-en-la-presa</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=105/salvan-a-perrito-de-ser-arrastrado-por-la-corriente</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=104/destruye-fgr-en-juarez-mas-de-mil-objetos-asegurados-en-investigaciones-federales</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=103/ciudad-juarez-bajo-el-agua-la-lluvia-expone-la-fragilidad-de-las-obras-publicas-y-la-omision-gubernamental</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=102/85-de-probabilidad-de-lluvia-hoy-en-ciudad-juarez</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=101/ciudad-juarez-se-perfila-como-la-capital-tecnologica-del-norte-el-alcance-de-los-acuerdos-del-festival-de-ia</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=100/cruz-perez-cuellar-encabeza-a-morena-en-chihuahua-rumbo-a-las-elecciones-de-2027</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=99/detienen-a-sujeto-en-posesion-de-dos-camionetas-sin-serie-vehicular-en-lomas-de-poleo</loc>
     <lastmod>2026-09-29</lastmod>
     <changefreq>weekly</changefreq>
