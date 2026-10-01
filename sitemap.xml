@@ -4,6 +4,30 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=111/uacj-avisa-de-madrugada-pasar-a-clases-virtuales-en-icsa-por-desbordamiento-del-rio-bravo</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=110/alerta-en-el-rio-bravo-crece-el-cauce-por-intensas-lluvias-y-autoridades-se-preparan-para-posibles-desbordamientos</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=109/cayo-el-terror-de-los-negocios-cierran-el-paso-a-objetivo-prioritario-buscado-por-una-racha-de-asaltos-armados-en-tiendas-de-conveniencia</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=108/aprovecho-el-comercio-para-atacar-a-su-victima-lo-vinculan-a-proceso-por-atroz-violacion-en-la-nuevo-hipodromo</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=107/pagano-desata-la-pasion-de-la-lucha-libre-en-el-corazon-de-ciudad-juarez</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>weekly</changefreq>
