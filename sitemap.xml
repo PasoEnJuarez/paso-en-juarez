@@ -4,6 +4,42 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=117/estragos-de-la-lluvia-en-el-valle-de-juarez</loc>
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=116/mantienen-labores-de-limpieza-y-desague-en-el-bulevar-cuatro-siglos-tras-acumulaciones-de-agua</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=115/sentencian-a-ocho-anos-de-prision-a-sujeto-detenido-con-arma-y-metanfetamina-en-ciudad-juarez</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=114/detienen-a-dos-hombres-por-causar-danos-a-tiendas-de-conveniencia-en-hechos-distintos</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=113/despliegan-operativo-de-bacheo-y-limpieza-en-la-carretera-juarez-porvenir-tras-afectaciones-por-lluvias</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=112/fgr-obtiene-sentencias-vinculaciones-y-cateos-masivos-en-operativo-contra-la-delincuencia-organizada</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=111/uacj-avisa-de-madrugada-pasar-a-clases-virtuales-en-icsa-por-desbordamiento-del-rio-bravo</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>weekly</changefreq>
