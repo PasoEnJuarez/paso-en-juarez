@@ -4,6 +4,18 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=121/decomiso-millonario-en-cuauhtemoc-fgr-investiga-hallazgo-de-casi-94-kilos-de-cocaina-ocultos-en-un-remolque</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=120/el-rio-bravo-avisa-autoridades-se-movilizan-ante-el-deterioro-estructural-del-bordo</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=119/paloma-dominguez-impulsa-perspectiva-de-genero-en-la-estrategia-mexico-te-abraza-para-proteger-a-mujeres-deportadas</loc>
     <lastmod>2026-10-06</lastmod>
     <changefreq>weekly</changefreq>
