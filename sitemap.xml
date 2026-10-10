@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=122/ciudad-juarez-al-borde-del-caos-vial-advierten-colapso-masivo-en-avenidas-principales-por-posibles-bloqueos-esta-tarde</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=121/decomiso-millonario-en-cuauhtemoc-fgr-investiga-hallazgo-de-casi-94-kilos-de-cocaina-ocultos-en-un-remolque</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
