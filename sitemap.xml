@@ -4,6 +4,18 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=124/arropa-el-pan-a-marco-bonilla-en-juarez-como-su-carta-fuerte-para-la-gubernatura-de-chihuahua</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=123/descubren-que-juarez-existe-marco-bonilla-promete-acordarse-de-la-frontera-frente-a-maru-campos</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=122/ciudad-juarez-al-borde-del-caos-vial-advierten-colapso-masivo-en-avenidas-principales-por-posibles-bloqueos-esta-tarde</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>weekly</changefreq>
