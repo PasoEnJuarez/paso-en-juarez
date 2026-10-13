@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=126/hallan-arma-tirada-en-la-via-publica-tras-reporte-de-balazos-en-la-colonia-simona-barba</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=125/empujaban-carro-robado-con-otro-carro-robado-caen-jovencito-de-15-anos-y-su-complice-tras-persecucion-en-oasis-revolucion</loc>
     <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
