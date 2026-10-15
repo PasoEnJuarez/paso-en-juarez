@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=128/carcel-a-quien-corte-orejas-o-colas-a-sus-mascotas-paloma-dominguez-propone-castigar-las-mutilaciones-esteticas</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=127/festival-internacional-de-jazz-en-la-frontera-fortunato-perez</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>weekly</changefreq>
