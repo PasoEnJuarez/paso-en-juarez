@@ -4,6 +4,30 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=134/video-fgr-detiene-al-exfiscal-cesar-jauregui-por-presunta-traicion-a-la-patria-tras-operativo-irregular-con-agentes-extranjeros</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=133/alista-municipio-donacion-de-8-mil-arboles-para-reforestar-ciudad-juarez</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=132/confirmado-ordenan-y-ejecutan-aprehension-contra-el-exfiscal-cesar-jauregui-y-guillermo-zuany</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=131/-el-caso-cia-llega-a-chihuahua-trascendidos-sobre-la-supuesta-detencion-del-exfiscal-cesar-jauregui-sacuden-a-la-politica-estatal</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=130/localiza-la-policia-municipal-a-conductora-de-plataforma-desaparecida-denuncia-haber-sido-privada-de-la-libertad</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
