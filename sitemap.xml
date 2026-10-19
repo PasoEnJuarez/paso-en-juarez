@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=135/golpe-al-bolsillo-invernal-registra-ciudad-juarez-nuevo-aumento-en-el-precio-del-gas-lp</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=134/video-fgr-detiene-al-exfiscal-cesar-jauregui-por-presunta-traicion-a-la-patria-tras-operativo-irregular-con-agentes-extranjeros</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>weekly</changefreq>
