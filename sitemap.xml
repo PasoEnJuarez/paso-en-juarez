@@ -4,6 +4,24 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=138/detienen-a-una-mujer-en-posesion-de-21-envoltorios-de-cristal-durante-un-operativo-preventivo-en-la-colonia-las-haciendas-de-juarez</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=137/proponen-reformar-la-ley-de-salud-y-del-trabajo-la-diputada-paloma-dominguez-busca-crear-licencia-especial-por-salud-mental-materna</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=136/policias-llegan-a-fiesta-en-misiones-del-real-pero-fue-para-sorprender-a-cumpleanera-con-un-regalo</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=135/golpe-al-bolsillo-invernal-registra-ciudad-juarez-nuevo-aumento-en-el-precio-del-gas-lp</loc>
     <lastmod>2026-10-19</lastmod>
     <changefreq>weekly</changefreq>
