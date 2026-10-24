@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=144/tormenta-de-lluvia-y-granizo-causa-severos-encharcamientos-e-inundaciones-en-la-ciudad-de-juarez</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=143/vinculada-por-explotar-sexualmente-a-su-hija-cinthia-janeth-a-h-se-queda-en-prision-en-juarez</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>weekly</changefreq>
