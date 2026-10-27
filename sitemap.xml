@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=147/nivel-del-agua-casi-alcanza-15-metros-en-gardeno-residencial-tras-colapso-de-vaso-de-captacion-en-ciudad-juarez</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=146/hasta-600-por-viaje-la-falta-de-transporte-publico-en-el-valle-de-juarez-asfixia-severamente-la-economia-de-cientos-de-familias-de-la-zona</loc>
     <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
