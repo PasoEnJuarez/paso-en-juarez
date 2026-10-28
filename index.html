@@ -33,13 +33,38 @@
   </script>
 
   <!-- SEO y Open Graph para Redes Sociales -->
-  <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera.">
+  <meta name="description" content="Periódico digital independiente con las noticias más relevantes de Ciudad Juárez y la frontera. Director General: Juan Manuel Carmona Escárcega.">
   <meta property="og:title" content="PasóEnJuárez | Noticias de la Frontera">
   <meta property="og:description" content="Entérate de lo que pasa en Ciudad Juárez: seguridad, economía, clima, local y más.">
   <meta property="og:image" content="https://pasoenjuarez.com/images/header-bg.jpg">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://pasoenjuarez.com">
   <link rel="canonical" href="https://pasoenjuarez.com">
+
+  <!-- DATOS ESTRUCTURADOS (SCHEMA.ORG) PARA GOOGLE -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "PasóEnJuárez",
+    "url": "https://pasoenjuarez.com",
+    "logo": "https://pasoenjuarez.com/images/header-bg.jpg",
+    "email": "direccion.pasoenjuarez@gmail.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Juan Manuel Carmona Escárcega",
+      "jobTitle": "Director General"
+    },
+    "editor": {
+      "@type": "Person",
+      "name": "Juan Manuel Carmona Escárcega",
+      "jobTitle": "Director General"
+    },
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=100089735558339"
+    ]
+  }
+  </script>
 
   <!-- Preconexión acelerada a tu subdominio proxied en Cloudflare -->
   <link rel="preconnect" href="https://api.pasoenjuarez.com">
@@ -105,6 +130,8 @@
     <!-- BARRA DE WIDGETS -->
     <div class="barra-widgets-oficial" style="background: #0f172a; color: #f8fafc; padding: 8px 15px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #0284c7;">
       
+      <div id="widget-director" style="font-weight: 500; color: #38bdf8;">👤 Director General: Juan Manuel Carmona Escárcega</div>
+
       <div id="widget-fecha" style="font-weight: 500;">📅 Cargar fecha...</div>
       
       <div id="widget-clima-container" style="display: flex; align-items: center; gap: 8px;">
@@ -211,6 +238,7 @@
 
   <footer>
     <p>&copy; 2026 PasóEnJuárez. Periódico digital independiente.</p>
+    <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">Director General: <strong style="color: #f8fafc;">Juan Manuel Carmona Escárcega</strong></p>
     <p style="font-size: 0.82rem; margin-top: 8px;">
       <a href="/politica-de-privacidad.html" style="color: #38bdf8; text-decoration: none;">Política de Privacidad</a> | 
       <a href="/contacto.html" style="color: #38bdf8; text-decoration: none;">Contacto y Directorio</a> | 
