@@ -9,7 +9,7 @@ const NOTICIAS_POR_PAGINA = 10;
 let categoriaActual = 'todas';
 
 const cacheNoticias = new Map();
-const CACHE_TTL_MS = 15 * 60 * 1000; 
+const CACHE_TTL_MS = 15 * 60 * 1000;
 
 let intervaloCarrusel = null;
 
@@ -37,6 +37,7 @@ function registrarClicAnuncio(nombrePatrocinador, posicion, tipoDispositivo) {
 }
 
 function obtenerListaFotos(nota) {
+  if (!nota) return [];
   const textoImagenes = nota.imagen_url || nota.galeria;
   if (!textoImagenes) return [];
   let listaFotos = Array.isArray(textoImagenes) ? textoImagenes : String(textoImagenes).split(',');
@@ -63,7 +64,7 @@ async function inicializarPublicidad() {
     const cacheTime = localStorage.getItem('cache_anuncios_time');
     const ahora = Date.now();
 
-    if (cacheAnuncios && cacheTime && (ahora - cacheTime < CACHE_TTL_MS)) {
+    if (cacheAnuncios && cacheTime && (ahora - Number(cacheTime) < CACHE_TTL_MS)) {
       anuncios = JSON.parse(cacheAnuncios);
     } else {
       const { data, error } = await supabaseClient
@@ -73,7 +74,7 @@ async function inicializarPublicidad() {
       if (!error && data) {
         anuncios = data;
         localStorage.setItem('cache_anuncios_v2', JSON.stringify(anuncios));
-        localStorage.setItem('cache_anuncios_time', ahora);
+        localStorage.setItem('cache_anuncios_time', ahora.toString());
       }
     }
 
@@ -87,7 +88,7 @@ async function inicializarPublicidad() {
       if (anuncio && foto) {
         contenedor.style.display = 'block';
         contenedor.innerHTML = `
-          <a href="${anuncio.link || '#'}" target="_blank" rel="noopener" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
+          <a href="${anuncio.link || '#'}" target="_blank" rel="noopener noreferrer" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
             <img src="${foto}" alt="${anuncio.nombre || 'Anuncio'}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
           </a>`;
 
@@ -114,7 +115,7 @@ async function inicializarPublicidad() {
         if (anuncio && fotoMovil) {
           contenedor.style.display = 'block';
           contenedor.innerHTML = `
-            <a href="${anuncio.link || '#'}" target="_blank" rel="noopener" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
+            <a href="${anuncio.link || '#'}" target="_blank" rel="noopener noreferrer" class="enlace-banner-publicitario" style="width:100%; height:100%; display:block;">
               <img src="${fotoMovil}" alt="${anuncio.nombre || 'Anuncio Móvil'}" style="width:100%; height:100%; object-fit:contain;" loading="lazy">
             </a>`;
 
@@ -207,7 +208,7 @@ async function cargarNoticiasDestacadasPorCategoria() {
   const cacheDestacadas = localStorage.getItem('cache_destacadas_v2');
   const cacheTime = localStorage.getItem('cache_destacadas_time');
 
-  if (cacheDestacadas && cacheTime && (ahora - cacheTime < CACHE_TTL_MS)) {
+  if (cacheDestacadas && cacheTime && (ahora - Number(cacheTime) < CACHE_TTL_MS)) {
     renderizarDestacadas(JSON.parse(cacheDestacadas), contenedor);
     return;
   }
@@ -237,7 +238,7 @@ async function cargarNoticiasDestacadasPorCategoria() {
 
     if (ultimasPorCategoria.length > 0) {
       localStorage.setItem('cache_destacadas_v2', JSON.stringify(ultimasPorCategoria));
-      localStorage.setItem('cache_destacadas_time', ahora);
+      localStorage.setItem('cache_destacadas_time', ahora.toString());
       renderizarDestacadas(ultimasPorCategoria, contenedor);
     } else {
       contenedor.innerHTML = '<p style="color: #94a3b8; font-size: 0.85rem;">No hay noticias destacadas por el momento.</p>';
@@ -267,17 +268,17 @@ function renderizarDestacadas(listaDestacadas, contenedor) {
 
     return `
       <div class="noticia-destacada-card" data-id="${nota.id}" style="flex: 0 0 220px; width: 220px; background: rgba(15, 23, 42, 0.85); border: 1px solid #1e293b; border-radius: 12px; padding: 10px; cursor: pointer; transition: transform 0.2s, border-color 0.2s; box-sizing: border-box;">
-        <span class="categoria ${catClase}" style="font-size: 0.72rem; padding: 2px 8px;">${nota.categoria}</span>
+        <span class="categoria ${catClase}" style="font-size: 0.72rem; padding: 2px 8px;">${nota.categoria || 'General'}</span>
         
         <div style="position: relative; width: 100%; height: 110px; margin: 8px 0; border-radius: 8px; overflow: hidden; background: #000;">
-          ${fotoUrl ? `<img src="${fotoUrl}" alt="${nota.titulo}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">` : '<div style="width:100%; height:100%; background:#1e293b;"></div>'}
+          ${fotoUrl ? `<img src="${fotoUrl}" alt="${nota.titulo || 'Destacada'}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">` : '<div style="width:100%; height:100%; background:#1e293b;"></div>'}
           ${esVideo ? `
             <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center;">
               <span style="background: rgba(220, 38, 38, 0.9); color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; gap: 4px;">▶ Video</span>
             </div>` : ''}
         </div>
         
-        <h4 style="font-size: 0.85rem; color: #f8fafc; margin: 5px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35;">${nota.titulo}</h4>
+        <h4 style="font-size: 0.85rem; color: #f8fafc; margin: 5px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.35;">${nota.titulo || ''}</h4>
       </div>
     `;
   }).join('');
