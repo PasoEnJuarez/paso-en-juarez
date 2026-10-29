@@ -4,6 +4,18 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=151/capturan-a-dos-presuntos-narcomenudistas-con-cristal-en-distintos-puntos-de-la-ciudad</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=150/arrestan-a-sujeto-en-posesion-de-arma-de-fuego-tras-maniobras-peligrosas-en-salvarcar</loc>
+    <lastmod>2026-10-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=149/llevan-mas-de-35-horas-de-trabajo-continuo-para-desaguar-el-puente-centauros-en-ciudad-juarez</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
