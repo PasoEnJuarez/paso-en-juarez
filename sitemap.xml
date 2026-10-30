@@ -4,6 +4,36 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=156/sin-orden-judicial-y-esposados-por-8-horas-estatales-abren-camiones-de-paqueteria-en-juarez-y-solo-hallan-juguetes</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=155/alerta-por-lluvias-en-ciudad-juarez-proteccion-civil-pide-extremar-precauciones-esta-tarde</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=154/capturan-a-mujer-con-pistola-hechiza-y-cartuchos-variados-tras-tirar-basura-en-riveras-del-bravo</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=153/dictan-mas-de-11-anos-de-prision-a-pareja-detenida-con-armas-y-mas-de-240-gramos-de-cristal-en-fraccionamiento-valle-de-allende</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=152/justicia-presupuestal-para-juarez-buscan-que-se-devuelva-mas-dinero-a-los-municipios-con-reforma-a-la-coordinacion-fiscal</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=151/capturan-a-dos-presuntos-narcomenudistas-con-cristal-en-distintos-puntos-de-la-ciudad</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
