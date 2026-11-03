@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=159/capturan-al-huazontle-caen-con-armas-en-la-ram-trx-y-uno-iba-disfrazado-del-guason-en-palmas-del-sol</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=158/semaforazo-y-brutal-impacto-ministeriales-en-ram-se-pasan-el-rojo-y-desatan-carambola-en-el-villarreal-y-borunda</loc>
     <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
