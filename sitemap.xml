@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=165/arrestan-a-sujeto-acusado-de-lesionar-con-una-navaja-a-su-primo-en-la-colonia-insurgentes</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=164/rechazan-evaluaciones-subjetivas-empleados-del-poder-judicial-se-manifiestan-en-juarez-por-nuevas-reglas-publicadas-en-el-dof</loc>
     <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
