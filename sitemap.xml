@@ -4,6 +4,30 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=170/balacera-en-walmart-monumental-enfrentamiento-entre-agentes-federales-y-civiles-armados-deja-heridos-en-paseo-triunfo</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=169/asaltaron-con-fusil-de-asalto-y-no-llegaron-lejos-caen-tres-tras-atraco-a-negocio-en-valle-de-allende</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=168/arrestan-a-mujer-en-la-colonia-altavista-la-investigan-por-el-presunto-homicidio-de-su-pareja</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=167/que-no-te-den-de-menos-paloma-dominguez-propone-sancionar-a-empresas-que-enganen-con-el-contenido-neto</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=166/cae-autor-material-arrestan-a-segundo-implicado-en-homicidio-de-empleado-de-clinica-dental</loc>
     <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
