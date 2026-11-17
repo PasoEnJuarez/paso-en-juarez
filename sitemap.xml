@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=177/impulsa-paloma-dominguez-iniciativa-para-combatir-las-islas-de-calor-urbanas-y-proteger-a-ciudad-juarez</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=176/llevan-apoyos-directo-a-las-colonias-entrega-desarrollo-social-tinacos-y-despensas-en-la-colonia-erendira</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
