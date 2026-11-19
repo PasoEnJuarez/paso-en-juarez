@@ -4,6 +4,18 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=190/actualizan-lista-de-los-20-delincuentes-mas-buscados-en-la-frontera-juarez-el-paso-bajo-la-campana-se-busca-informacion</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=189/se-suman-lideres-de-mercados-populares-a-la-colecta-de-juguetes-para-santa-bombero-en-su-edicion-87</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=188/caen-a-minimos-historicos-los-cruces-irregulares-en-la-frontera-se-cumplen-18-meses-de-cero-liberaciones-hacia-ee-uu</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>weekly</changefreq>
