@@ -4,6 +4,30 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=202/arrestan-a-cuatro-personas-tras-faltas-administrativas-contaban-con-mandamientos-judiciales-vigentes</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=201/aseguran-a-sujeto-por-posesion-de-automovil-con-reporte-de-robo-localizado-en-redes-sociales</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=200/detienen-a-dos-hombres-por-delitos-contra-la-salud-tras-operativos-de-las-bases-de-operaciones-interinstitucionales</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=199/aseguran-a-sujeto-con-efectivo-y-mercancia-robada-de-un-comercio-en-la-colonia-nuevo-hipodromo</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=198/desmiente-ortiz-orpinel-detenciones-por-pintas-en-riveras-del-bravo-solo-hubo-amonestacion-verbal</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
