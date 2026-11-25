@@ -4,6 +4,12 @@
   <url><loc>https://www.pasoenjuarez.com/contacto.html</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
   <url><loc>https://www.pasoenjuarez.com/politica-de-privacidad.html</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
   <url>
+    <loc>https://www.pasoenjuarez.com/noticia.html?id=215/trato-digno-y-sin-largas-filas-propone-paloma-dominguez-garantizar-atencion-preferente-y-asientos-accesibles-para-adultos-mayores-y-personas-con-discapacidad</loc>
+    <lastmod>2026-11-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.pasoenjuarez.com/noticia.html?id=214/destina-gobierno-municipal-mas-de-490-mil-pesos-en-apoyos-e-insumos-para-madres-y-familias-buscadoras</loc>
     <lastmod>2026-11-24</lastmod>
     <changefreq>weekly</changefreq>
