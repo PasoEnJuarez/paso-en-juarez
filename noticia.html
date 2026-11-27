@@ -18,7 +18,7 @@
   <link rel="canonical" id="canonical-url" href="https://pasoenjuarez.com/noticia.html" />
   
   <!-- Preconexión acelerada -->
-  <link rel="preconnect" href="https://akwnmorymjhthdkcebri.supabase.co">
+  <link rel="preconnect" href="https://api.pasoenjuarez.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="/styles.css">
   
@@ -188,8 +188,9 @@
 
   <!-- SCRIPT PRINCIPAL DE LA VISTA DETALLADA -->
   <script>
-    const SUPABASE_URL = 'https://akwnmorymjhthdkcebri.supabase.co';
+    const SUPABASE_URL = 'https://api.pasoenjuarez.com';
     const SUPABASE_KEY = 'sb_publishable_1oNA-SbdvgSbWEwy_jZNew_UX4JVIMT';
+    const CACHE_TTL_MS = 15 * 60 * 1000;
     
     let supabaseClient = null;
     if (window.supabase && typeof window.supabase.createClient === 'function') {
@@ -212,7 +213,6 @@
       const params = new URLSearchParams(window.location.search);
       const rawId = params.get('id');
       if (rawId) {
-        // Extrae únicamente los dígitos iniciales del ID (ignora el slug o texto extra)
         const matchNum = String(rawId).match(/^(\d+)/);
         return matchNum ? matchNum[1] : rawId;
       }
@@ -292,7 +292,23 @@
     async function inicializarPublicidad() {
       if (!supabaseClient) return;
       try {
-        const { data: anuncios, error } = await supabaseClient.from('Anuncios').select('posicion, imagen_desktop, imagen, link, nombre');
+        let anuncios = null;
+        const cacheAnuncios = localStorage.getItem('cache_anuncios_v2');
+        const cacheTime = localStorage.getItem('cache_anuncios_time');
+        const ahora = Date.now();
+
+        if (cacheAnuncios && cacheTime && (ahora - Number(cacheTime) < CACHE_TTL_MS)) {
+          anuncios = JSON.parse(cacheAnuncios);
+        } else {
+          const { data, error } = await supabaseClient
+            .from('Anuncios')
+            .select('posicion, imagen_desktop, imagen, link, nombre');
+          if (!error && data) {
+            anuncios = data;
+            localStorage.setItem('cache_anuncios_v2', JSON.stringify(anuncios));
+            localStorage.setItem('cache_anuncios_time', ahora.toString());
+          }
+        }
         
         const espaciosEscritorio = document.querySelectorAll('.columna-publicidad .caja-banner-vertical');
         espaciosEscritorio.forEach((contenedor) => {
@@ -322,6 +338,55 @@
       }
     }
 
+    function renderizarDetalleNota(nota, contenedor) {
+      document.title = `${nota.titulo || 'Noticia'} | PasóEnJuárez`;
+      const canonicalTag = document.getElementById('canonical-url');
+      if (canonicalTag) {
+        canonicalTag.href = window.location.href;
+      }
+
+      let mediaHTML = '';
+      const ytId = obtenerYouTubeId(nota.video_url);
+      const listaFotos = obtenerListaFotosNota(nota);
+      
+      if (ytId) {
+        mediaHTML = `
+          <div class="contenedor-multimedia-nota" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; border-radius: 8px;">
+            <iframe src="https://www.youtube.com/embed/${ytId}" title="Video de la noticia" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
+          </div>`;
+      } else if (nota.video_url && nota.video_url.includes('facebook')) {
+        mediaHTML = `
+          <div class="contenedor-multimedia-nota" style="padding: 20px; background: #0f172a; text-align: center; border: 1px solid #334155; border-radius: 8px;">
+            <a href="${nota.video_url}" target="_blank" rel="noopener" style="color: #38bdf8; font-weight: bold; text-decoration: none;">Ver video completo en Facebook ↗</a>
+          </div>`;
+      } else if (listaFotos.length > 0) {
+        if (listaFotos.length === 1) {
+          mediaHTML = `
+            <div class="contenedor-multimedia-nota">
+              <img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy" style="width: 100%; height: auto; border-radius: 6px; display: block;">
+            </div>`;
+        } else {
+          mediaHTML = `
+            <div class="galeria-cuadricula">
+              ${listaFotos.map(foto => `<img src="${foto}" alt="${nota.titulo || 'Foto'}" loading="lazy">`).join('')}
+            </div>`;
+        }
+      }
+
+      const fechaFormateada = nota.created_at ? new Date(nota.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+      const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
+
+      contenedor.innerHTML = `
+        <span class="categoria ${catClase}" style="display:inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #0284c7; color: white; margin-bottom: 10px;">${nota.categoria || 'General'}</span>
+        <h1>${nota.titulo || 'Sin título'}</h1>
+        <div class="meta-nota">
+          <span>Publicado el ${fechaFormateada} en PasóEnJuárez</span>
+        </div>
+        ${mediaHTML}
+        <div class="cuerpo-texto">${nota.contenido || ''}</div>
+      `;
+    }
+
     async function cargarDetalleNoticia() {
       const idNoticia = obtenerIdDesdeUrl();
       const contenedor = document.getElementById('noticia-detalle-container');
@@ -329,6 +394,18 @@
       if (!idNoticia) {
         contenedor.innerHTML = `<p style="color: #ef4444; padding: 20px;">No se especificó ningún ID de noticia en la URL.</p>`;
         return;
+      }
+
+      const claveCache = `cache_nota_${idNoticia}`;
+      const cacheGuardado = sessionStorage.getItem(claveCache);
+      const ahora = Date.now();
+
+      if (cacheGuardado) {
+        const { timestamp, nota } = JSON.parse(cacheGuardado);
+        if (ahora - timestamp < CACHE_TTL_MS && nota) {
+          renderizarDetalleNota(nota, contenedor);
+          return;
+        }
       }
 
       if (!supabaseClient) {
@@ -339,12 +416,16 @@
       try {
         let { data: nota, error } = await supabaseClient
           .from('Noticias')
-          .select('*')
+          .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, video_url')
           .eq('id', idNoticia)
           .single();
 
         if (error || !nota) {
-          const resAlt = await supabaseClient.from('noticias').select('*').eq('id', idNoticia).single();
+          const resAlt = await supabaseClient
+            .from('noticias')
+            .select('id, titulo, contenido, categoria, created_at, imagen_url, galeria, video_url')
+            .eq('id', idNoticia)
+            .single();
           nota = resAlt.data;
         }
 
@@ -353,54 +434,8 @@
           return;
         }
 
-        document.title = `${nota.titulo || 'Noticia'} | PasóEnJuárez`;
-        const canonicalTag = document.getElementById('canonical-url');
-        if (canonicalTag) {
-          canonicalTag.href = window.location.href;
-        }
-
-        let mediaHTML = '';
-        const ytId = obtenerYouTubeId(nota.video_url);
-        const listaFotos = obtenerListaFotosNota(nota);
-        
-        if (ytId) {
-          mediaHTML = `
-            <div class="contenedor-multimedia-nota" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; border-radius: 8px;">
-              <iframe src="https://www.youtube.com/embed/${ytId}" title="Video de la noticia" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
-            </div>`;
-        } else if (nota.video_url && nota.video_url.includes('facebook')) {
-          mediaHTML = `
-            <div class="contenedor-multimedia-nota" style="padding: 20px; background: #0f172a; text-align: center; border: 1px solid #334155; border-radius: 8px;">
-              <a href="${nota.video_url}" target="_blank" rel="noopener" style="color: #38bdf8; font-weight: bold; text-decoration: none;">Ver video completo en Facebook ↗</a>
-            </div>`;
-        } else {
-          if (listaFotos.length > 0) {
-            if (listaFotos.length === 1) {
-              mediaHTML = `
-                <div class="contenedor-multimedia-nota">
-                  <img src="${listaFotos[0]}" alt="${nota.titulo || 'Noticia'}" loading="lazy" style="width: 100%; height: auto; border-radius: 6px; display: block;">
-                </div>`;
-            } else {
-              mediaHTML = `
-                <div class="galeria-cuadricula">
-                  ${listaFotos.map(foto => `<img src="${foto}" alt="${nota.titulo || 'Foto'}" loading="lazy">`).join('')}
-                </div>`;
-            }
-          }
-        }
-
-        const fechaFormateada = nota.created_at ? new Date(nota.created_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-        const catClase = nota.categoria ? nota.categoria.toLowerCase().trim().replace(/\s+/g, '-') : 'general';
-
-        contenedor.innerHTML = `
-          <span class="categoria ${catClase}" style="display:inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #0284c7; color: white; margin-bottom: 10px;">${nota.categoria || 'General'}</span>
-          <h1>${nota.titulo || 'Sin título'}</h1>
-          <div class="meta-nota">
-            <span>Publicado el ${fechaFormateada} en PasóEnJuárez</span>
-          </div>
-          ${mediaHTML}
-          <div class="cuerpo-texto">${nota.contenido || ''}</div>
-        `;
+        sessionStorage.setItem(claveCache, JSON.stringify({ timestamp: ahora, nota }));
+        renderizarDetalleNota(nota, contenedor);
 
       } catch (err) {
         console.error("Error cargando detalle:", err);
